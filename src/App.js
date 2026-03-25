@@ -33,7 +33,7 @@ const CSS = `
 // ─── PROFESSION GROUPS ────────────────────────────────────────────────────────
 const GROUPS = [
   {
-    id: "healthcare", label: "Healthcare", emoji: "🏥",
+    id: "healthcare", label: "Healthcare & Allied Health", emoji: "🏥",
     professions: [
       { id: "nurse", label: "Nurse / Midwife", emoji: "🏥" },
       { id: "doctor", label: "Doctor / GP", emoji: "👨‍⚕️" },
@@ -43,7 +43,7 @@ const GROUPS = [
     ]
   },
   {
-    id: "trades", label: "Trades & Labour", emoji: "🔧",
+    id: "trades", label: "Trades & Construction", emoji: "🔧",
     professions: [
       { id: "tradie", label: "Tradie (General)", emoji: "🔧" },
       { id: "electrician", label: "Electrician", emoji: "⚡" },
@@ -53,7 +53,7 @@ const GROUPS = [
     ]
   },
   {
-    id: "community", label: "Migrant & Community", emoji: "🤝",
+    id: "community", label: "Care & Community Services", emoji: "🤝",
     professions: [
       { id: "agedcare", label: "Aged Care Worker", emoji: "👴" },
       { id: "cleaner", label: "Cleaner", emoji: "🧹" },
@@ -63,7 +63,7 @@ const GROUPS = [
     ]
   },
   {
-    id: "whitecollar", label: "White Collar", emoji: "💼",
+    id: "whitecollar", label: "Professional Services", emoji: "💼",
     professions: [
       { id: "lawyer", label: "Lawyer / Solicitor", emoji: "⚖️" },
       { id: "engineer", label: "Engineer", emoji: "🔩" },
@@ -73,7 +73,7 @@ const GROUPS = [
     ]
   },
   {
-    id: "gig", label: "Gig & Freelance", emoji: "🎨",
+    id: "gig", label: "Creative & Self-Employed", emoji: "🎨",
     professions: [
       { id: "teacher", label: "Teacher / Tutor", emoji: "📚" },
       { id: "creator", label: "Content Creator", emoji: "📱" },
