@@ -744,6 +744,11 @@ export default function App() {
   const [showLogbook, setShowLogbook] = useState(false);
   const [copied, setCopied] = useState(false);
   const [search, setSearch] = useState("");
+  const [email, setEmail] = useState("");
+  const [emailSubmitted, setEmailSubmitted] = useState(false);
+  const [checklist, setChecklist] = useState({});
+  const [checklistDone, setChecklistDone] = useState(false);
+  const [showChecklist, setShowChecklist] = useState(false);
 
   useEffect(() => {
     const s = document.createElement("style");
@@ -759,6 +764,26 @@ export default function App() {
   const estimatedSaving = data ? Math.round((data.claimable||[]).reduce((s,d)=>s+d.value*marginalRate,0) + (data.conditional||[]).reduce((s,d)=>s+d.value*marginalRate*0.6,0)) : 0;
 
   const NEEDS_LOGBOOK = ["tradie","electrician","plumber","concreter","truckie","uber","delivery","realestate","lawyer","engineer","photographer","doctor","cleaner"];
+
+  const CHECKLIST_QUESTIONS = [
+    { id: "car", label: "Do you use your own car for work?" },
+    { id: "phone", label: "Do you use your personal phone for work?" },
+    { id: "wfh", label: "Do you work from home (even sometimes)?" },
+    { id: "uniform", label: "Do you wear a required work uniform?" },
+    { id: "tools", label: "Do you buy your own tools or equipment for work?" },
+    { id: "courses", label: "Have you paid for any work-related courses or memberships this year?" },
+  ];
+
+  const personalised = checklistDone && data ? [
+    ...(checklist.car ? (data.claimable||[]).filter(d=>d.tag==="Vehicle"||d.tag==="Travel") : []),
+    ...(checklist.phone ? (data.claimable||[]).filter(d=>d.tag==="Phone") : []),
+    ...(checklist.wfh ? (data.claimable||[]).filter(d=>d.tag==="Home Office") : []),
+    ...(checklist.uniform ? (data.claimable||[]).filter(d=>d.tag==="Clothing") : []),
+    ...(checklist.tools ? (data.claimable||[]).filter(d=>d.tag==="Equipment") : []),
+    ...(checklist.courses ? (data.claimable||[]).filter(d=>d.tag==="Education"||d.tag==="Memberships") : []),
+  ] : [];
+
+  const personalisedSaving = personalised.reduce((s,d)=>s+Math.round(d.value*marginalRate),0);
 
   function handleShare() {
     const text = `Just used this free Aussie tax tool — found ${fmt(totalClaim)} in potential deductions as a ${profession?.label}. That's ~${fmt(estimatedSaving)} back. Check yours 👇 isitdeductible.com.au 🇦🇺`;
@@ -965,6 +990,115 @@ export default function App() {
             Based on {fmt(effectiveSalary)}/yr · {Math.round(marginalRate*100)}% marginal rate
           </div>
         </div>
+
+
+        {/* 1 — PERSONALISATION CHECKLIST */}
+        {!checklistDone ? (
+          <div style={{ background:"#fff", border:"2px solid #4f46e5", borderRadius:16, padding:"18px", marginBottom:12 }}>
+            {!showChecklist ? (
+              <div style={{ textAlign:"center" }}>
+                <p style={{ fontSize:22, marginBottom:8 }}>🎯</p>
+                <p style={{ fontWeight:800, fontSize:15, color:"#111827", marginBottom:6 }}>Get your personalised list</p>
+                <p style={{ fontSize:13, color:"#6b7280", marginBottom:14, lineHeight:1.6 }}>Answer 6 quick questions — we'll filter down to only the deductions that actually apply to you.</p>
+                <button onClick={()=>setShowChecklist(true)} style={{ background:"linear-gradient(135deg,#4f46e5,#6366f1)", border:"none", borderRadius:12, padding:"12px 24px", color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer" }}>
+                  Personalise My Results →
+                </button>
+              </div>
+            ) : (
+              <div>
+                <p style={{ fontWeight:800, fontSize:15, color:"#111827", marginBottom:4 }}>Which of these apply to you?</p>
+                <p style={{ fontSize:13, color:"#6b7280", marginBottom:14 }}>Tick all that apply</p>
+                <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:16 }}>
+                  {CHECKLIST_QUESTIONS.map(q=>(
+                    <div key={q.id} onClick={()=>setChecklist(c=>({...c,[q.id]:!c[q.id]}))}
+                      style={{ display:"flex", alignItems:"center", gap:12, background: checklist[q.id] ? "#eef2ff" : "#f9fafb", border:`2px solid ${checklist[q.id] ? "#4f46e5" : "#e2e5f0"}`, borderRadius:10, padding:"12px 14px", cursor:"pointer" }}>
+                      <div style={{ width:22, height:22, borderRadius:6, background: checklist[q.id] ? "#4f46e5" : "#fff", border:`2px solid ${checklist[q.id] ? "#4f46e5" : "#d1d5db"}`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                        {checklist[q.id] && <span style={{ color:"#fff", fontSize:13, fontWeight:800 }}>✓</span>}
+                      </div>
+                      <p style={{ fontSize:14, fontWeight:600, color:"#111827" }}>{q.label}</p>
+                    </div>
+                  ))}
+                </div>
+                <button onClick={()=>setChecklistDone(true)} style={{ width:"100%", background:"linear-gradient(135deg,#4f46e5,#6366f1)", border:"none", borderRadius:12, padding:"13px", color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer" }}>
+                  Show My Personalised Deductions →
+                </button>
+              </div>
+            )}
+          </div>
+        ) : personalised.length > 0 ? (
+          <div style={{ background:"linear-gradient(135deg,#eef2ff,#ecfdf5)", border:"2px solid #4f46e5", borderRadius:16, padding:"18px", marginBottom:12 }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:12 }}>
+              <div>
+                <p style={{ fontSize:11, fontWeight:700, color:"#4f46e5", textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:4 }}>Your Personalised Deductions</p>
+                <p style={{ fontWeight:800, fontSize:22, color:"#059669" }}>{fmt(personalisedSaving)} estimated back</p>
+                <p style={{ fontSize:12, color:"#6b7280", marginTop:2 }}>{personalised.length} deductions that apply to you specifically</p>
+              </div>
+              <button onClick={()=>{setChecklistDone(false);setChecklist({});setShowChecklist(false);}} style={{ background:"#eef2ff", border:"none", borderRadius:8, padding:"6px 10px", fontSize:11, color:"#4f46e5", cursor:"pointer", fontWeight:700, flexShrink:0 }}>Edit</button>
+            </div>
+            <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+              {personalised.map((d,i)=>(
+                <div key={i} style={{ background:"#fff", borderRadius:9, padding:"10px 12px", borderLeft:"3px solid #059669", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                  <p style={{ fontSize:13, fontWeight:600, color:"#111827" }}>{d.item}</p>
+                  <p style={{ fontSize:13, fontWeight:800, color:"#059669", flexShrink:0, marginLeft:8, fontFamily:"monospace" }}>{fmt(d.value)}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div style={{ background:"#f9fafb", border:"1px solid #e2e5f0", borderRadius:14, padding:"14px 16px", marginBottom:12, textAlign:"center" }}>
+            <p style={{ fontSize:14, color:"#6b7280" }}>No specific deductions matched your answers — check the full list below.</p>
+            <button onClick={()=>{setChecklistDone(false);setChecklist({});setShowChecklist(false);}} style={{ marginTop:8, background:"transparent", border:"none", color:"#4f46e5", fontSize:13, fontWeight:700, cursor:"pointer" }}>Try again</button>
+          </div>
+        )}
+
+        {/* 2 — BOOK A TAX AGENT */}
+        <div style={{ background:"linear-gradient(135deg,#0f172a,#1e1b4b)", borderRadius:16, padding:"18px", marginBottom:12 }}>
+          <div style={{ display:"flex", alignItems:"flex-start", gap:14 }}>
+            <span style={{ fontSize:32, flexShrink:0 }}>👨‍💼</span>
+            <div style={{ flex:1 }}>
+              <p style={{ color:"#fff", fontWeight:800, fontSize:15, marginBottom:4 }}>Want someone to claim all of this for you?</p>
+              <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.6, marginBottom:14 }}>
+                You've found {fmt(totalClaim)} in potential deductions. A registered tax agent will make sure you claim every dollar — and their fee is tax deductible too.
+              </p>
+              <a href="https://www.ato.gov.au/individuals-and-families/your-tax-return/help-and-support-to-lodge-your-tax-return/find-a-registered-tax-agent" target="_blank" rel="noopener noreferrer"
+                style={{ display:"block", background:"linear-gradient(135deg,#4f46e5,#6366f1)", borderRadius:12, padding:"13px 18px", color:"#fff", fontSize:14, fontWeight:700, textAlign:"center", textDecoration:"none" }}>
+                Find a Registered Tax Agent →
+              </a>
+              <p style={{ color:"#475569", fontSize:11, marginTop:8, textAlign:"center" }}>Powered by the ATO's official register</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 3 — EMAIL CAPTURE */}
+        {!emailSubmitted ? (
+          <div style={{ background:"#fff", border:"1px solid #e2e5f0", borderRadius:16, padding:"18px", marginBottom:12 }}>
+            <p style={{ fontSize:22, marginBottom:8, textAlign:"center" }}>🔔</p>
+            <p style={{ fontWeight:800, fontSize:15, color:"#111827", marginBottom:4, textAlign:"center" }}>Get your 30 June reminder</p>
+            <p style={{ fontSize:13, color:"#6b7280", marginBottom:14, textAlign:"center", lineHeight:1.6 }}>
+              We'll email you before tax time with your {profession?.label} deduction checklist — so you never miss a claim again.
+            </p>
+            <div style={{ display:"flex", gap:8 }}>
+              <input
+                type="email"
+                value={email}
+                onChange={e=>setEmail(e.target.value)}
+                placeholder="your@email.com"
+                style={{ flex:1, border:"2px solid #e2e5f0", borderRadius:10, padding:"11px 14px", fontSize:14, color:"#111827", background:"#f9fafb" }}
+              />
+              <button
+                onClick={()=>{ if(email.includes("@")){ setEmailSubmitted(true); }}}
+                style={{ background:"#4f46e5", border:"none", borderRadius:10, padding:"11px 18px", color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer", flexShrink:0 }}
+              >
+                Remind Me
+              </button>
+            </div>
+            <p style={{ fontSize:11, color:"#9ca3af", marginTop:8, textAlign:"center" }}>No spam. One email per year before 30 June.</p>
+          </div>
+        ) : (
+          <div style={{ background:"#ecfdf5", border:"1px solid #a7f3d0", borderRadius:14, padding:"14px 18px", marginBottom:12, textAlign:"center" }}>
+            <p style={{ fontSize:14, fontWeight:700, color:"#059669" }}>✅ Done! We'll remind you before 30 June with your {profession?.label} deduction checklist.</p>
+          </div>
+        )}
 
         {/* ACTIONS */}
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:10 }}>
