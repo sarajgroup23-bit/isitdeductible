@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #f0f2f8; font-family: 'Plus Jakarta Sans', sans-serif; color: #111827; -webkit-font-smoothing: antialiased; }
+  body { background: #f4f6fc; font-family: 'Plus Jakarta Sans', sans-serif; color: #111827; -webkit-font-smoothing: antialiased; }
   @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
   @keyframes scaleIn { from { opacity:0; transform:scale(0.96); } to { opacity:1; transform:scale(1); } }
   @keyframes numberPop { 0%{transform:scale(0.8);opacity:0} 60%{transform:scale(1.06)} 100%{transform:scale(1);opacity:1} }
@@ -27,10 +27,7 @@ const CSS = `
   .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
   .progress-bar { height:4px; background:#e2e5f0; border-radius:99px; overflow:hidden; }
   .progress-fill { height:100%; background:linear-gradient(90deg,#1e4fd8,#10b981); border-radius:99px; transition:width 0.5s ease; }
-  input:focus { outline: 2.5px solid #1e4fd8; outline-offset: 1px; }
-  .trust-badge { display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); border-radius:99px; padding:4px 12px; font-size:11px; font-weight:700; color:#fff; letter-spacing:0.04em; }
-  .ato-link { display:inline-flex; align-items:center; gap:4px; font-size:11px; color:#1e4fd8; font-weight:600; text-decoration:none; }
-  .ato-link:hover { text-decoration:underline; }
+  input:focus { outline: 2px solid #1e4fd8; outline-offset: 1px; }
 `;
 
 // ─── PROFESSION GROUPS ────────────────────────────────────────────────────────
@@ -43,6 +40,11 @@ const GROUPS = [
       { id: "physio", label: "Physio / OT / Chiro", emoji: "🦴" },
       { id: "paramedic", label: "Paramedic / Ambo", emoji: "🚑" },
       { id: "dentist", label: "Dentist / Dental Nurse", emoji: "🦷" },
+      { id: "pharmacist", label: "Pharmacist", emoji: "💊" },
+      { id: "psychologist", label: "Psychologist / Counsellor", emoji: "🧠" },
+      { id: "optometrist", label: "Optometrist", emoji: "👁️" },
+      { id: "radiographer", label: "Radiographer / Sonographer", emoji: "🩻" },
+      { id: "dietitian", label: "Dietitian / Nutritionist", emoji: "🥗" },
     ]
   },
   {
@@ -53,6 +55,11 @@ const GROUPS = [
       { id: "plumber", label: "Plumber", emoji: "🪠" },
       { id: "concreter", label: "Concreter / Landscaper", emoji: "🏗️" },
       { id: "truckie", label: "Truck Driver", emoji: "🚛" },
+      { id: "carpenter", label: "Carpenter / Joiner", emoji: "🪚" },
+      { id: "welder", label: "Welder / Boilermaker", emoji: "🔥" },
+      { id: "painter", label: "Painter / Decorator", emoji: "🖌️" },
+      { id: "tiler", label: "Tiler / Floorer", emoji: "🟦" },
+      { id: "pestcontrol", label: "Pest Control / Lawn Care", emoji: "🌿" },
     ]
   },
   {
@@ -63,6 +70,11 @@ const GROUPS = [
       { id: "security", label: "Security Guard", emoji: "🛡️" },
       { id: "delivery", label: "Delivery Driver", emoji: "📦" },
       { id: "uber", label: "Rideshare Driver", emoji: "🚗" },
+      { id: "socialworker", label: "Social Worker", emoji: "🤲" },
+      { id: "police", label: "Police Officer", emoji: "👮" },
+      { id: "firefighter", label: "Firefighter", emoji: "🚒" },
+      { id: "military", label: "Military Personnel", emoji: "🎖️" },
+      { id: "corrections", label: "Corrections Officer", emoji: "🔐" },
     ]
   },
   {
@@ -73,16 +85,108 @@ const GROUPS = [
       { id: "hr", label: "HR Professional", emoji: "👥" },
       { id: "developer", label: "Software Developer", emoji: "💻" },
       { id: "accountant", label: "Accountant / Bookkeeper", emoji: "📊" },
+      { id: "financeplanner", label: "Financial Planner / Adviser", emoji: "💰" },
+      { id: "mortgagebroker", label: "Mortgage Broker", emoji: "🏦" },
+      { id: "businessanalyst", label: "Business Analyst", emoji: "📈" },
+      { id: "projectmanager", label: "Project Manager", emoji: "📋" },
+      { id: "architect", label: "Architect / Interior Designer", emoji: "📐" },
     ]
   },
   {
-    id: "gig", label: "Creative & Self-Employed", emoji: "🎨",
+    id: "education", label: "Education & Training", emoji: "🎓",
     professions: [
       { id: "teacher", label: "Teacher / Tutor", emoji: "📚" },
+      { id: "lecturer", label: "University Lecturer / Academic", emoji: "🎓" },
+      { id: "earlychildhood", label: "Early Childhood Educator", emoji: "🧒" },
+      { id: "tafe", label: "TAFE / Vocational Trainer", emoji: "🔨" },
+      { id: "schoolcounsellor", label: "School Counsellor", emoji: "💬" },
+    ]
+  },
+  {
+    id: "tech", label: "Tech & Digital", emoji: "💡",
+    professions: [
+      { id: "datascientist", label: "Data Scientist / Analyst", emoji: "📊" },
+      { id: "cybersecurity", label: "Cybersecurity Analyst", emoji: "🔒" },
+      { id: "uxdesigner", label: "UX / UI Designer", emoji: "🎨" },
+      { id: "itsupport", label: "IT Support / Help Desk", emoji: "🖥️" },
+      { id: "networkengineer", label: "Network / Systems Engineer", emoji: "🌐" },
+    ]
+  },
+  {
+    id: "creative", label: "Creative & Media", emoji: "🎭",
+    professions: [
       { id: "creator", label: "Content Creator", emoji: "📱" },
       { id: "photographer", label: "Photographer / Videographer", emoji: "📸" },
-      { id: "realestate", label: "Real Estate Agent", emoji: "🏠" },
+      { id: "graphicdesigner", label: "Graphic Designer", emoji: "🖼️" },
+      { id: "journalist", label: "Journalist / Writer", emoji: "✍️" },
+      { id: "musician", label: "Musician / Performer", emoji: "🎵" },
+      { id: "actor", label: "Actor / Presenter", emoji: "🎬" },
+    ]
+  },
+  {
+    id: "hospitality", label: "Hospitality & Tourism", emoji: "🍽️",
+    professions: [
       { id: "chef", label: "Chef / Cook", emoji: "👨‍🍳" },
+      { id: "barista", label: "Barista / Bartender", emoji: "☕" },
+      { id: "hospitalitymanager", label: "Hospitality Manager", emoji: "🏨" },
+      { id: "travelagent", label: "Travel Agent", emoji: "✈️" },
+      { id: "eventplanner", label: "Event Planner / Manager", emoji: "🎉" },
+      { id: "flightattendant", label: "Flight Attendant", emoji: "🛫" },
+    ]
+  },
+  {
+    id: "retail", label: "Retail, Sales & Personal Services", emoji: "🛍️",
+    professions: [
+      { id: "realestate", label: "Real Estate Agent", emoji: "🏠" },
+      { id: "salesrep", label: "Sales Representative", emoji: "🤝" },
+      { id: "hairdresser", label: "Hairdresser / Beauty Therapist", emoji: "💇" },
+      { id: "personaltrainer", label: "Personal Trainer", emoji: "💪" },
+      { id: "retailmanager", label: "Retail Manager", emoji: "🏪" },
+    ]
+  },
+  {
+    id: "property", label: "Property & Construction", emoji: "🏗️",
+    professions: [
+      { id: "propertymanager", label: "Property Manager", emoji: "🏢" },
+      { id: "buildinginspector", label: "Building Inspector / Surveyor", emoji: "📏" },
+      { id: "quantitysurveyor", label: "Quantity Surveyor", emoji: "🔢" },
+      { id: "facilitiesmanager", label: "Facilities Manager", emoji: "🔧" },
+      { id: "townplanner", label: "Town Planner", emoji: "🗺️" },
+    ]
+  },
+  {
+    id: "transport", label: "Transport & Logistics", emoji: "🚚",
+    professions: [
+      { id: "pilot", label: "Airline Pilot", emoji: "✈️" },
+      { id: "busdriver", label: "Bus / Train Driver", emoji: "🚌" },
+      { id: "forklift", label: "Forklift / Warehouse Operator", emoji: "🏭" },
+      { id: "logistics", label: "Logistics Coordinator", emoji: "📦" },
+      { id: "seafarer", label: "Marine / Seafarer", emoji: "⚓" },
+    ]
+  },
+  {
+    id: "agriculture", label: "Agriculture & Environment", emoji: "🌾",
+    professions: [
+      { id: "farmer", label: "Farmer / Agricultural Worker", emoji: "🌾" },
+      { id: "vet", label: "Veterinarian / Vet Nurse", emoji: "🐾" },
+      { id: "environmental", label: "Environmental Scientist", emoji: "🌍" },
+      { id: "mining", label: "Mining / Resources Worker", emoji: "⛏️" },
+      { id: "horticulturalist", label: "Horticulturalist / Arborist", emoji: "🌳" },
+    ]
+  },
+  {
+    id: "online", label: "Online & Digital Business", emoji: "🌐",
+    professions: [
+      { id: "ecommerce", label: "eCommerce / Dropshipper", emoji: "🛒" },
+      { id: "freelancer", label: "Freelancer", emoji: "💼" },
+      { id: "socialmedia", label: "Social Media Manager", emoji: "📣" },
+      { id: "onlinetutor", label: "Online Tutor / Course Creator", emoji: "🎓" },
+      { id: "crypto", label: "Crypto / NFT Trader", emoji: "₿" },
+      { id: "podcaster", label: "Podcaster", emoji: "🎙️" },
+      { id: "affiliatemarketer", label: "Affiliate Marketer", emoji: "🔗" },
+      { id: "virtualassistant", label: "Virtual Assistant", emoji: "🤖" },
+      { id: "appdeveloper", label: "Indie App Developer", emoji: "📲" },
+      { id: "digitalnomad", label: "Digital Nomad / Remote Worker", emoji: "🌏" },
     ]
   },
 ];
@@ -94,15 +198,15 @@ const D = {
   nurse: {
     avgSalary: 80000,
     claimable: [
-      { item: "Scrubs & nursing uniforms", value: 300, tag: "Clothing", atoUrl: "https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/clothes-and-items-you-wear-at-work/clothing-laundry-and-dry-cleaning-expenses", summary: "Distinctive work uniforms are fully deductible.", scenario: "Sarah buys 3 sets of scrubs at $90 each = $270. Distinct work uniforms — she claims the full $270.", howTo: "Keep receipt. Uniform must be 'distinctive' — employer logo or required specific colour. Plain black pants don't qualify.", watchOut: "Cannot claim plain street clothes even if worn only to work.", docsNeeded: ["Receipt", "Note employer uniform policy if asked"] },
+      { item: "Scrubs & nursing uniforms", value: 300, tag: "Clothing", summary: "Distinctive work uniforms are fully deductible.", scenario: "Sarah buys 3 sets of scrubs at $90 each = $270. Distinct work uniforms — she claims the full $270.", howTo: "Keep receipt. Uniform must be 'distinctive' — employer logo or required specific colour. Plain black pants don't qualify.", watchOut: "Cannot claim plain street clothes even if worn only to work.", docsNeeded: ["Receipt", "Note employer uniform policy if asked"] },
       { item: "Uniform laundry costs", value: 150, tag: "Clothing", summary: "ATO formula: $1 per load — no receipts needed under $150.", scenario: "Tom washes scrubs 3x/week × 48 weeks = 144 loads × $1 = $144. No receipts needed.", howTo: "Use ATO formula: $1/load washing, $1/load if also drying. Keep a simple weekly count in Notes.", watchOut: "Only applies to distinctive uniforms. Cannot claim laundering plain clothes.", docsNeeded: ["Simple weekly tally (notes app is fine)", "No receipts needed under $150"] },
       { item: "Stethoscope & medical equipment", value: 400, tag: "Equipment", summary: "Tools of trade you personally buy are fully deductible.", scenario: "Amira buys a $320 Littmann stethoscope. Employer doesn't provide one. Claims full $320.", howTo: "Keep receipt. Under $300 = instant deduction. Over $300 = depreciate over ATO effective life.", watchOut: "If employer reimburses you — you cannot claim it.", docsNeeded: ["Receipt", "Asset register entry if over $300"] },
-      { item: "CPD courses & conferences", value: 500, tag: "Education", atoUrl: "https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/education-training-and-seminars/self-education-expenses", summary: "Professional development directly related to your current nursing role.", scenario: "James pays $450 for an ICU upskilling course as an ICU nurse. Directly related — fully deductible.", howTo: "Keep receipt + course description. Key test: maintains or improves skills for your CURRENT job.", watchOut: "Studying law or a completely different field = not deductible.", docsNeeded: ["Receipt/invoice", "Course outline showing relevance"] },
-      { item: "ANMF membership fees", value: 200, tag: "Memberships", atoUrl: "https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/memberships-accreditations-fees-and-commissions/union-fees-subscriptions-to-associations-and-bargaining-agents-fees", summary: "Union and professional body fees are fully deductible.", scenario: "ANMF annual fee $190 — claimed in full, no conditions.", howTo: "Get annual tax statement from ANMF (usually emailed in July). Use that exact figure.", watchOut: "None — ANMF is 100% work-related.", docsNeeded: ["Annual tax statement from ANMF"] },
+      { item: "CPD courses & conferences", value: 500, tag: "Education", summary: "Professional development directly related to your current nursing role.", scenario: "James pays $450 for an ICU upskilling course as an ICU nurse. Directly related — fully deductible.", howTo: "Keep receipt + course description. Key test: maintains or improves skills for your CURRENT job.", watchOut: "Studying law or a completely different field = not deductible.", docsNeeded: ["Receipt/invoice", "Course outline showing relevance"] },
+      { item: "ANMF membership fees", value: 200, tag: "Memberships", summary: "Union and professional body fees are fully deductible.", scenario: "ANMF annual fee $190 — claimed in full, no conditions.", howTo: "Get annual tax statement from ANMF (usually emailed in July). Use that exact figure.", watchOut: "None — ANMF is 100% work-related.", docsNeeded: ["Annual tax statement from ANMF"] },
       { item: "Work phone use (portion)", value: 200, tag: "Phone", summary: "Work-use proportion of your phone plan.", scenario: "Priya uses her phone 30% for work. Annual plan $600. Claims 30% = $180.", howTo: "Keep a 4-week usage diary in June. That % applies to the whole year.", watchOut: "Cannot claim 100% on a mixed-use phone.", docsNeeded: ["4-week usage diary", "Annual plan cost or bills"] },
     ],
     conditional: [
-      { item: "Home office (70c/hr)", value: 300, tag: "Home Office", summary: "If you do admin or CPD at home, claim 70 cents per hour.", scenario: "Mia does 2hrs/week clinical notes at home. 2 × 48 × $0.70 = $64. Small but real.", howTo: "ATO fixed rate 70c/hr. Keep a time diary — calendar entries count.", watchOut: "Cannot also separately claim internet if using fixed rate.", docsNeeded: ["Time diary showing hours worked at home"] },
+      { item: "Home office (70c/hr)", value: 300, tag: "Home Office", summary: "If you do admin or CPD at home, claim 67 cents per hour.", scenario: "Mia does 2hrs/week clinical notes at home. 2 × 48 × $0.70 = $64. Small but real.", howTo: "ATO fixed rate 70c/hr. Keep a time diary — calendar entries count.", watchOut: "Cannot also separately claim internet if using fixed rate.", docsNeeded: ["Time diary showing hours worked at home"] },
       { item: "Travel between work sites", value: 400, tag: "Travel", summary: "Driving between two workplaces in one day — not home to work.", scenario: "Jake works morning at public hospital, afternoon at private clinic. The 15km between sites is deductible. His drive from home is not.", howTo: "Cents per km method: 88c/km (2024-25), up to 5,000km. Keep a simple trip diary.", watchOut: "Home-to-work commute is NEVER deductible. ATO's top audit target.", docsNeeded: ["Trip diary: date, from, to, km, purpose"] },
       { item: "Protective shoes / compression socks", value: 150, tag: "Clothing", summary: "Only if employer specifically requires protective footwear.", scenario: "Hospital policy requires safety-rated closed-toe shoes. Emma buys $140 pair — claimable.", howTo: "Keep receipt. Document the employer's specific requirement.", watchOut: "'Sensible shoes' recommendation ≠ claimable. Must be a specific employer requirement.", docsNeeded: ["Receipt", "Reference to employer policy"] },
     ],
@@ -199,7 +303,7 @@ const D = {
     avgSalary: 90000,
     claimable: [
       { item: "Tools & equipment (under $300 each)", value: 800, tag: "Equipment", summary: "Small tools are instantly deductible in the year purchased.", scenario: "Marco buys a $180 angle grinder, $95 level set and $85 drill bits. All under $300 each — claims $360 immediately.", howTo: "Keep receipts. Each item assessed individually. Must be used for work.", watchOut: "Don't bundle items to avoid $300 threshold. A $350 kit is one $350 item.", docsNeeded: ["Receipt per item"] },
-      { item: "Vehicle costs (logbook method)", value: 3000, tag: "Vehicle", atoUrl: "https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/cars-transport-and-travel/motor-vehicle-and-car-expenses/expenses-for-a-car-you-own-or-lease", summary: "Your biggest deduction — claim the work % of ALL car running costs.", scenario: "Dave (plumber) drives ute to job sites. 12-week logbook: 75% work. Annual car costs $12,000. Claims $9,000.", howTo: "12-week logbook — every trip, work AND personal. Calculate business %. Apply to all car costs for 5 years.", watchOut: "Home to first job site is NOT deductible. Site-to-site is fine.", docsNeeded: ["12-week logbook (all trips)", "All car receipts: fuel, rego, insurance, servicing", "Odometer readings 1 July & 30 June"] },
+      { item: "Vehicle costs (logbook method)", value: 3000, tag: "Vehicle", summary: "Your biggest deduction — claim the work % of ALL car running costs.", scenario: "Dave (plumber) drives ute to job sites. 12-week logbook: 75% work. Annual car costs $12,000. Claims $9,000.", howTo: "12-week logbook — every trip, work AND personal. Calculate business %. Apply to all car costs for 5 years.", watchOut: "Home to first job site is NOT deductible. Site-to-site is fine.", docsNeeded: ["12-week logbook (all trips)", "All car receipts: fuel, rego, insurance, servicing", "Odometer readings 1 July & 30 June"] },
       { item: "Safety boots & PPE", value: 350, tag: "Clothing", summary: "Safety-rated protective clothing required for work.", scenario: "Site requires steel-caps, hi-vis and safety glasses. Liam buys all three for $310. Fully claimable.", howTo: "Keep receipts. Must be specifically protective — safety-rated.", watchOut: "Regular work clothes don't count even if only worn to work.", docsNeeded: ["Receipts"] },
       { item: "Union fees & trade licence renewal", value: 600, tag: "Memberships", summary: "Trade licence renewals and union fees are fully deductible.", scenario: "Electrical licence $380 + ETU union $420 = $800 claimed.", howTo: "Keep licence renewal receipt. Union sends annual tax statement in July.", watchOut: "Only income-earning portions — trade unions are 100% work-related.", docsNeeded: ["Licence renewal receipt", "Union annual tax statement"] },
       { item: "Sunscreen & sunglasses (outdoor workers)", value: 80, tag: "Health", summary: "Sun protection for outdoor workers — often overlooked.", scenario: "Chris works outdoors 4 days/week. Buys $35 sunscreen + $60 sunglasses. Claims $35 + 80% × $60 = $83.", howTo: "Keep receipts. ATO allows this for workers exposed to sun. Apply work % to sunglasses.", watchOut: "Cannot claim if mostly indoors. Cosmetic SPF in moisturiser doesn't count.", docsNeeded: ["Receipts"] },
@@ -371,7 +475,7 @@ const D = {
   uber: {
     avgSalary: 55000,
     claimable: [
-      { item: "Vehicle costs (fuel, rego, insurance)", value: 4000, tag: "Vehicle", atoUrl: "https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/cars-transport-and-travel/motor-vehicle-and-car-expenses/expenses-for-a-car-you-own-or-lease", summary: "Your biggest deduction — work % of ALL running costs via logbook.", scenario: "Raj drives Uber full-time. 12-week logbook: 85% work. Annual car costs $14,000. Claims $11,900.", howTo: "12-week logbook — every trip, work and personal. Apply % to all costs for 5 years.", watchOut: "Without a logbook the ATO can deny your entire vehicle claim.", docsNeeded: ["12-week logbook (all trips — work AND personal)", "All car receipts", "Annual odometer readings 1 July & 30 June"] },
+      { item: "Vehicle costs (fuel, rego, insurance)", value: 4000, tag: "Vehicle", summary: "Your biggest deduction — work % of ALL running costs via logbook.", scenario: "Raj drives Uber full-time. 12-week logbook: 85% work. Annual car costs $14,000. Claims $11,900.", howTo: "12-week logbook — every trip, work and personal. Apply % to all costs for 5 years.", watchOut: "Without a logbook the ATO can deny your entire vehicle claim.", docsNeeded: ["12-week logbook (all trips — work AND personal)", "All car receipts", "Annual odometer readings 1 July & 30 June"] },
       { item: "Phone plan (work portion)", value: 400, tag: "Phone", summary: "Phone used for Uber app, navigation and passenger comms.", scenario: "Lin's plan $70/month. Uses 70% for Uber. 70% × $840/yr = $588.", howTo: "4-week diary. Apply % to full year costs.", watchOut: "Must be honest. 100% claim on mixed phone is a common audit trigger.", docsNeeded: ["4-week diary", "Annual plan cost"] },
       { item: "Water & mints for passengers", value: 150, tag: "Supplies", summary: "Passenger comfort items are deductible.", scenario: "Spends $12/month on water and mints. $144/yr — fully deductible.", howTo: "Keep supermarket receipts. Note 'Uber passenger supplies'.", watchOut: "Keep it reasonable — lavish gifts won't hold up.", docsNeeded: ["Supermarket receipts"] },
       { item: "Car cleaning (work portion)", value: 300, tag: "Vehicle", summary: "Cleaning costs proportional to work use.", scenario: "Washes car weekly at $15. 85% work use × $780/yr = $663.", howTo: "Apply logbook work % to annual cleaning costs.", watchOut: "Don't claim 100% — apply your logbook percentage.", docsNeeded: ["Receipts", "Apply logbook business %"] },
@@ -394,7 +498,7 @@ const D = {
       { item: "Law Institute / Bar Association membership", value: 800, tag: "Memberships", summary: "Professional body membership — fully deductible.", scenario: "LIV annual membership $750 — claimed using annual tax statement.", howTo: "Annual tax statement from LIV or relevant body.", watchOut: "100% work-related.", docsNeeded: ["Annual tax statement"] },
       { item: "CPD points & legal courses", value: 1000, tag: "Education", summary: "Mandatory CPD and practice-area upskilling.", scenario: "Pays $400 for a property law CPD seminar + $650 online course. Both relate to current practice area. Claimed.", howTo: "Keep receipts + course descriptions. Must relate to current practice area.", watchOut: "Studying for a completely different area of law = borderline. Current specialty is safest.", docsNeeded: ["Receipts", "Course outlines"] },
       { item: "Legal databases & subscriptions", value: 1200, tag: "Software", summary: "LexisNexis, Westlaw, Practical Law — if personally subscribed.", scenario: "Personal LexisNexis subscription $1,100/yr for research work. Fully deductible.", howTo: "Keep subscription receipts. Must be personally subscribed — not employer-provided.", watchOut: "If employer provides access — cannot claim personal subscription.", docsNeeded: ["Subscription receipts"] },
-      { item: "Home office (WFH portion)", value: 1000, tag: "Home Office", atoUrl: "https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/working-from-home-expenses/fixed-rate-method-67-cents", summary: "Lawyers who WFH or do after-hours work at home.", scenario: "Lawyer works from home 2 days/week + 2hrs/night on matters. ~6hrs/day WFH. 6 × 2 × 48 × $0.70 = $386.", howTo: "70c/hr fixed rate. Time diary. Calendar records of WFH days work.", watchOut: "Cannot separately claim internet or electricity if using fixed rate.", docsNeeded: ["Time diary or WFH calendar records"] },
+      { item: "Home office (WFH portion)", value: 1000, tag: "Home Office", summary: "Lawyers who WFH or do after-hours work at home.", scenario: "Lawyer works from home 2 days/week + 2hrs/night on matters. ~6hrs/day WFH. 6 × 2 × 48 × $0.70 = $386.", howTo: "70c/hr fixed rate. Time diary. Calendar records of WFH days work.", watchOut: "Cannot separately claim internet or electricity if using fixed rate.", docsNeeded: ["Time diary or WFH calendar records"] },
       { item: "Phone & internet (work portion)", value: 500, tag: "Phone", summary: "Work-use proportion of phone and internet.", scenario: "Uses phone 50% for work. $1,200/yr plan × 50% = $600.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if claiming fixed rate home office method.", docsNeeded: ["4-week diary", "Annual phone/internet cost"] },
     ],
     conditional: [
@@ -451,7 +555,7 @@ const D = {
     avgSalary: 120000,
     claimable: [
       { item: "Technical courses & subscriptions", value: 800, tag: "Education", summary: "Udemy, Pluralsight, O'Reilly, conference tickets.", scenario: "Alex: AWS cert course $300 + Pluralsight $200 + dev conference $350 = $850 — all work-relevant.", howTo: "Keep receipts. Must relate to current tech stack or role.", watchOut: "Learning an entirely new field for a career change = not deductible.", docsNeeded: ["Receipts", "Course description if relevance isn't obvious"] },
-      { item: "Home office (WFH hours)", value: 1200, tag: "Home Office", atoUrl: "https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/working-from-home-expenses/fixed-rate-method-67-cents", summary: "Most devs WFH — your most consistent annual deduction.", scenario: "Full-time WFH dev: 5 days × 8hrs × 48 weeks × $0.70 = $1,285.", howTo: "70c/hr. Time diary or calendar records.", watchOut: "Cannot also claim internet separately if using fixed rate.", docsNeeded: ["Time diary or WFH calendar"] },
+      { item: "Home office (WFH hours)", value: 1200, tag: "Home Office", summary: "Most devs WFH — your most consistent annual deduction.", scenario: "Full-time WFH dev: 5 days × 8hrs × 48 weeks × $0.70 = $1,285.", howTo: "70c/hr. Time diary or calendar records.", watchOut: "Cannot also claim internet separately if using fixed rate.", docsNeeded: ["Time diary or WFH calendar"] },
       { item: "Software subscriptions (GitHub, Figma, Jira)", value: 600, tag: "Software", summary: "Work tools you personally subscribe to.", scenario: "GitHub Pro $48 + JetBrains $250 + Figma $180 = $478 — fully deductible.", howTo: "Keep subscription receipts. Must be personally subscribed for work.", watchOut: "Employer-provided tools cannot be claimed.", docsNeeded: ["Subscription receipts or annual statements"] },
       { item: "Monitor, keyboard, peripherals", value: 800, tag: "Equipment", summary: "WFH equipment — claim the work-use proportion.", scenario: "Buys $450 monitor (depreciated) + $120 keyboard (instant). 80% work. $96 now + depreciation on monitor.", howTo: "Under $300 = instant. Over $300 = depreciate. Apply work-use %.", watchOut: "Gaming peripherals or items also used personally — must apportion.", docsNeeded: ["Receipts", "Work-use % calculation"] },
       { item: "Phone & internet (work portion)", value: 600, tag: "Phone", summary: "Work-use portion of phone and internet.", scenario: "Uses phone 50% for work + internet 60% for work. Separate diary for each.", howTo: "4-week diary for phone. If NOT using fixed rate — also claim internet separately.", watchOut: "Cannot claim internet separately if using fixed rate home office method.", docsNeeded: ["4-week diary", "Annual phone and internet costs"] },
@@ -587,6 +691,1164 @@ const D = {
       { item: "Personal cooking equipment at home", reason: "Home kitchen equipment is personal." },
     ],
   },
+
+  pharmacist: {
+    avgSalary: 105000,
+    claimable: [
+      { item: "AHPRA registration", value: 500, tag: "Memberships", atoUrl: "https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/memberships-accreditations-fees-and-commissions/professional-memberships-and-accreditations", summary: "Annual AHPRA registration required to practise.", scenario: "Pharmacist pays $480 AHPRA renewal — claimed in full.", howTo: "Keep AHPRA tax invoice. Claim in year paid.", watchOut: "Renewals only — initial registration not deductible.", docsNeeded: ["AHPRA tax invoice"] },
+      { item: "PSA membership & CPD", value: 900, tag: "Memberships", summary: "Pharmaceutical Society membership and mandatory CPD.", scenario: "PSA annual fee $820 + CPD conference $280 = $1,100. Claimed.", howTo: "Annual tax statement from PSA + CPD receipts.", watchOut: "CPD must relate to current pharmacist role.", docsNeeded: ["PSA tax statement", "CPD receipts"] },
+      { item: "Professional indemnity insurance", value: 800, tag: "Insurance", summary: "PI insurance required to practise — fully deductible.", scenario: "Annual MIGA/Guild policy $750 — claimed in full.", howTo: "Keep insurance certificate and receipt.", watchOut: "Only if self-funded — employer-provided cover cannot be claimed.", docsNeeded: ["Insurance receipt"] },
+      { item: "Pharmacy journals & clinical databases", value: 500, tag: "Education", summary: "Clinical reference materials directly related to practice.", scenario: "MIMS online $380/yr + pharmacy journal $150/yr. Both claimed.", howTo: "Keep subscription receipts.", watchOut: "General health reading doesn't qualify.", docsNeeded: ["Subscription receipts"] },
+      { item: "Work uniform / pharmacy coat", value: 200, tag: "Clothing", summary: "Employer-required pharmacy coat or branded uniform.", scenario: "Pharmacy requires branded white coat. Buys 2 × $85 = $170. Claimed.", howTo: "Keep receipt. Must be distinctive employer-branded.", watchOut: "Generic white coat without branding is borderline.", docsNeeded: ["Receipt"] },
+      { item: "Phone (work portion)", value: 200, tag: "Phone", summary: "Work-use proportion for patient comms and clinical queries.", scenario: "Uses phone 30% for work. $720/yr × 30% = $216.", howTo: "4-week diary. Apply % to full year.", watchOut: "Honest apportionment required.", docsNeeded: ["4-week diary", "Annual phone cost"] },
+    ],
+    conditional: [
+      { item: "Home office (WFH admin)", value: 250, tag: "Home Office", summary: "If you do CPD or admin at home.", scenario: "2hrs/week CPD at home. 2 × 48 × $0.70 = $67.", howTo: "70c/hr fixed rate. Keep time diary.", watchOut: "Must be genuine work, not just reading for interest.", docsNeeded: ["Time diary"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-pharmacy commute", reason: "Standard commute rule." },
+      { item: "Personal medications", reason: "Your own health costs are personal." },
+      { item: "Gym membership", reason: "Personal expense." },
+    ],
+  },
+
+  psychologist: {
+    avgSalary: 95000,
+    claimable: [
+      { item: "AHPRA registration", value: 500, tag: "Memberships", summary: "Annual registration required to practise.", scenario: "$480 AHPRA renewal — claimed in full.", howTo: "Keep AHPRA tax invoice.", watchOut: "Renewals only.", docsNeeded: ["AHPRA tax invoice"] },
+      { item: "APS membership & CPD", value: 800, tag: "Memberships", summary: "Australian Psychological Society membership and CPD.", scenario: "APS annual fee $700 + CPD workshop $200 = $900. Claimed.", howTo: "Annual tax statement from APS + CPD receipts.", watchOut: "CPD must relate to current clinical role.", docsNeeded: ["APS tax statement", "CPD receipts"] },
+      { item: "Professional indemnity insurance", value: 700, tag: "Insurance", summary: "PI insurance required for clinical practice.", scenario: "Annual policy $650 — claimed in full.", howTo: "Keep insurance receipt.", watchOut: "Only if self-funded.", docsNeeded: ["Insurance receipt"] },
+      { item: "Clinical supervision fees", value: 1200, tag: "Education", summary: "Mandatory supervision required for registration maintenance.", scenario: "Monthly supervision sessions $120 × 10 = $1,200. Required for provisionally registered psychologists.", howTo: "Keep receipts from supervisor. Must be required for your registration or practice.", watchOut: "Optional mentoring or personal therapy is not deductible.", docsNeeded: ["Receipts from supervisor"] },
+      { item: "Psychology books & journals", value: 400, tag: "Education", summary: "Clinical reference materials.", scenario: "DSM-5 update $180 + clinical journal subscription $220. Both claimed.", howTo: "Keep receipts. Must relate to current clinical work.", watchOut: "Self-help or personal interest books don't qualify.", docsNeeded: ["Receipts"] },
+      { item: "Home office (client notes, reports)", value: 800, tag: "Home Office", summary: "Writing clinical notes and reports at home.", scenario: "3hrs/day writing notes at home. 3 × 5 × 48 × $0.70 = $504.", howTo: "70c/hr fixed rate. Keep time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+    ],
+    conditional: [
+      { item: "Personal therapy (if required for registration)", value: 600, tag: "Education", summary: "Some registrations require personal therapy — partially deductible.", scenario: "Provisionally registered psychologist pays $150/session for required personal therapy. Claimed as self-education.", howTo: "Must be specifically required by your training program or supervisor. Keep receipts.", watchOut: "Personal therapy for your own wellbeing (not required) is not deductible.", docsNeeded: ["Receipt", "Evidence it is required by training program"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-clinic commute", reason: "Standard commute rule." },
+      { item: "Personal therapy for self-care", reason: "Must be required for registration — voluntary therapy is personal." },
+      { item: "General self-help or wellness books", reason: "Must relate to your clinical practice area." },
+    ],
+  },
+
+  optometrist: {
+    avgSalary: 100000,
+    claimable: [
+      { item: "AHPRA registration", value: 500, tag: "Memberships", summary: "Annual registration required to practise.", scenario: "$480 AHPRA renewal — claimed in full.", howTo: "Keep AHPRA tax invoice.", watchOut: "Renewals only.", docsNeeded: ["AHPRA tax invoice"] },
+      { item: "Optometry Australia membership & CPD", value: 700, tag: "Memberships", summary: "Professional body membership and mandatory CPD.", scenario: "OA annual fee $600 + CPD workshop $180 = $780. Claimed.", howTo: "Annual tax statement from OA + CPD receipts.", watchOut: "CPD must relate to current optometry role.", docsNeeded: ["OA tax statement", "CPD receipts"] },
+      { item: "Professional indemnity insurance", value: 800, tag: "Insurance", summary: "PI insurance required to practise.", scenario: "Annual Avant/Guild policy $760 — claimed in full.", howTo: "Keep insurance certificate and receipt.", watchOut: "Only if self-funded.", docsNeeded: ["Insurance receipt"] },
+      { item: "Clinical instruments & equipment", value: 500, tag: "Equipment", summary: "Personal clinical equipment for patient examinations.", scenario: "Buys hand-held ophthalmoscope $380 (depreciated) + trial lenses $120 (instant). Claims split.", howTo: "Under $300 = instant. Over $300 = depreciate over effective life.", watchOut: "Practice-provided equipment cannot be claimed.", docsNeeded: ["Receipts", "Asset register for items over $300"] },
+      { item: "Clinical journals & databases", value: 400, tag: "Education", summary: "Optometry and ophthalmology clinical references.", scenario: "Clinical journal subscription $350/yr. Claimed.", howTo: "Keep subscription receipts.", watchOut: "General health publications don't qualify.", docsNeeded: ["Subscription receipts"] },
+    ],
+    conditional: [
+      { item: "Home office", value: 300, tag: "Home Office", summary: "Admin and CPD done at home.", scenario: "2hrs/week CPD and admin at home. 2 × 48 × $0.70 = $67.", howTo: "70c/hr. Keep time diary.", watchOut: "Must be genuine work.", docsNeeded: ["Time diary"] },
+    ],
+    notClaimable: [
+      { item: "Personal glasses or contact lenses", reason: "Your own eyewear is personal — even as an optometrist." },
+      { item: "Home-to-practice commute", reason: "Standard commute rule." },
+    ],
+  },
+
+  radiographer: {
+    avgSalary: 90000,
+    claimable: [
+      { item: "AHPRA registration", value: 500, tag: "Memberships", summary: "Annual registration required to practise.", scenario: "$480 AHPRA renewal — claimed in full.", howTo: "Keep AHPRA tax invoice.", watchOut: "Renewals only.", docsNeeded: ["AHPRA tax invoice"] },
+      { item: "ASMIRT / AIR membership & CPD", value: 600, tag: "Memberships", summary: "Professional society membership and mandatory CPD.", scenario: "ASMIRT annual fee $520 + CPD course $180 = $700. Claimed.", howTo: "Annual tax statement + CPD receipts.", watchOut: "CPD must relate to current role.", docsNeeded: ["Tax statement", "CPD receipts"] },
+      { item: "Work uniform laundering", value: 150, tag: "Clothing", summary: "ATO formula for hospital scrubs.", scenario: "Washes scrubs 4x/week. 192 loads × $1 = $192. Claims $150.", howTo: "$1/load formula. No receipts under $150.", watchOut: "Must be a distinctive required uniform.", docsNeeded: ["Weekly tally"] },
+      { item: "Radiation safety resources", value: 200, tag: "Education", summary: "Safety compliance resources and dosimetry knowledge.", scenario: "Radiation safety manual $180 + online resource $60. Claimed.", howTo: "Keep receipts. Must relate to current practice.", watchOut: "General interest publications don't qualify.", docsNeeded: ["Receipts"] },
+      { item: "Phone (work portion)", value: 150, tag: "Phone", summary: "Work-use proportion.", scenario: "25% work use on $600/yr plan = $150.", howTo: "4-week diary. Apply % to full year.", watchOut: "Honest apportionment.", docsNeeded: ["4-week diary", "Annual phone cost"] },
+    ],
+    conditional: [
+      { item: "Travel between imaging facilities", value: 400, tag: "Travel", summary: "If you work across multiple sites.", scenario: "Works at 2 hospitals. 88c × 20km × 150 trips = $2,640.", howTo: "Cents per km (88c/km). Keep trip diary.", watchOut: "Home to first site = commute.", docsNeeded: ["Trip diary"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-hospital commute", reason: "Standard commute rule." },
+      { item: "Personal health costs", reason: "Personal expense." },
+    ],
+  },
+
+  dietitian: {
+    avgSalary: 80000,
+    claimable: [
+      { item: "APD registration & DAA membership", value: 600, tag: "Memberships", summary: "Accredited Practising Dietitian registration and Dietitians Australia membership.", scenario: "DAA annual fee $550 + APD credential renewal $60 = $610. Claimed.", howTo: "Annual tax statement from DAA.", watchOut: "Renewals only.", docsNeeded: ["DAA tax statement"] },
+      { item: "CPD workshops & conferences", value: 500, tag: "Education", summary: "Mandatory CPD for registration maintenance.", scenario: "Pays $480 for nutrition conference. Directly related — claimed.", howTo: "Keep receipts + course descriptions.", watchOut: "Must relate to current dietetics role.", docsNeeded: ["Receipts", "Course outline"] },
+      { item: "Clinical nutrition resources", value: 350, tag: "Education", summary: "Reference materials and clinical databases.", scenario: "Nutrient Reference Values database $280/yr. Claimed.", howTo: "Keep subscription receipts.", watchOut: "Personal nutrition books for your own diet don't qualify.", docsNeeded: ["Subscription receipts"] },
+      { item: "Work uniform", value: 150, tag: "Clothing", summary: "Clinic-branded uniform if required.", scenario: "Clinic requires branded polo shirts. 3 × $45 = $135. Claimed.", howTo: "Keep receipt. Must be employer-branded.", watchOut: "Generic clothing doesn't qualify.", docsNeeded: ["Receipt"] },
+      { item: "Home office (client notes, reports)", value: 600, tag: "Home Office", summary: "Writing client reports and CPD at home.", scenario: "2hrs/week at home on reports. 2 × 48 × $0.70 = $67.", howTo: "70c/hr. Keep time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+    ],
+    conditional: [
+      { item: "Travel between clinics or sites", value: 400, tag: "Travel", summary: "Working across multiple sites.", scenario: "Works at 2 hospitals. 88c × 15km × 100 days = $1,320.", howTo: "Cents per km. Keep trip diary.", watchOut: "Home to first clinic = commute.", docsNeeded: ["Trip diary"] },
+    ],
+    notClaimable: [
+      { item: "Personal food or groceries", reason: "Even for meal planning purposes — personal expense." },
+      { item: "Home-to-clinic commute", reason: "Standard commute rule." },
+      { item: "Gym or fitness membership", reason: "Personal expense regardless of health knowledge." },
+    ],
+  },
+
+  carpenter: {
+    avgSalary: 85000,
+    claimable: [
+      { item: "Carpenter's licence renewal", value: 350, tag: "Licences", summary: "Required builder/carpenter licence renewals.", scenario: "NSW builder licence renewal $320 — claimed in full.", howTo: "Keep receipt from state licensing body.", watchOut: "Initial training costs generally not deductible.", docsNeeded: ["Licence renewal receipt"] },
+      { item: "Hand tools & power tools (under $300)", value: 1000, tag: "Equipment", summary: "Chisels, saws, planes, drills — all deductible.", scenario: "Buys handsaw $85, chisel set $95, router bits $120 = $300. All under $300 — claimed instantly.", howTo: "Under $300 per item = instant. Keep receipts.", watchOut: "Tools also used for personal projects — must apportion.", docsNeeded: ["Receipts"] },
+      { item: "Vehicle costs (logbook)", value: 3000, tag: "Vehicle", atoUrl: "https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/cars-transport-and-travel/motor-vehicle-and-car-expenses/expenses-for-a-car-you-own-or-lease", summary: "Ute or van used for work — logbook method.", scenario: "Ute 80% work use. Annual costs $13,000. Claims $10,400.", howTo: "12-week logbook. Apply business % to all running costs.", watchOut: "Home to first site = commute.", docsNeeded: ["12-week logbook", "All vehicle receipts", "Odometer records"] },
+      { item: "Safety boots, hi-vis & PPE", value: 350, tag: "Clothing", summary: "Required safety equipment for carpentry work.", scenario: "Steel caps $180, hi-vis $90, safety glasses $45. Total $315 — claimed.", howTo: "Keep receipts. Must be safety-rated.", watchOut: "Regular clothing doesn't qualify.", docsNeeded: ["Receipts"] },
+      { item: "CFMEU / HIA union or association fees", value: 500, tag: "Memberships", summary: "Union and industry body fees.", scenario: "CFMEU annual fee $480. Annual tax statement claimed.", howTo: "Annual tax statement from union.", watchOut: "100% work-related.", docsNeeded: ["Union tax statement"] },
+      { item: "Phone (work portion)", value: 250, tag: "Phone", summary: "Work-use for client comms and quoting.", scenario: "40% work use on $840/yr plan = $336.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim 100% on mixed phone.", docsNeeded: ["4-week diary", "Annual phone cost"] },
+    ],
+    conditional: [
+      { item: "Home office (quotes & admin)", value: 200, tag: "Home Office", summary: "Quoting and invoicing done at home.", scenario: "Self-employed carpenter 3hrs/week at home. 3 × 48 × $0.70 = $101.", howTo: "70c/hr. Keep time diary.", watchOut: "PAYG employees need employer requirement.", docsNeeded: ["Time diary"] },
+    ],
+    notClaimable: [
+      { item: "Home to first job site", reason: "Commute is personal." },
+      { item: "Tools used exclusively for personal home projects", reason: "Must be work-related." },
+      { item: "Traffic fines", reason: "Explicitly excluded." },
+    ],
+  },
+
+  welder: {
+    avgSalary: 90000,
+    claimable: [
+      { item: "Welder / boilermaker ticket renewal", value: 400, tag: "Licences", summary: "Required welding certifications and tickets.", scenario: "Boilermaker ticket renewal $380 — claimed.", howTo: "Keep receipt from certifying body.", watchOut: "Initial tickets generally not deductible — renewals are.", docsNeeded: ["Ticket renewal receipt"] },
+      { item: "Welding tools & consumables", value: 800, tag: "Equipment", summary: "Personal welding equipment and consumables.", scenario: "Welding gloves $60, grinding discs $80, personal shield $180 = $320. All personal purchases — claimed.", howTo: "Keep receipts. Work-use items only.", watchOut: "Employer-provided consumables cannot be claimed.", docsNeeded: ["Receipts"] },
+      { item: "Safety boots, gloves & PPE", value: 400, tag: "Clothing", summary: "Heavy-duty safety equipment for welding environments.", scenario: "Steel caps $190, leather welding gloves $85, face shield $120 = $395. Claimed.", howTo: "Keep receipts. Must be safety-rated.", watchOut: "Standard clothing doesn't qualify.", docsNeeded: ["Receipts"] },
+      { item: "Vehicle costs (logbook)", value: 2500, tag: "Vehicle", summary: "Work vehicle use.", scenario: "70% work use. Annual costs $12,000. Claims $8,400.", howTo: "12-week logbook. Apply business % to all costs.", watchOut: "Home to first site = commute.", docsNeeded: ["12-week logbook", "Vehicle receipts", "Odometer records"] },
+      { item: "Union fees (AWU/AMWU)", value: 500, tag: "Memberships", summary: "Union membership fully deductible.", scenario: "AWU annual fee $480. Annual tax statement claimed.", howTo: "Annual tax statement from union.", watchOut: "100% work-related.", docsNeeded: ["Union tax statement"] },
+    ],
+    conditional: [
+      { item: "Upskilling / welding tickets (new methods)", value: 500, tag: "Education", summary: "Additional welding certifications for current role.", scenario: "TIG welding upskill course $450. Adds skills to current boilermaker role — claimed.", howTo: "Keep receipt + course description.", watchOut: "Must relate to current role, not a career change.", docsNeeded: ["Receipt", "Course outline"] },
+    ],
+    notClaimable: [
+      { item: "Home to first job site", reason: "Commute is personal." },
+      { item: "Traffic fines", reason: "Explicitly excluded." },
+      { item: "Personal protective equipment for home use", reason: "Must be work-related." },
+    ],
+  },
+
+  painter: {
+    avgSalary: 75000,
+    claimable: [
+      { item: "Painter / decorator licence renewal", value: 300, tag: "Licences", summary: "Required licence renewals.", scenario: "Painting contractor licence renewal $280 — claimed.", howTo: "Keep receipt from state licensing body.", watchOut: "Initial licence training generally not deductible.", docsNeeded: ["Licence renewal receipt"] },
+      { item: "Painting tools & equipment", value: 600, tag: "Equipment", summary: "Brushes, rollers, spray guns — tools of trade.", scenario: "Spray gun $180, roller set $45, brush set $65 = $290. All under $300 — claimed.", howTo: "Under $300 per item = instant. Keep receipts.", watchOut: "Tools used for personal home painting — must apportion.", docsNeeded: ["Receipts"] },
+      { item: "Vehicle costs (logbook)", value: 2500, tag: "Vehicle", summary: "Van or ute used to transport equipment to sites.", scenario: "Van 75% work use. Annual costs $12,000. Claims $9,000.", howTo: "12-week logbook. Apply business % to all costs.", watchOut: "Home to first site = commute.", docsNeeded: ["12-week logbook", "Vehicle receipts", "Odometer records"] },
+      { item: "Safety gear & PPE", value: 300, tag: "Clothing", summary: "Safety boots, hi-vis, respirator mask.", scenario: "Respirator $120, safety boots $160, hi-vis $45 = $325. Claimed.", howTo: "Keep receipts. Must be safety-rated.", watchOut: "Plain clothing doesn't qualify.", docsNeeded: ["Receipts"] },
+      { item: "MBAV / union fees", value: 400, tag: "Memberships", summary: "Master Builders or union membership.", scenario: "Annual fee $380. Claimed from annual tax statement.", howTo: "Annual tax statement.", watchOut: "100% work-related.", docsNeeded: ["Annual tax statement"] },
+      { item: "Sunscreen (outdoor painter)", value: 80, tag: "Health", summary: "Sun protection for outdoor work.", scenario: "Buys SPF 50+ sunscreen weekly. $80/yr — claimed.", howTo: "Keep receipts. ATO allows for outdoor workers.", watchOut: "Cosmetic sunscreen doesn't qualify.", docsNeeded: ["Receipts"] },
+    ],
+    conditional: [
+      { item: "Home office (quotes & admin)", value: 150, tag: "Home Office", summary: "Quoting and invoicing at home.", scenario: "2hrs/week at home on quotes. 2 × 48 × $0.70 = $67.", howTo: "70c/hr. Time diary.", watchOut: "Must be genuine work.", docsNeeded: ["Time diary"] },
+    ],
+    notClaimable: [
+      { item: "Home to first job site", reason: "Commute is personal." },
+      { item: "Personal painting supplies for your own home", reason: "Home materials are personal." },
+      { item: "Traffic fines", reason: "Explicitly excluded." },
+    ],
+  },
+
+  tiler: {
+    avgSalary: 80000,
+    claimable: [
+      { item: "Tiling tools (under $300 each)", value: 700, tag: "Equipment", summary: "Tile cutters, spacers, floats — tools of trade.", scenario: "Manual tile cutter $180, notched trowels $65, grout float $45 = $290. All under $300 — claimed.", howTo: "Under $300 per item = instant. Keep receipts.", watchOut: "Expensive electric tile saws over $300 = depreciated.", docsNeeded: ["Receipts"] },
+      { item: "Vehicle costs (logbook)", value: 2500, tag: "Vehicle", summary: "Vehicle used to transport tools to job sites.", scenario: "80% work use. Annual costs $11,000. Claims $8,800.", howTo: "12-week logbook. Apply business % to all costs.", watchOut: "Home to first site = commute.", docsNeeded: ["12-week logbook", "Vehicle receipts", "Odometer records"] },
+      { item: "Safety gear & kneepads", value: 300, tag: "Clothing", summary: "Safety boots, kneepads, safety glasses.", scenario: "Steel caps $180, kneepads $75, safety glasses $35 = $290. Claimed.", howTo: "Keep receipts. Must be safety-rated.", watchOut: "Regular clothing doesn't qualify.", docsNeeded: ["Receipts"] },
+      { item: "CFMEU union fees", value: 500, tag: "Memberships", summary: "Union membership fully deductible.", scenario: "CFMEU fee $480. Annual tax statement claimed.", howTo: "Annual tax statement from CFMEU.", watchOut: "100% work-related.", docsNeeded: ["CFMEU tax statement"] },
+      { item: "Tiling licence renewal", value: 250, tag: "Licences", summary: "Required contractor licence if applicable.", scenario: "Tiling contractor licence $240 — claimed.", howTo: "Keep receipt from licensing body.", watchOut: "Not all states require a licence — only claim if applicable.", docsNeeded: ["Licence renewal receipt"] },
+    ],
+    conditional: [
+      { item: "Home office (quotes)", value: 150, tag: "Home Office", summary: "Quoting done at home.", scenario: "2hrs/week at home on quotes. 2 × 48 × $0.70 = $67.", howTo: "70c/hr. Time diary.", watchOut: "Must be genuine work, not just messaging.", docsNeeded: ["Time diary"] },
+    ],
+    notClaimable: [
+      { item: "Home to first job site", reason: "Commute is personal." },
+      { item: "Tiles or materials for own home", reason: "Personal home materials are not deductible." },
+      { item: "Traffic fines", reason: "Explicitly excluded." },
+    ],
+  },
+
+  pestcontrol: {
+    avgSalary: 70000,
+    claimable: [
+      { item: "Pest control licence renewal", value: 300, tag: "Licences", summary: "Required annual licence to apply pesticides.", scenario: "State pest control licence renewal $280 — claimed.", howTo: "Keep receipt from EPA or state licensing body.", watchOut: "Initial licensing training generally not deductible.", docsNeeded: ["Licence renewal receipt"] },
+      { item: "Vehicle costs (logbook)", value: 3000, tag: "Vehicle", summary: "Van or ute used to travel to client properties.", scenario: "90% work use. Annual costs $12,000. Claims $10,800.", howTo: "12-week logbook. Apply business % to all running costs.", watchOut: "Home to first client = commute.", docsNeeded: ["12-week logbook", "Vehicle receipts", "Odometer records"] },
+      { item: "PPE — respirator, gloves, protective gear", value: 400, tag: "Clothing", summary: "Chemical handling PPE required for the role.", scenario: "Respirator $120, chemical gloves $45, coveralls $80, safety glasses $35 = $280. Claimed.", howTo: "Keep receipts. Must be required safety gear.", watchOut: "Standard clothing doesn't qualify.", docsNeeded: ["Receipts"] },
+      { item: "Sunscreen & hat (lawn care workers)", value: 80, tag: "Health", summary: "Sun protection for outdoor work.", scenario: "SPF 50+ sunscreen. $80/yr — claimed.", howTo: "Keep receipts. ATO allows for outdoor workers.", watchOut: "Cosmetic sunscreen doesn't qualify.", docsNeeded: ["Receipts"] },
+      { item: "Phone (work portion)", value: 250, tag: "Phone", summary: "Work-use for client bookings and scheduling.", scenario: "50% work use on $840/yr plan = $420.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim 100% on mixed phone.", docsNeeded: ["4-week diary", "Annual phone cost"] },
+    ],
+    conditional: [
+      { item: "Spray equipment (over $300)", value: 500, tag: "Equipment", summary: "Professional spray equipment depreciated over effective life.", scenario: "Buys professional spray rig $1,200. Work use only. Depreciated over 5 years = $240/yr.", howTo: "Keep receipt. Depreciate over ATO effective life.", watchOut: "Only claim work-use proportion if used for personal garden too.", docsNeeded: ["Receipt", "Asset register"] },
+    ],
+    notClaimable: [
+      { item: "Home to first client commute", reason: "Standard commute rule." },
+      { item: "Pesticides for own home garden", reason: "Personal use materials." },
+      { item: "Traffic fines", reason: "Explicitly excluded." },
+    ],
+  },
+
+  socialworker: {
+    avgSalary: 78000,
+    claimable: [
+      { item: "AASW membership & CPD", value: 600, tag: "Memberships", summary: "Australian Association of Social Workers membership and CPD.", scenario: "AASW annual fee $520 + CPD workshop $180 = $700. Claimed.", howTo: "Annual tax statement from AASW + CPD receipts.", watchOut: "CPD must relate to current social work role.", docsNeeded: ["AASW tax statement", "CPD receipts"] },
+      { item: "Vehicle costs (client visits)", value: 2000, tag: "Vehicle", summary: "Driving to client homes, hospitals, community sites.", scenario: "Logbook: 50% work. Annual car costs $10,000. Claims $5,000.", howTo: "12-week logbook or 88c/km method.", watchOut: "Home to main office = commute.", docsNeeded: ["12-week logbook or trip diary", "Vehicle receipts if logbook"] },
+      { item: "Professional supervision fees", value: 800, tag: "Education", summary: "Mandatory professional supervision required for practice.", scenario: "Monthly supervision $80 × 10 sessions = $800. Required for AASW practice standards.", howTo: "Keep receipts from supervisor.", watchOut: "Personal therapy or coaching is not deductible.", docsNeeded: ["Supervisor receipts"] },
+      { item: "Phone (work portion)", value: 300, tag: "Phone", summary: "High work-use for client and interagency comms.", scenario: "60% work use on $900/yr plan = $540.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim 100% on mixed phone.", docsNeeded: ["4-week diary", "Annual phone cost"] },
+      { item: "Home office (case notes, reports)", value: 700, tag: "Home Office", summary: "Writing case notes and reports at home.", scenario: "2hrs/day on case notes at home. 2 × 5 × 48 × $0.70 = $336.", howTo: "70c/hr. Keep time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+    ],
+    conditional: [
+      { item: "Work-related clothing (client-facing)", value: 150, tag: "Clothing", summary: "Organisation-branded uniform if required.", scenario: "Required to wear branded polo shirts. 3 × $45 = $135. Claimed.", howTo: "Keep receipt. Must be employer-branded.", watchOut: "Generic professional clothing doesn't qualify.", docsNeeded: ["Receipt", "Employer uniform requirement"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+      { item: "Personal counselling or therapy", reason: "Must be required for your role, not for personal wellbeing." },
+      { item: "Meals during normal shifts", reason: "Personal expense." },
+    ],
+  },
+
+  police: {
+    avgSalary: 85000,
+    claimable: [
+      { item: "Police union fees (POLICE Association)", value: 500, tag: "Memberships", summary: "Police association membership — fully deductible.", scenario: "Police Association annual fee $480. Claimed from annual tax statement.", howTo: "Annual tax statement from your state Police Association in July.", watchOut: "100% work-related.", docsNeeded: ["Union annual tax statement"] },
+      { item: "Uniform laundering", value: 150, tag: "Clothing", summary: "ATO formula for compulsory police uniform.", scenario: "Washes uniform 5x/week × 48 weeks = 240 loads × $1. Claims $150.", howTo: "$1/load. No receipts under $150.", watchOut: "Only for compulsory distinctive uniforms.", docsNeeded: ["Weekly tally"] },
+      { item: "Work boots & safety footwear", value: 200, tag: "Clothing", summary: "Required safety footwear if personally purchased.", scenario: "Police-required boots $180 — claimed.", howTo: "Keep receipt. Must be employer-required footwear.", watchOut: "If police-issued, cannot claim.", docsNeeded: ["Receipt", "Employer footwear requirement"] },
+      { item: "CPD & operational training", value: 300, tag: "Education", summary: "Job-required training and development courses.", scenario: "Pays $280 for specialised investigative course — claimed.", howTo: "Keep receipt + course description.", watchOut: "Must relate to current policing role.", docsNeeded: ["Receipt", "Course outline"] },
+      { item: "Phone (work portion)", value: 200, tag: "Phone", summary: "Work-use proportion of personal phone.", scenario: "30% work use on $720/yr plan = $216.", howTo: "4-week diary. Apply % to full year.", watchOut: "If issued a work phone, cannot claim personal phone.", docsNeeded: ["4-week diary", "Annual phone cost"] },
+    ],
+    conditional: [
+      { item: "Home office (reports, studies)", value: 250, tag: "Home Office", summary: "Writing reports or studying at home for work.", scenario: "2hrs/week writing reports at home. 2 × 48 × $0.70 = $67.", howTo: "70c/hr. Keep time diary.", watchOut: "Must be genuine required work.", docsNeeded: ["Time diary"] },
+      { item: "Fitness equipment (if mandated)", value: 200, tag: "Equipment", summary: "Only if fitness testing is a formal requirement AND equipment is mandated.", scenario: "Police officer required to maintain fitness standards. Gym equipment specifically required — borderline claim.", howTo: "Extremely limited. Must be specifically mandated, not just generally expected.", watchOut: "General fitness is personal. Most gym or equipment costs are not deductible.", docsNeeded: ["Evidence of specific mandate", "Receipt"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-station commute", reason: "Standard commute rule." },
+      { item: "General fitness or gym membership", reason: "Personal expense even if fitness standards are expected." },
+      { item: "Police-issued uniforms and equipment", reason: "Cannot claim employer-provided items." },
+    ],
+  },
+
+  firefighter: {
+    avgSalary: 80000,
+    claimable: [
+      { item: "UFU / fire union fees", value: 500, tag: "Memberships", summary: "United Firefighters Union membership — fully deductible.", scenario: "UFU annual fee $480. Annual tax statement claimed.", howTo: "Annual tax statement from UFU in July.", watchOut: "100% work-related.", docsNeeded: ["Union annual tax statement"] },
+      { item: "Uniform laundering", value: 150, tag: "Clothing", summary: "ATO formula for compulsory firefighter uniform.", scenario: "Washes uniform 4x/week × 48 weeks = 192 loads. Claims $150.", howTo: "$1/load. No receipts under $150.", watchOut: "Only for compulsory distinctive uniforms.", docsNeeded: ["Weekly tally"] },
+      { item: "Fitness training equipment", value: 300, tag: "Equipment", summary: "Where fitness testing is a formal occupational requirement.", scenario: "Fire service mandates fitness standards. Home training equipment $280 — potentially claimable.", howTo: "Must be formally mandated by employer. Keep receipt.", watchOut: "General fitness is personal. Must be specifically required, not just expected.", docsNeeded: ["Receipt", "Evidence of formal fitness requirement"] },
+      { item: "CPD & emergency response training", value: 400, tag: "Education", summary: "Required technical and safety training courses.", scenario: "Pays $380 for hazmat refresher course — required. Claimed.", howTo: "Keep receipt + course description.", watchOut: "Must be required for your operational role.", docsNeeded: ["Receipt", "Course outline"] },
+      { item: "Phone (work portion)", value: 150, tag: "Phone", summary: "Work-use portion of personal phone.", scenario: "25% work use on $600/yr plan = $150.", howTo: "4-week diary. Apply % to full year.", watchOut: "If work phone provided, cannot claim personal phone.", docsNeeded: ["4-week diary", "Annual phone cost"] },
+    ],
+    conditional: [
+      { item: "Rescue / paramedic qualification costs", value: 400, tag: "Education", summary: "Additional qualifications required by fire service.", scenario: "Pays $380 for first responder recertification — required. Claimed.", howTo: "Keep receipt. Must be required for your role.", watchOut: "Voluntary qualifications for career advancement are borderline.", docsNeeded: ["Receipt", "Evidence requirement"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-station commute", reason: "Standard commute rule." },
+      { item: "Employer-issued gear", reason: "Cannot claim provided equipment." },
+      { item: "General gym membership", reason: "Personal expense unless fitness testing is formally mandated." },
+    ],
+  },
+
+  military: {
+    avgSalary: 75000,
+    claimable: [
+      { item: "Defence Force Welfare Association fees", value: 200, tag: "Memberships", summary: "Welfare association and union fees.", scenario: "DFWA annual fee $180. Annual tax statement claimed.", howTo: "Annual tax statement from DFWA.", watchOut: "100% work-related.", docsNeeded: ["Annual tax statement"] },
+      { item: "Uniform laundering & dry-cleaning", value: 150, tag: "Clothing", summary: "ATO formula for compulsory military uniform.", scenario: "Washes uniform 5x/week. 240 loads × $1. Claims $150.", howTo: "$1/load. No receipts under $150.", watchOut: "Only for compulsory distinctive uniforms.", docsNeeded: ["Weekly tally"] },
+      { item: "Specialist skills training (personal cost)", value: 400, tag: "Education", summary: "Where personally funded training is required for current role.", scenario: "Pays $380 for specialised course not funded by ADF — claimed.", howTo: "Keep receipt. Must relate to current military role.", watchOut: "ADF-funded training cannot be claimed.", docsNeeded: ["Receipt", "Evidence of personal funding"] },
+      { item: "Self-funded books and resources", value: 200, tag: "Education", summary: "Military doctrine and specialist subject resources.", scenario: "Military history and tactics books $180. Directly related to current role — claimed.", howTo: "Keep receipts. Must relate to current role.", watchOut: "General interest reading doesn't qualify.", docsNeeded: ["Receipts"] },
+      { item: "Home office (study, reports)", value: 400, tag: "Home Office", summary: "Study and report writing at home.", scenario: "3hrs/week at home studying and writing reports. 3 × 48 × $0.70 = $101.", howTo: "70c/hr. Keep time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+    ],
+    conditional: [
+      { item: "Travel between postings (if unreimbursed)", value: 500, tag: "Travel", summary: "Travel costs between postings not covered by ADF.", scenario: "Drives to new posting. ADF covers part — excess not reimbursed. Claims difference.", howTo: "Keep all travel receipts. Only claim the unreimbursed portion.", watchOut: "Cannot double-claim reimbursed amounts.", docsNeeded: ["Receipts", "Reimbursement documentation"] },
+    ],
+    notClaimable: [
+      { item: "Employer-issued uniforms and equipment", reason: "Cannot claim ADF-provided items." },
+      { item: "Home-to-base commute", reason: "Standard commute rule." },
+      { item: "ADF-funded training costs", reason: "Cannot claim reimbursed or employer-funded items." },
+    ],
+  },
+
+  corrections: {
+    avgSalary: 72000,
+    claimable: [
+      { item: "CPSU / union fees", value: 400, tag: "Memberships", summary: "Community and Public Sector Union membership.", scenario: "CPSU annual fee $380. Annual tax statement claimed.", howTo: "Annual tax statement from CPSU in July.", watchOut: "100% work-related.", docsNeeded: ["Union annual tax statement"] },
+      { item: "Uniform laundering", value: 150, tag: "Clothing", summary: "ATO formula for compulsory corrections uniform.", scenario: "Washes uniform 5x/week. 240 loads × $1. Claims $150.", howTo: "$1/load. No receipts under $150.", watchOut: "Only for compulsory distinctive uniforms.", docsNeeded: ["Weekly tally"] },
+      { item: "Safety boots", value: 150, tag: "Clothing", summary: "Required safety footwear if personally purchased.", scenario: "Required steel-cap boots $140 — claimed.", howTo: "Keep receipt. Must be employer-required.", watchOut: "If provided by employer, cannot claim.", docsNeeded: ["Receipt"] },
+      { item: "CPD & correctional training", value: 300, tag: "Education", summary: "Required professional development courses.", scenario: "Pays $280 for required training course — claimed.", howTo: "Keep receipt.", watchOut: "Must be required for current role.", docsNeeded: ["Receipt"] },
+    ],
+    conditional: [
+      { item: "Home office (reports, studies)", value: 200, tag: "Home Office", summary: "Report writing or studying at home.", scenario: "2hrs/week at home. 2 × 48 × $0.70 = $67.", howTo: "70c/hr. Keep time diary.", watchOut: "Must be genuine required work.", docsNeeded: ["Time diary"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-facility commute", reason: "Standard commute rule." },
+      { item: "Personal fitness costs", reason: "Personal expense even if fitness is expected." },
+      { item: "Employer-issued equipment", reason: "Cannot claim provided items." },
+    ],
+  },
+
+  financeplanner: {
+    avgSalary: 110000,
+    claimable: [
+      { item: "FPA / AFA membership & CPD", value: 1000, tag: "Memberships", summary: "Financial Planning Association membership and mandatory CPD.", scenario: "FPA annual fee $850 + CPD conference $350 = $1,200. Claimed.", howTo: "Annual tax statement from FPA + CPD receipts.", watchOut: "CPD must relate to current financial planning role.", docsNeeded: ["FPA tax statement", "CPD receipts"] },
+      { item: "ASIC financial adviser registration", value: 400, tag: "Licences", summary: "Required ASIC registration as a financial adviser.", scenario: "Annual ASIC adviser registration $380 — claimed.", howTo: "Keep ASIC registration receipt.", watchOut: "Only if personally paying — employer-paid cannot be claimed.", docsNeeded: ["ASIC registration receipt"] },
+      { item: "Professional indemnity insurance", value: 2000, tag: "Insurance", summary: "PI insurance required for financial advice practice.", scenario: "Annual PI policy $1,800 — claimed in full.", howTo: "Keep insurance certificate and receipt.", watchOut: "Only if self-funded.", docsNeeded: ["Insurance receipt"] },
+      { item: "Financial planning software (personal)", value: 600, tag: "Software", summary: "Xplan, Midwinter or other advice software personally subscribed.", scenario: "Xplan personal subscription $560/yr. Fully deductible.", howTo: "Keep subscription receipts.", watchOut: "Employer-provided software cannot be claimed.", docsNeeded: ["Subscription receipts"] },
+      { item: "Home office (WFH hours)", value: 900, tag: "Home Office", summary: "Financial planners who WFH regularly.", scenario: "WFH 3 days/week. 3 × 8 × 48 × $0.70 = $806.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or WFH calendar"] },
+      { item: "Phone & internet (work portion)", value: 400, tag: "Phone", summary: "Work-use proportion.", scenario: "50% work use on $1,000/yr plan and internet = $500 combined.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+    ],
+    conditional: [
+      { item: "Client travel", value: 600, tag: "Travel", summary: "Driving to client meetings.", scenario: "Logbook: 35% work. Annual car costs $12,000. Claims $4,200.", howTo: "12-week logbook or 88c/km.", watchOut: "Home to office = commute.", docsNeeded: ["12-week logbook or trip diary"] },
+    ],
+    notClaimable: [
+      { item: "Personal investment advice fees", reason: "Advice about your own investments is personal." },
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+      { item: "Client entertainment", reason: "ATO is very strict. Must directly connect to earning specific income." },
+    ],
+  },
+
+  mortgagebroker: {
+    avgSalary: 95000,
+    claimable: [
+      { item: "MFAA / FBAA membership", value: 500, tag: "Memberships", summary: "Mortgage & Finance Association membership — required for practice.", scenario: "MFAA annual fee $480. Claimed.", howTo: "Annual tax statement from MFAA or FBAA.", watchOut: "100% work-related.", docsNeeded: ["Annual tax statement"] },
+      { item: "Australian Credit Licence (ACL) costs", value: 400, tag: "Licences", summary: "ASIC credit licence fees.", scenario: "Annual ASIC ACL renewal $380 — claimed.", howTo: "Keep receipt from ASIC.", watchOut: "Initial application costs may not be deductible — renewals are.", docsNeeded: ["ASIC renewal receipt"] },
+      { item: "Professional indemnity insurance", value: 1500, tag: "Insurance", summary: "PI insurance required for credit advice.", scenario: "Annual PI policy $1,400 — claimed.", howTo: "Keep insurance receipt.", watchOut: "Only if self-funded.", docsNeeded: ["Insurance receipt"] },
+      { item: "Vehicle costs (client visits)", value: 2000, tag: "Vehicle", summary: "Driving to client meetings and property inspections.", scenario: "Logbook: 45% work. Annual car costs $12,000. Claims $5,400.", howTo: "12-week logbook or 88c/km.", watchOut: "Home to office = commute.", docsNeeded: ["12-week logbook or trip diary", "Vehicle receipts if logbook"] },
+      { item: "Home office (WFH)", value: 800, tag: "Home Office", summary: "Brokers who WFH or work after hours.", scenario: "WFH 2 days/week + evening admin. 4hrs/day × 2 × 48 × $0.70 = $269.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+      { item: "Phone & internet (work portion)", value: 500, tag: "Phone", summary: "Heavy phone use for client comms.", scenario: "60% work use on $1,200/yr = $720.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+    ],
+    conditional: [
+      { item: "CRM software subscription", value: 400, tag: "Software", summary: "Personal CRM subscription for client management.", scenario: "Salesforce or Broker CRM $380/yr — work tool, fully deductible.", howTo: "Keep subscription receipt.", watchOut: "Employer-provided CRM cannot be claimed.", docsNeeded: ["Subscription receipt"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+      { item: "Client entertainment", reason: "ATO is very strict — must directly connect to earning specific income." },
+      { item: "Personal financial advice fees", reason: "Your own financial planning is personal." },
+    ],
+  },
+
+  businessanalyst: {
+    avgSalary: 100000,
+    claimable: [
+      { item: "IIBA membership & CBAP certification", value: 600, tag: "Memberships", summary: "International Institute of Business Analysis membership and certifications.", scenario: "IIBA annual fee $280 + CBAP exam prep $350 = $630. Claimed.", howTo: "Annual tax statement from IIBA + exam receipts.", watchOut: "Must relate to current BA role.", docsNeeded: ["IIBA tax statement", "Exam receipts"] },
+      { item: "BA tools & software (personal)", value: 500, tag: "Software", summary: "Modelling, documentation and project tools personally subscribed.", scenario: "Lucidchart $180/yr + Confluence $120/yr + Jira $96/yr = $396. All work tools — claimed.", howTo: "Keep subscription receipts.", watchOut: "Employer-provided tools cannot be claimed.", docsNeeded: ["Subscription receipts"] },
+      { item: "Home office (WFH)", value: 1000, tag: "Home Office", summary: "BAs typically WFH — claim every hour.", scenario: "WFH 4 days/week. 4 × 8 × 48 × $0.70 = $1,075.", howTo: "70c/hr. Time diary or WFH calendar.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or calendar records"] },
+      { item: "Phone & internet (work portion)", value: 400, tag: "Phone", summary: "Work-use proportion.", scenario: "45% work use on $1,000/yr = $450.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+      { item: "Technical training & certifications", value: 800, tag: "Education", summary: "Agile, BPMN, Scrum certifications.", scenario: "SAFe Agilist certification $680 + Scrum course $200 = $880. Work-relevant — claimed.", howTo: "Keep receipts + course descriptions.", watchOut: "Must relate to current BA role.", docsNeeded: ["Receipts", "Course outlines"] },
+    ],
+    conditional: [
+      { item: "Laptop & peripherals (work portion)", value: 800, tag: "Equipment", summary: "Work-use proportion of computer.", scenario: "MacBook $2,400 × 75% work = $1,800 depreciated over 2 years = $900/yr.", howTo: "Calculate work-use %. Depreciate over effective life.", watchOut: "100% claim on device also used personally = audit flag.", docsNeeded: ["Receipt", "Work-use diary"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+      { item: "Personal project management apps", reason: "Must be used for your current work role." },
+    ],
+  },
+
+  projectmanager: {
+    avgSalary: 115000,
+    claimable: [
+      { item: "PMI / AIPM membership & PMP certification", value: 700, tag: "Memberships", summary: "Project Management Institute membership and PMP certification fees.", scenario: "PMI annual fee $290 + PMP exam $580 = $870. Claimed.", howTo: "Annual tax statement from PMI + exam receipts.", watchOut: "Must relate to current PM role.", docsNeeded: ["PMI tax statement", "Exam receipts"] },
+      { item: "PM software (personal subscription)", value: 400, tag: "Software", summary: "Monday.com, Smartsheet or other PM tools personally subscribed.", scenario: "Monday.com $240/yr + MS Project $200/yr = $440. Work tools — claimed.", howTo: "Keep subscription receipts.", watchOut: "Employer-provided software cannot be claimed.", docsNeeded: ["Subscription receipts"] },
+      { item: "Home office (WFH)", value: 1000, tag: "Home Office", summary: "PMs who WFH regularly.", scenario: "WFH 3 days/week. 3 × 8 × 48 × $0.70 = $806.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or calendar records"] },
+      { item: "Phone & internet (work portion)", value: 400, tag: "Phone", summary: "Work-use proportion for stakeholder comms.", scenario: "50% work use on $1,000/yr = $500.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+      { item: "PM books & CPD", value: 400, tag: "Education", summary: "Project management reference books and CPD courses.", scenario: "PMBOK guide $180 + leadership course $280 = $460. Claimed.", howTo: "Keep receipts. Must relate to current PM role.", watchOut: "General business books are borderline.", docsNeeded: ["Receipts"] },
+    ],
+    conditional: [
+      { item: "Vehicle costs (site visits)", value: 800, tag: "Travel", summary: "Driving to project sites or client locations.", scenario: "Logbook: 30% work. Annual car costs $12,000. Claims $3,600.", howTo: "12-week logbook or 88c/km.", watchOut: "Home to main office = commute.", docsNeeded: ["12-week logbook or trip diary"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+      { item: "Client entertainment", reason: "ATO is very strict." },
+    ],
+  },
+
+  architect: {
+    avgSalary: 95000,
+    claimable: [
+      { item: "Architects Registration Board annual fee", value: 400, tag: "Licences", summary: "Required annual registration to practise as an architect.", scenario: "ARB annual registration $380 — claimed.", howTo: "Keep registration receipt.", watchOut: "Initial registration costs generally not deductible — renewals are.", docsNeeded: ["ARB registration receipt"] },
+      { item: "AIA membership & CPD", value: 700, tag: "Memberships", summary: "Australian Institute of Architects membership and mandatory CPD.", scenario: "AIA annual fee $620 + CPD seminar $180 = $800. Claimed.", howTo: "Annual tax statement from AIA + CPD receipts.", watchOut: "CPD must relate to current practice.", docsNeeded: ["AIA tax statement", "CPD receipts"] },
+      { item: "Design software (personal subscription)", value: 800, tag: "Software", summary: "AutoCAD, Revit, Sketch-Up personally subscribed.", scenario: "AutoCAD personal licence $780/yr. Fully deductible.", howTo: "Keep subscription receipts.", watchOut: "Employer-provided software cannot be claimed.", docsNeeded: ["Subscription receipts"] },
+      { item: "Professional indemnity insurance", value: 1500, tag: "Insurance", summary: "PI insurance required for architectural practice.", scenario: "Annual PI policy $1,400 — claimed.", howTo: "Keep insurance certificate and receipt.", watchOut: "Only if self-funded.", docsNeeded: ["Insurance receipt"] },
+      { item: "Home office (WFH design work)", value: 900, tag: "Home Office", summary: "Architects who WFH or work on projects at home.", scenario: "WFH 3 days/week. 3 × 8 × 48 × $0.70 = $806.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+    ],
+    conditional: [
+      { item: "Vehicle costs (site visits)", value: 1500, tag: "Travel", summary: "Driving to construction sites and client meetings.", scenario: "Logbook: 40% work. Annual car costs $12,000. Claims $4,800.", howTo: "12-week logbook or 88c/km.", watchOut: "Home to office = commute.", docsNeeded: ["12-week logbook or trip diary", "Vehicle receipts if logbook"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+      { item: "Personal design tools for hobby projects", reason: "Must be for current work, not personal creative projects." },
+    ],
+  },
+
+  lecturer: {
+    avgSalary: 100000,
+    claimable: [
+      { item: "Professional association membership & CPD", value: 600, tag: "Memberships", summary: "Discipline-specific professional body membership.", scenario: "Annual membership $520 + CPD conference $280 = $800. Claimed.", howTo: "Annual tax statement + CPD receipts.", watchOut: "Must relate to current teaching and research area.", docsNeeded: ["Tax statement", "CPD receipts"] },
+      { item: "Academic books & research journals", value: 800, tag: "Education", summary: "Textbooks and journal subscriptions for teaching and research.", scenario: "Journal subscriptions $480/yr + textbooks $320. Claimed.", howTo: "Keep receipts. Must relate to current teaching subjects.", watchOut: "Personal interest reading doesn't qualify.", docsNeeded: ["Receipts or subscription statements"] },
+      { item: "Home office (research, marking, preparation)", value: 1200, tag: "Home Office", summary: "Academics genuinely WFH significantly — claim every hour.", scenario: "Research and prep 4hrs/day from home. 4 × 5 × 48 × $0.70 = $672.", howTo: "70c/hr. Time diary or calendar records.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or calendar records"] },
+      { item: "Conference travel (academic)", value: 1000, tag: "Travel", summary: "Travel to academic conferences for research presentation.", scenario: "Presents research at interstate conference. Airfare $450 + accommodation $350 = $800 — claimed.", howTo: "Keep all receipts. Must be for work-related academic conference.", watchOut: "Personal travel with incidental conference attendance doesn't qualify.", docsNeeded: ["Receipts", "Conference registration", "Evidence of presentation"] },
+      { item: "Computer & software (work portion)", value: 800, tag: "Equipment", summary: "Work-use proportion of computer and research software.", scenario: "MacBook $2,400 × 70% work = $1,680 depreciated over 2 years = $840/yr.", howTo: "Calculate work-use %. Depreciate over effective life.", watchOut: "100% claim on device also used for personal Netflix = audit flag.", docsNeeded: ["Receipt", "Work-use diary"] },
+    ],
+    conditional: [
+      { item: "Research-related equipment", value: 600, tag: "Equipment", summary: "Equipment specifically required for research activities.", scenario: "Buys specialised measurement tool $580 for research project not covered by university budget.", howTo: "Keep receipt. Document research requirement and that university didn't fund it.", watchOut: "University-funded equipment cannot be claimed personally.", docsNeeded: ["Receipt", "Evidence of self-funding"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-university commute", reason: "Standard commute rule." },
+      { item: "University-funded conference travel", reason: "Cannot claim reimbursed or institution-funded expenses." },
+      { item: "Personal academic interests unrelated to current teaching", reason: "Must relate to your current role and subjects." },
+    ],
+  },
+
+  earlychildhood: {
+    avgSalary: 58000,
+    claimable: [
+      { item: "ACECQA or state registration fees", value: 200, tag: "Licences", summary: "Required early childhood registration and qualification recognition.", scenario: "ACECQA registration $180 — claimed.", howTo: "Keep registration receipt.", watchOut: "Only renewals — initial qualification costs not deductible.", docsNeeded: ["Registration receipt"] },
+      { item: "IEU / AEU union fees", value: 350, tag: "Memberships", summary: "Early childhood teachers union membership.", scenario: "IEU annual fee $320. Annual tax statement claimed.", howTo: "Annual tax statement from union in July.", watchOut: "100% work-related.", docsNeeded: ["Union annual tax statement"] },
+      { item: "Early childhood resources (self-funded)", value: 300, tag: "Supplies", summary: "Learning materials, books, craft supplies bought out of pocket.", scenario: "Spends $280 on books, puzzles, art supplies. Not reimbursed — claimed.", howTo: "Keep receipts. Only claim what employer didn't reimburse.", watchOut: "Centre-provided resources cannot be claimed.", docsNeeded: ["Receipts", "Note of no employer reimbursement"] },
+      { item: "Work uniform / branded clothing", value: 150, tag: "Clothing", summary: "Centre-branded uniform if required.", scenario: "Required branded polo shirts. 3 × $45 = $135. Claimed.", howTo: "Keep receipt. Must be distinctive employer-branded.", watchOut: "Generic casual clothing doesn't qualify.", docsNeeded: ["Receipt"] },
+      { item: "First aid & CPD courses", value: 250, tag: "Education", summary: "Required first aid renewal and professional development.", scenario: "Annual first aid renewal $140 + CPD workshop $120 = $260. Claimed.", howTo: "Keep receipts from training providers.", watchOut: "Must be required for your role.", docsNeeded: ["Receipts from registered providers"] },
+    ],
+    conditional: [
+      { item: "Home office (planning, reports)", value: 300, tag: "Home Office", summary: "Lesson planning and reports done at home.", scenario: "2hrs/evening × 3 evenings × 40 weeks × $0.70 = $168.", howTo: "70c/hr. Time diary or calendar records.", watchOut: "Must be genuine work hours.", docsNeeded: ["Time diary"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-centre commute", reason: "Standard commute rule." },
+      { item: "Personal childcare costs", reason: "Personal family expense." },
+      { item: "Gifts or presents for children", reason: "Personal expense." },
+    ],
+  },
+
+  tafe: {
+    avgSalary: 85000,
+    claimable: [
+      { item: "Industry body membership & CPD", value: 500, tag: "Memberships", summary: "Industry-specific professional membership required for vocational training.", scenario: "Industry association annual fee $450 + CPD $180 = $630. Claimed.", howTo: "Annual tax statement + CPD receipts.", watchOut: "Must relate to your training discipline.", docsNeeded: ["Tax statement", "CPD receipts"] },
+      { item: "Trade tools (if demonstrating skills)", value: 600, tag: "Equipment", summary: "Tools used to demonstrate trade skills to students.", scenario: "Carpentry TAFE trainer buys demonstration tools $550. Self-funded. Claimed.", howTo: "Keep receipts. Must be work-related demonstration tools.", watchOut: "TAFE-provided equipment cannot be claimed.", docsNeeded: ["Receipts"] },
+      { item: "Work uniform or safety gear", value: 250, tag: "Clothing", summary: "Required work uniform or PPE for TAFE workshops.", scenario: "TAFE requires branded polo and safety boots. $200 total — claimed.", howTo: "Keep receipts. Must be specifically required.", watchOut: "Generic clothing doesn't qualify.", docsNeeded: ["Receipts"] },
+      { item: "Home office (preparation, marking)", value: 700, tag: "Home Office", summary: "Lesson preparation and marking done at home.", scenario: "3hrs/day × 3 days/week × 48 × $0.70 = $302.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+      { item: "Training & assessment resources", value: 300, tag: "Supplies", summary: "Training materials and assessment resources self-funded.", scenario: "Buys $280 in training materials not provided by TAFE. Claimed.", howTo: "Keep receipts. Only claim what TAFE didn't provide.", watchOut: "TAFE-provided resources cannot be claimed.", docsNeeded: ["Receipts"] },
+    ],
+    conditional: [
+      { item: "Upskilling in current discipline", value: 400, tag: "Education", summary: "Keeping trade skills current for effective teaching.", scenario: "Plumbing TAFE trainer pays $380 for industry upskill course. Claimed.", howTo: "Keep receipt + course description. Must relate to current teaching area.", watchOut: "Career change courses not deductible.", docsNeeded: ["Receipt", "Course outline"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-campus commute", reason: "Standard commute rule." },
+      { item: "Personal tools at home", reason: "Must be specifically for work teaching purposes." },
+    ],
+  },
+
+  schoolcounsellor: {
+    avgSalary: 85000,
+    claimable: [
+      { item: "AHPRA / ACA registration & membership", value: 500, tag: "Memberships", summary: "Required registration and professional body membership.", scenario: "AHPRA $480 or ACA annual fee $420. Claimed.", howTo: "Keep registration invoice.", watchOut: "Renewals only.", docsNeeded: ["Registration invoice"] },
+      { item: "CPD & clinical training", value: 600, tag: "Education", summary: "Mandatory CPD for registration maintenance.", scenario: "Pays $550 for CPD workshop. Required — claimed.", howTo: "Keep receipt + course description.", watchOut: "Must relate to current counselling role.", docsNeeded: ["Receipt", "Course outline"] },
+      { item: "Clinical supervision", value: 800, tag: "Education", summary: "Professional supervision required for registration.", scenario: "Monthly supervision sessions $80 × 10 = $800. Required.", howTo: "Keep receipts from supervisor.", watchOut: "Optional mentoring is not deductible.", docsNeeded: ["Supervisor receipts"] },
+      { item: "Home office (case notes, reports)", value: 600, tag: "Home Office", summary: "Writing case notes and reports at home.", scenario: "2hrs/day at home on reports. 2 × 5 × 48 × $0.70 = $336.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+      { item: "Professional resources & books", value: 300, tag: "Education", summary: "Clinical psychology and counselling reference materials.", scenario: "DSM-5 $180 + clinical resource book $130 = $310. Claimed.", howTo: "Keep receipts. Must relate to current role.", watchOut: "Personal self-help books don't qualify.", docsNeeded: ["Receipts"] },
+    ],
+    conditional: [
+      { item: "Union fees (AEU/IEU)", value: 350, tag: "Memberships", summary: "Teaching union membership if employed by school.", scenario: "AEU annual fee $320. Annual tax statement claimed.", howTo: "Annual tax statement from union.", watchOut: "100% work-related.", docsNeeded: ["Union tax statement"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-school commute", reason: "Standard commute rule." },
+      { item: "Personal therapy for self-care", reason: "Must be required for registration." },
+    ],
+  },
+
+  datascientist: {
+    avgSalary: 120000,
+    claimable: [
+      { item: "Technical courses & certifications", value: 1000, tag: "Education", summary: "Data science, ML, cloud certifications.", scenario: "AWS ML Specialty $300 + Coursera specialisation $180 + DataCamp $200 = $680. Claimed.", howTo: "Keep receipts. Must relate to current role.", watchOut: "Learning a completely different field = career change = not deductible.", docsNeeded: ["Receipts", "Course descriptions"] },
+      { item: "Home office (WFH hours)", value: 1200, tag: "Home Office", summary: "Data scientists typically WFH — claim every hour.", scenario: "Full-time WFH. 5 × 8 × 48 × $0.70 = $1,344.", howTo: "70c/hr. Time diary or calendar records.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or WFH calendar"] },
+      { item: "Software & cloud subscriptions", value: 800, tag: "Software", summary: "Statistical software, cloud compute, data tools.", scenario: "Tableau $600/yr + GitHub Pro $48 + cloud credits for personal projects $200 = $848. Work tools — claimed.", howTo: "Keep subscription receipts. Must be used for work.", watchOut: "Personal data projects must be excluded.", docsNeeded: ["Subscription receipts"] },
+      { item: "Technical books & journals", value: 400, tag: "Education", summary: "Data science, statistics, ML reference materials.", scenario: "O'Reilly subscription $480/yr. Direct reference material — claimed.", howTo: "Keep subscription receipt.", watchOut: "Must relate to current work, not hobby projects.", docsNeeded: ["Subscription receipt"] },
+      { item: "Phone & internet (work portion)", value: 500, tag: "Phone", summary: "Work-use proportion.", scenario: "50% work use on $1,200/yr total = $600.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+    ],
+    conditional: [
+      { item: "High-performance laptop / computer (work portion)", value: 1000, tag: "Equipment", summary: "High-spec machine needed for data work — work-use proportion.", scenario: "MacBook Pro $3,200 × 80% work = $2,560 depreciated over 2 years = $1,280/yr.", howTo: "Calculate work-use %. Depreciate over effective life.", watchOut: "100% claim on device also used personally = audit flag.", docsNeeded: ["Receipt", "Work-use diary"] },
+    ],
+    notClaimable: [
+      { item: "Personal hobby data projects", reason: "Must relate to your current employment role." },
+      { item: "Home internet if claiming fixed rate", reason: "70c/hr rate already includes internet." },
+    ],
+  },
+
+  cybersecurity: {
+    avgSalary: 115000,
+    claimable: [
+      { item: "Security certifications (CISSP, CEH, etc.)", value: 1200, tag: "Education", summary: "Industry certifications required for cybersecurity work.", scenario: "CISSP exam $750 + CEH course $480 = $1,230. Direct career requirements — claimed.", howTo: "Keep receipts + exam/course descriptions.", watchOut: "Must relate to current role.", docsNeeded: ["Receipts", "Cert descriptions"] },
+      { item: "AISA membership", value: 400, tag: "Memberships", summary: "Australian Information Security Association membership.", scenario: "AISA annual fee $380. Claimed.", howTo: "Annual tax statement from AISA.", watchOut: "100% work-related.", docsNeeded: ["AISA tax statement"] },
+      { item: "Home office (WFH hours)", value: 1200, tag: "Home Office", summary: "Security analysts who WFH regularly.", scenario: "WFH 4 days/week. 4 × 8 × 48 × $0.70 = $1,075.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or WFH calendar"] },
+      { item: "Security tools & software", value: 600, tag: "Software", summary: "Security testing and analysis tools personally subscribed.", scenario: "Burp Suite Pro $450/yr + pen testing platform $200/yr = $650. Work tools — claimed.", howTo: "Keep subscription receipts.", watchOut: "Employer-provided tools cannot be claimed.", docsNeeded: ["Subscription receipts"] },
+      { item: "Phone & internet (work portion)", value: 500, tag: "Phone", summary: "Work-use proportion.", scenario: "55% work use on $1,200/yr = $660.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+    ],
+    conditional: [
+      { item: "Home lab / test equipment", value: 600, tag: "Equipment", summary: "Where you maintain a home lab for security research and testing.", scenario: "Raspberry Pi kit $200, network switch $180, USB drives $60 = $440 for security testing lab.", howTo: "Keep receipts. Must be for work-related security research — document this.", watchOut: "Personal home network equipment cannot be claimed.", docsNeeded: ["Receipts", "Note of work purpose"] },
+    ],
+    notClaimable: [
+      { item: "Personal VPN for privacy", reason: "Personal cybersecurity tools are personal expense." },
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+      { item: "Home internet if claiming fixed rate", reason: "70c/hr rate already includes internet." },
+    ],
+  },
+
+  uxdesigner: {
+    avgSalary: 105000,
+    claimable: [
+      { item: "Design software subscriptions", value: 700, tag: "Software", summary: "Figma, Sketch, Adobe XD personally subscribed.", scenario: "Figma Professional $180/yr + Adobe XD $600/yr = $780. Work tools — claimed.", howTo: "Keep subscription receipts.", watchOut: "Employer-provided tools cannot be claimed.", docsNeeded: ["Subscription receipts"] },
+      { item: "UX/design courses & certifications", value: 600, tag: "Education", summary: "UX research, interaction design, and accessibility courses.", scenario: "Nielsen Norman certification $580. Directly work-related — claimed.", howTo: "Keep receipt + course description.", watchOut: "Must relate to current UX/design role.", docsNeeded: ["Receipt", "Course outline"] },
+      { item: "Home office (WFH hours)", value: 1100, tag: "Home Office", summary: "UX designers who WFH regularly.", scenario: "WFH 4 days/week. 4 × 8 × 48 × $0.70 = $1,075.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or WFH calendar"] },
+      { item: "Design books & UX resources", value: 300, tag: "Education", summary: "UX methodology and design system reference books.", scenario: "Don Norman's Design of Everyday Things + UX books $280. Claimed.", howTo: "Keep receipts. Must relate to current work.", watchOut: "General art or design books for personal interest don't qualify.", docsNeeded: ["Receipts"] },
+      { item: "Phone & internet (work portion)", value: 400, tag: "Phone", summary: "Work-use proportion.", scenario: "45% work use on $1,000/yr = $450.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+    ],
+    conditional: [
+      { item: "External monitor & peripherals (work portion)", value: 600, tag: "Equipment", summary: "WFH setup equipment — work-use proportion.", scenario: "External monitor $600 × 80% work = $480. Claimed.", howTo: "Under $300 = instant. Over $300 = depreciate. Apply work-use %.", watchOut: "Gaming monitor also used for personal use — must apportion.", docsNeeded: ["Receipts", "Work-use % calculation"] },
+    ],
+    notClaimable: [
+      { item: "Personal creative projects tools", reason: "Must relate to your current employment role." },
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+    ],
+  },
+
+  itsupport: {
+    avgSalary: 75000,
+    claimable: [
+      { item: "CompTIA / Microsoft / ITIL certifications", value: 600, tag: "Education", summary: "IT support certifications required for the role.", scenario: "CompTIA A+ $350 + ITIL Foundation $280 = $630. Direct job requirements — claimed.", howTo: "Keep receipts + exam descriptions.", watchOut: "Must relate to current IT support role.", docsNeeded: ["Receipts", "Certification descriptions"] },
+      { item: "Technical tools & software (personal)", value: 400, tag: "Software", summary: "Remote desktop, monitoring and ticketing tools personally subscribed.", scenario: "TeamViewer Personal $180/yr + knowledge base tool $120/yr = $300. Work tools — claimed.", howTo: "Keep subscription receipts.", watchOut: "Employer-provided tools cannot be claimed.", docsNeeded: ["Subscription receipts"] },
+      { item: "Home office (WFH / remote support)", value: 900, tag: "Home Office", summary: "IT support workers who provide remote support from home.", scenario: "WFH 3 days/week. 3 × 8 × 48 × $0.70 = $806.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or WFH calendar"] },
+      { item: "Phone & internet (work portion)", value: 400, tag: "Phone", summary: "Work-use proportion.", scenario: "40% work use on $900/yr = $360.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+      { item: "Technical books & manuals", value: 200, tag: "Education", summary: "IT reference materials for current role.", scenario: "Network troubleshooting manual $180. Claimed.", howTo: "Keep receipts. Must relate to current IT support role.", watchOut: "General tech interest reading doesn't qualify.", docsNeeded: ["Receipts"] },
+    ],
+    conditional: [
+      { item: "Test equipment & tools (personal kit)", value: 300, tag: "Equipment", summary: "Network cables, testers and personal toolkit.", scenario: "Cable tester $120, patch cables $60, toolkit $80 = $260. Personal kit for work — claimed.", howTo: "Keep receipts. Must be for work purposes.", watchOut: "Employer-provided tools cannot be claimed.", docsNeeded: ["Receipts"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+      { item: "Personal gaming PC or home network", reason: "Personal equipment is not deductible even if also used for work." },
+      { item: "Home internet if claiming fixed rate", reason: "70c/hr rate already includes internet." },
+    ],
+  },
+
+  networkengineer: {
+    avgSalary: 105000,
+    claimable: [
+      { item: "Cisco / AWS / Azure certifications", value: 1000, tag: "Education", summary: "Network and cloud certifications for current role.", scenario: "CCNP exam $600 + AWS cert $300 = $900. Direct career requirements — claimed.", howTo: "Keep receipts + exam descriptions.", watchOut: "Must relate to current network engineering role.", docsNeeded: ["Receipts", "Certification descriptions"] },
+      { item: "Technical tools & network software", value: 600, tag: "Software", summary: "Network monitoring and management tools.", scenario: "PRTG licence $580/yr. Work tool — claimed.", howTo: "Keep subscription receipts.", watchOut: "Employer-provided tools cannot be claimed.", docsNeeded: ["Subscription receipts"] },
+      { item: "Home office (WFH hours)", value: 1000, tag: "Home Office", summary: "Network engineers who WFH regularly.", scenario: "WFH 3 days/week. 3 × 8 × 48 × $0.70 = $806.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or WFH calendar"] },
+      { item: "Technical books & vendor documentation", value: 300, tag: "Education", summary: "Networking reference materials.", scenario: "Cisco networking guide $280. Claimed.", howTo: "Keep receipts. Must relate to current role.", watchOut: "General IT books not relevant to current role.", docsNeeded: ["Receipts"] },
+      { item: "Phone & internet (work portion)", value: 400, tag: "Phone", summary: "Work-use proportion.", scenario: "45% work use on $1,000/yr = $450.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+    ],
+    conditional: [
+      { item: "Home lab networking equipment", value: 500, tag: "Equipment", summary: "Where home lab is used for work-related testing.", scenario: "Managed switch $280 + rack unit $180 = $460. Used for testing configurations for work.", howTo: "Keep receipts. Document work purpose — not just personal home network.", watchOut: "Cannot claim personal home network equipment.", docsNeeded: ["Receipts", "Note of work purpose"] },
+    ],
+    notClaimable: [
+      { item: "Personal home network equipment", reason: "Personal home network is not deductible." },
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+      { item: "Home internet if claiming fixed rate", reason: "70c/hr rate already includes internet." },
+    ],
+  },
+
+  graphicdesigner: {
+    avgSalary: 75000,
+    claimable: [
+      { item: "Adobe Creative Cloud subscription", value: 660, tag: "Software", summary: "Industry-standard design software — fully deductible.", scenario: "Adobe Creative Cloud All Apps $660/yr. Fully deductible work tool.", howTo: "Keep subscription receipt. Annual plan is the most cost-effective.", watchOut: "Personal creative projects must be excluded if apportioning.", docsNeeded: ["Subscription receipt"] },
+      { item: "Home office (WFH hours)", value: 1000, tag: "Home Office", summary: "Graphic designers who WFH or freelance.", scenario: "WFH 4 days/week. 4 × 8 × 48 × $0.70 = $1,075.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or WFH calendar"] },
+      { item: "Design fonts & stock assets", value: 300, tag: "Software", summary: "Font licences and stock image subscriptions for client work.", scenario: "Adobe Fonts $120/yr + Shutterstock $200/yr = $320. Work assets — claimed.", howTo: "Keep subscription receipts. Must be used for client work.", watchOut: "Personal creative projects must be excluded.", docsNeeded: ["Subscription receipts"] },
+      { item: "Professional portfolio & website", value: 250, tag: "Software", summary: "Portfolio hosting to attract clients.", scenario: "Behance Pro $120/yr + domain $25/yr + Squarespace $180/yr = $325. Business tools — claimed.", howTo: "Keep subscription receipts.", watchOut: "Personal website not used to attract clients doesn't qualify.", docsNeeded: ["Subscription receipts"] },
+      { item: "Phone & internet (work portion)", value: 400, tag: "Phone", summary: "Work-use proportion.", scenario: "45% work use on $1,000/yr = $450.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+    ],
+    conditional: [
+      { item: "Graphics tablet & peripherals (work portion)", value: 400, tag: "Equipment", summary: "Wacom tablet or similar design hardware.", scenario: "Wacom Intuus Pro $480 × 90% work use. Depreciated over 3 years = $144/yr.", howTo: "Keep receipt. Apply work-use %. Depreciate over effective life.", watchOut: "Also used for personal art — must honestly apportion.", docsNeeded: ["Receipt", "Work-use % calculation"] },
+    ],
+    notClaimable: [
+      { item: "Personal art supplies", reason: "Must be for paid client work, not personal creative projects." },
+      { item: "Home-to-studio commute", reason: "Standard commute rule." },
+      { item: "Home internet if claiming fixed rate", reason: "70c/hr rate already includes internet." },
+    ],
+  },
+
+  journalist: {
+    avgSalary: 75000,
+    claimable: [
+      { item: "MEAA membership", value: 400, tag: "Memberships", summary: "Media Entertainment & Arts Alliance membership — fully deductible.", scenario: "MEAA annual fee $380. Claimed from annual tax statement.", howTo: "Annual tax statement from MEAA in July.", watchOut: "100% work-related.", docsNeeded: ["MEAA annual tax statement"] },
+      { item: "Research subscriptions & databases", value: 600, tag: "Software", summary: "News archives, research databases, publication subscriptions.", scenario: "JSTOR $200/yr + news archives $150/yr + reference databases $250/yr = $600. Claimed.", howTo: "Keep subscription receipts. Must be for work research.", watchOut: "Personal magazine or newspaper subscriptions for general reading don't qualify.", docsNeeded: ["Subscription receipts"] },
+      { item: "Home office (writing & research)", value: 1000, tag: "Home Office", summary: "Journalists who WFH or write from home.", scenario: "WFH 4 days/week. 4 × 8 × 48 × $0.70 = $1,075.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or calendar records"] },
+      { item: "Phone & internet (work portion)", value: 600, tag: "Phone", summary: "High work-use for sources, interviews and research.", scenario: "60% work use on $1,200/yr = $720.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+      { item: "Travel for stories (if unreimbursed)", value: 600, tag: "Travel", summary: "Travel to cover stories not reimbursed by employer.", scenario: "Freelance journalist travels to report on event. Airfare $280 + transport $80 — not reimbursed. Claimed.", howTo: "Keep all receipts. Only claim unreimbursed portions.", watchOut: "Cannot double-claim reimbursed expenses.", docsNeeded: ["Receipts", "Evidence of no reimbursement"] },
+    ],
+    conditional: [
+      { item: "Recording equipment (work portion)", value: 300, tag: "Equipment", summary: "Microphone, recorder for interviews.", scenario: "Tascam recorder $220. Work tool for interviews — claimed.", howTo: "Keep receipt. Under $300 = instant deduction.", watchOut: "Also used personally — must apportion.", docsNeeded: ["Receipt", "Work-use if mixed"] },
+    ],
+    notClaimable: [
+      { item: "General newspaper or magazine subscriptions for reading", reason: "Personal entertainment even if related to your field." },
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+      { item: "Home internet if claiming fixed rate", reason: "70c/hr rate already includes internet." },
+    ],
+  },
+
+  musician: {
+    avgSalary: 55000,
+    claimable: [
+      { item: "Musical instruments (work portion)", value: 1500, tag: "Equipment", summary: "Instruments used for professional performances.", scenario: "Professional guitarist buys $1,800 guitar. 80% work use. Depreciated over 5 years × 80% = $288/yr.", howTo: "Keep receipt. Over $300 = depreciate over effective life. Apply work-use %.", watchOut: "Instruments also used for personal playing — must honestly apportion.", docsNeeded: ["Receipt", "Asset register", "Work-use % calculation"] },
+      { item: "Music software & DAW", value: 500, tag: "Software", summary: "Logic Pro, Ableton, Pro Tools for professional music production.", scenario: "Logic Pro $350 (one-time purchase, depreciated) + plugins $200/yr = $550. Work tools — claimed.", howTo: "Keep receipts. Must be used for professional work.", watchOut: "Hobby music production must be excluded.", docsNeeded: ["Receipts"] },
+      { item: "MEAA / PPCA membership fees", value: 300, tag: "Memberships", summary: "Performing rights and musicians union fees.", scenario: "MEAA annual fee $280. Claimed.", howTo: "Annual tax statement from MEAA.", watchOut: "100% work-related.", docsNeeded: ["MEAA annual tax statement"] },
+      { item: "Home studio / home office", value: 800, tag: "Home Office", summary: "Dedicated home studio for professional music work.", scenario: "Uses dedicated room as home studio for recording and rehearsal. 70c/hr × 6hrs/day × 200 work days = $804.", howTo: "70c/hr fixed rate OR actual costs if room exclusively used. Time diary.", watchOut: "Must be genuinely dedicated. Dual-use room = fixed rate only.", docsNeeded: ["Time diary", "If exclusive: rent/mortgage and utility bills"] },
+      { item: "Performance clothing / stage wear", value: 400, tag: "Clothing", summary: "Stage costumes and performance clothing that cannot be worn normally.", scenario: "Stage costume $380. Exclusively for performances — claimed.", howTo: "Keep receipt. Must be exclusively for performances, not everyday wear.", watchOut: "General clothing you also wear personally cannot be claimed.", docsNeeded: ["Receipt", "Note that clothing is exclusively for performance"] },
+    ],
+    conditional: [
+      { item: "Music lessons for current professional skills", value: 400, tag: "Education", summary: "Lessons that maintain or improve skills for current professional work.", scenario: "Jazz pianist takes advanced harmony lessons $400 to improve jazz performance skills — claimed.", howTo: "Must maintain or improve skills for CURRENT professional work, not enter the profession.", watchOut: "Learning a completely new instrument for a different career = not deductible.", docsNeeded: ["Receipts", "Note of professional relevance"] },
+    ],
+    notClaimable: [
+      { item: "Personal music listening (Spotify/Apple Music)", reason: "Personal entertainment regardless of professional musician status." },
+      { item: "Instruments used exclusively for personal playing", reason: "Must be for professional performances or recordings." },
+      { item: "Home-to-venue commute", reason: "If you travel to the same regular venue, that is treated as a commute." },
+    ],
+  },
+
+  actor: {
+    avgSalary: 55000,
+    claimable: [
+      { item: "Acting classes & workshops", value: 800, tag: "Education", summary: "Professional development classes directly related to current acting work.", scenario: "Pays $750 for Meisner technique workshop. Maintains and improves current professional acting skills — claimed.", howTo: "Keep receipt + workshop description. Must relate to current professional work.", watchOut: "Initial training to enter the profession = not deductible.", docsNeeded: ["Receipt", "Workshop description"] },
+      { item: "MEAA union fees", value: 400, tag: "Memberships", summary: "Media Entertainment & Arts Alliance membership.", scenario: "MEAA annual fee $380. Claimed from annual tax statement.", howTo: "Annual tax statement from MEAA.", watchOut: "100% work-related.", docsNeeded: ["MEAA annual tax statement"] },
+      { item: "Headshots & portfolio", value: 600, tag: "Marketing", summary: "Professional headshots and show reel production — essential marketing.", scenario: "Professional headshots $450 + show reel editing $200 = $650. Directly for securing work — claimed.", howTo: "Keep receipts. Must be for professional acting career, not personal.", watchOut: "Personal portraits or social media photos don't qualify.", docsNeeded: ["Receipts"] },
+      { item: "Agent fees (where not withheld from income)", value: 500, tag: "Memberships", summary: "Talent agency commission or fees if paid directly.", scenario: "Pays agent $500 directly for services — deductible.", howTo: "Keep receipts or agent invoices.", watchOut: "If agent deducts commission from your income, don't also claim — it's already excluded.", docsNeeded: ["Agent invoice or receipt"] },
+      { item: "Home office (audition prep, self-tape)", value: 600, tag: "Home Office", summary: "Self-tape setup and audition preparation at home.", scenario: "4hrs/day at home on self-tapes and preparation. 4 × 5 × 48 × $0.70 = $672.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+    ],
+    conditional: [
+      { item: "Costumes & performance clothing (exclusive)", value: 400, tag: "Clothing", summary: "Costumes and clothing exclusively for professional roles.", scenario: "Purchases period costume pieces for a specific production role. $380 — exclusively for performance.", howTo: "Keep receipt. Must be exclusively for professional roles, not everyday wear.", watchOut: "General clothing worn outside performances cannot be claimed.", docsNeeded: ["Receipt", "Note of exclusive professional use"] },
+    ],
+    notClaimable: [
+      { item: "General gym or personal training", reason: "Personal fitness even if maintaining physical appearance for roles." },
+      { item: "Personal grooming and cosmetics", reason: "Personal expense regardless of on-screen appearance needs." },
+      { item: "Travel to auditions (generally)", reason: "Travel to auditions is usually a private expense — work hasn't started yet." },
+    ],
+  },
+
+  barista: {
+    avgSalary: 52000,
+    claimable: [
+      { item: "Barista & coffee courses", value: 300, tag: "Education", summary: "Professional coffee training courses.", scenario: "ASCA competition prep course $280. Directly relevant to current role — claimed.", howTo: "Keep receipt + course description.", watchOut: "Must relate to current hospitality role.", docsNeeded: ["Receipt", "Course description"] },
+      { item: "Non-slip safety shoes", value: 130, tag: "Clothing", summary: "Required non-slip footwear for hospitality environments.", scenario: "Non-slip kitchen shoes $120 — required. Claimed.", howTo: "Keep receipt. Must be required by employer.", watchOut: "'Comfortable shoes' without specific employer requirement don't qualify.", docsNeeded: ["Receipt"] },
+      { item: "Uniform laundering", value: 150, tag: "Clothing", summary: "ATO formula for required work uniform.", scenario: "Washes uniform 5x/week × 48 weeks = 240 loads × $1. Claims $150.", howTo: "$1/load. No receipts under $150.", watchOut: "Only for compulsory distinctive uniforms.", docsNeeded: ["Weekly tally"] },
+      { item: "RSA licence & food handler certificate", value: 150, tag: "Licences", summary: "Required industry licences.", scenario: "RSA renewal $60 + food handler cert renewal $90 = $150. Both required — claimed.", howTo: "Keep receipts from registered training providers.", watchOut: "Must be renewals for current role.", docsNeeded: ["Receipts from registered providers"] },
+      { item: "Union fees (UNITE / SDA)", value: 250, tag: "Memberships", summary: "Hospitality union membership.", scenario: "SDA annual fee $240. Annual tax statement claimed.", howTo: "Annual tax statement from union.", watchOut: "100% work-related.", docsNeeded: ["Union tax statement"] },
+    ],
+    conditional: [
+      { item: "Barista tools (personal tamper, knock box)", value: 150, tag: "Equipment", summary: "Personal professional tools if self-supplied.", scenario: "Purchases personal tamper $120 for work use. Not supplied by employer — claimed.", howTo: "Keep receipt. Must be your personally purchased tools.", watchOut: "Cafe-provided equipment cannot be claimed.", docsNeeded: ["Receipt"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-cafe commute", reason: "Standard commute rule." },
+      { item: "Meals and coffees during shifts", reason: "Personal expense." },
+      { item: "Personal coffee equipment at home", reason: "Personal interest — not work-related." },
+    ],
+  },
+
+  hospitalitymanager: {
+    avgSalary: 75000,
+    claimable: [
+      { item: "Restaurant & Catering Australia membership", value: 400, tag: "Memberships", summary: "Industry body membership for hospitality managers.", scenario: "RCA annual fee $380. Claimed.", howTo: "Annual tax statement from RCA.", watchOut: "100% work-related.", docsNeeded: ["Annual tax statement"] },
+      { item: "Management & hospitality courses", value: 500, tag: "Education", summary: "Leadership and hospitality management CPD.", scenario: "Management workshop $480. Claimed.", howTo: "Keep receipt + course description.", watchOut: "Must relate to current management role.", docsNeeded: ["Receipt", "Course outline"] },
+      { item: "Work uniform (if required)", value: 200, tag: "Clothing", summary: "Required management uniform.", scenario: "Required branded management uniform. 2 × $90 = $180. Claimed.", howTo: "Keep receipt. Must be employer-branded.", watchOut: "Generic professional clothing doesn't qualify.", docsNeeded: ["Receipt"] },
+      { item: "Phone & internet (work portion)", value: 400, tag: "Phone", summary: "Work-use proportion for supplier and staff comms.", scenario: "55% work use on $900/yr = $495.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+      { item: "Home office (rosters, reports)", value: 500, tag: "Home Office", summary: "Admin and rostering done at home.", scenario: "2hrs/evening × 5 nights × 48 × $0.70 = $336.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+    ],
+    conditional: [
+      { item: "Vehicle costs (multi-venue role)", value: 1000, tag: "Travel", summary: "If managing multiple venues.", scenario: "Logbook: 35% work visiting multiple venues. Annual car costs $10,000. Claims $3,500.", howTo: "12-week logbook or 88c/km.", watchOut: "Home to primary venue = commute.", docsNeeded: ["12-week logbook or trip diary"] },
+    ],
+    notClaimable: [
+      { item: "Meals and drinks at work", reason: "Personal expense even in food service industry." },
+      { item: "Home-to-venue commute", reason: "Standard commute rule." },
+    ],
+  },
+
+  travelagent: {
+    avgSalary: 58000,
+    claimable: [
+      { item: "AFTA membership & accreditation", value: 400, tag: "Memberships", summary: "Australian Federation of Travel Agents membership.", scenario: "AFTA annual fee $380. Claimed.", howTo: "Annual tax statement from AFTA.", watchOut: "100% work-related.", docsNeeded: ["AFTA annual tax statement"] },
+      { item: "Destination familiarisation trips (partial)", value: 600, tag: "Travel", summary: "FAM trips with work-related learning component.", scenario: "Employer-assisted FAM trip to Europe. Personal portion excluded — work component $580 claimed.", howTo: "Keep receipts. Document specific work-learning purpose. Apportion any personal benefit.", watchOut: "Pure holiday trips cannot be claimed. Must have genuine work purpose and documentation.", docsNeeded: ["Trip receipts", "Evidence of work purpose", "Work itinerary"] },
+      { item: "Travel booking software subscriptions", value: 300, tag: "Software", summary: "GDS or booking tool personal subscriptions.", scenario: "Sabre GDS training subscription $280/yr. Claimed.", howTo: "Keep subscription receipts.", watchOut: "Employer-provided access cannot be claimed.", docsNeeded: ["Subscription receipts"] },
+      { item: "Phone (work portion)", value: 250, tag: "Phone", summary: "Work-use for client bookings and supplier comms.", scenario: "50% work use on $720/yr = $360.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim 100% on mixed phone.", docsNeeded: ["4-week diary", "Annual phone cost"] },
+      { item: "Home office (quotes, research)", value: 500, tag: "Home Office", summary: "Research and client work done at home.", scenario: "3hrs/week at home. 3 × 48 × $0.70 = $101.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+    ],
+    conditional: [
+      { item: "Trade publications & destination resources", value: 200, tag: "Education", summary: "Travel trade publications and destination guides.", scenario: "Traveltrade Weekly and destination resources $180/yr. Work reference materials — claimed.", howTo: "Keep subscription receipts. Must be professional trade resources.", watchOut: "General travel magazines for personal reading don't qualify.", docsNeeded: ["Subscription receipts"] },
+    ],
+    notClaimable: [
+      { item: "Personal holidays", reason: "Even if learning about destinations — personal travel is not deductible." },
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+    ],
+  },
+
+  eventplanner: {
+    avgSalary: 70000,
+    claimable: [
+      { item: "EEAA / MEA membership & certification", value: 400, tag: "Memberships", summary: "Exhibition & Events Association or Meetings & Events Australia membership.", scenario: "MEA annual fee $380. Claimed.", howTo: "Annual tax statement from MEA.", watchOut: "100% work-related.", docsNeeded: ["Annual tax statement"] },
+      { item: "Event management software", value: 400, tag: "Software", summary: "Project management and event software personally subscribed.", scenario: "Eventbrite Pro $360/yr + planning software $120/yr = $480. Work tools — claimed.", howTo: "Keep subscription receipts.", watchOut: "Employer-provided software cannot be claimed.", docsNeeded: ["Subscription receipts"] },
+      { item: "Phone & internet (work portion)", value: 400, tag: "Phone", summary: "High work-use for supplier and client comms.", scenario: "60% work use on $900/yr = $540.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+      { item: "Vehicle costs (site inspections, event days)", value: 1500, tag: "Vehicle", summary: "Driving to venues, suppliers and event sites.", scenario: "Logbook: 40% work. Annual car costs $11,000. Claims $4,400.", howTo: "12-week logbook or 88c/km.", watchOut: "Home to main office = commute.", docsNeeded: ["12-week logbook or trip diary", "Vehicle receipts if logbook"] },
+      { item: "Home office (planning, coordination)", value: 700, tag: "Home Office", summary: "Event coordination and admin done at home.", scenario: "3hrs/evening × 4 nights × 48 × $0.70 = $403.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+    ],
+    conditional: [
+      { item: "Work attire for formal events", value: 300, tag: "Clothing", summary: "Required formal attire for specific high-end events.", scenario: "Event manager required to wear formal attire for specific award ceremonies. $280 — documented requirement.", howTo: "Keep receipt. Document employer/client specific requirement.", watchOut: "General professional clothing is personal. Must be specifically required for formal events.", docsNeeded: ["Receipt", "Event dress code requirement"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+      { item: "Personal attendance at events and functions", reason: "Attending events for personal enjoyment is not deductible." },
+      { item: "Client entertainment", reason: "ATO is very strict — must directly connect to earning specific income." },
+    ],
+  },
+
+  flightattendant: {
+    avgSalary: 65000,
+    claimable: [
+      { item: "Transport Workers Union (TWU) fees", value: 400, tag: "Memberships", summary: "TWU membership — fully deductible.", scenario: "TWU annual fee $380. Annual tax statement claimed.", howTo: "Annual tax statement from TWU in July.", watchOut: "100% work-related.", docsNeeded: ["TWU annual tax statement"] },
+      { item: "Uniform laundering", value: 150, tag: "Clothing", summary: "ATO formula for compulsory airline uniform.", scenario: "Washes uniform 4x/week × 48 weeks = 192 loads × $1. Claims $150.", howTo: "$1/load. No receipts under $150.", watchOut: "Only for compulsory distinctive uniforms.", docsNeeded: ["Weekly tally"] },
+      { item: "Overnight meal allowances", value: 1200, tag: "Meals", summary: "Meals during overnight layovers — up to ATO reasonable amounts.", scenario: "Domestic overnight layovers 60 nights/yr. ATO reasonable amount ~$33/meal. Claims reasonable amounts.", howTo: "Check ATO's reasonable meal amounts table. Keep receipts for amounts over the threshold.", watchOut: "Day flights with no overnight layover — meals are NOT deductible.", docsNeeded: ["Duty roster showing overnight trips", "Receipts for amounts over ATO reasonable amounts"] },
+      { item: "Safety training certifications (self-funded)", value: 300, tag: "Education", summary: "Required safety certifications if personally funded.", scenario: "First aid renewal $280 — required by airline but self-funded. Claimed.", howTo: "Keep receipt. Must be required for your role.", watchOut: "Airline-funded training cannot be claimed.", docsNeeded: ["Receipt", "Evidence of self-funding"] },
+      { item: "Phone (work portion)", value: 150, tag: "Phone", summary: "Work-use proportion of personal phone.", scenario: "25% work use on $600/yr = $150.", howTo: "4-week diary. Apply % to full year.", watchOut: "If work phone provided, cannot claim personal phone.", docsNeeded: ["4-week diary", "Annual phone cost"] },
+    ],
+    conditional: [
+      { item: "Home office (rosters, training materials)", value: 200, tag: "Home Office", summary: "Reviewing rosters and training materials at home.", scenario: "2hrs/week at home reviewing training and completing admin. 2 × 48 × $0.70 = $67.", howTo: "70c/hr. Time diary.", watchOut: "Must be genuine required work.", docsNeeded: ["Time diary"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-airport commute", reason: "Standard commute rule applies to getting to your base airport." },
+      { item: "Airline-issued uniforms and equipment", reason: "Cannot claim employer-provided items." },
+      { item: "Personal travel on staff discount tickets", reason: "Personal travel even at concessional rates is personal." },
+    ],
+  },
+
+  salesrep: {
+    avgSalary: 90000,
+    claimable: [
+      { item: "Vehicle costs (logbook — client visits)", value: 4000, tag: "Vehicle", atoUrl: "https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/cars-transport-and-travel/motor-vehicle-and-car-expenses/expenses-for-a-car-you-own-or-lease", summary: "Driving to client meetings — your biggest deduction.", scenario: "Sales rep drives to clients daily. Logbook: 75% work. Annual car costs $14,000. Claims $10,500.", howTo: "12-week logbook. Apply business % to all running costs.", watchOut: "Home to main office = commute. Office to clients = deductible.", docsNeeded: ["12-week logbook", "All vehicle receipts", "Odometer records"] },
+      { item: "Phone & internet (work portion)", value: 500, tag: "Phone", summary: "High work-use for client and pipeline management.", scenario: "65% work use on $1,200/yr = $780.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+      { item: "CRM & sales tools (personal subscription)", value: 400, tag: "Software", summary: "CRM, prospecting and productivity tools.", scenario: "Salesforce personal licence $360/yr + LinkedIn Sales Navigator $400/yr = $760. Work tools — claimed.", howTo: "Keep subscription receipts.", watchOut: "Employer-provided CRM access cannot be claimed.", docsNeeded: ["Subscription receipts"] },
+      { item: "Home office (admin, reporting)", value: 600, tag: "Home Office", summary: "Admin, reporting and client research done at home.", scenario: "2hrs/day at home on admin. 2 × 5 × 48 × $0.70 = $336.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+      { item: "Professional development courses", value: 400, tag: "Education", summary: "Sales skills, negotiation and product knowledge training.", scenario: "Sales training workshop $380. Claimed.", howTo: "Keep receipt + course description.", watchOut: "Must relate to current sales role.", docsNeeded: ["Receipt", "Course outline"] },
+    ],
+    conditional: [
+      { item: "Accommodation & meals (interstate travel)", value: 600, tag: "Travel", summary: "Overnight travel to client sites in other cities.", scenario: "Travels interstate for 8 client visits/yr. Hotel $180/night + meals = $600/yr — claimed.", howTo: "Keep all receipts. Must be for overnight business travel.", watchOut: "Day trips — accommodation and most meals not deductible.", docsNeeded: ["Receipts", "Duty diary showing business purpose"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-main-office commute", reason: "Standard commute rule." },
+      { item: "Client entertainment", reason: "ATO is very strict — must directly connect to earning specific income." },
+      { item: "Personal clothing", reason: "Professional attire is personal even in a sales role." },
+    ],
+  },
+
+  hairdresser: {
+    avgSalary: 55000,
+    claimable: [
+      { item: "Professional scissors & tools", value: 600, tag: "Equipment", summary: "Personal professional hairdressing tools.", scenario: "Joewell scissors $380 (depreciated) + thinning shears $120 (instant) + comb set $45. Claims instantly on items under $300.", howTo: "Under $300 = instant. Over $300 = depreciate. Must be personally owned.", watchOut: "Salon-provided tools cannot be claimed.", docsNeeded: ["Receipts", "Asset register for items over $300"] },
+      { item: "Hair Stylists Australia / HBIA membership", value: 300, tag: "Memberships", summary: "Industry body membership.", scenario: "HBIA annual fee $280. Claimed.", howTo: "Annual tax statement from HBIA.", watchOut: "100% work-related.", docsNeeded: ["Annual tax statement"] },
+      { item: "Hairdressing courses & upskilling", value: 400, tag: "Education", summary: "Colour, cutting and styling courses.", scenario: "Oribe colour course $380. Maintains current hairdressing skills — claimed.", howTo: "Keep receipt + course description.", watchOut: "Must relate to current hairdressing role.", docsNeeded: ["Receipt", "Course description"] },
+      { item: "Work uniform / salon clothing", value: 200, tag: "Clothing", summary: "Required salon uniform or black professional clothing.", scenario: "Salon requires all-black outfit with branded apron. Buys $180 in required items — claimed.", howTo: "Keep receipt. Must be specifically required by employer.", watchOut: "Generic black clothing worn outside work is borderline.", docsNeeded: ["Receipt", "Employer uniform requirement"] },
+      { item: "Phone (work portion)", value: 150, tag: "Phone", summary: "Client bookings and comms.", scenario: "25% work use on $600/yr = $150.", howTo: "4-week diary. Apply % to full year.", watchOut: "Honest apportionment required.", docsNeeded: ["4-week diary", "Annual phone cost"] },
+    ],
+    conditional: [
+      { item: "Self-employed: product costs & supplies", value: 500, tag: "Supplies", summary: "If you supply your own products for clients.", scenario: "Mobile hairdresser buys $400 in colour and styling products for client use — claimed.", howTo: "Keep all receipts. Only claim products used for client work.", watchOut: "Salon-supplied products cannot be claimed. Own products only.", docsNeeded: ["Receipts"] },
+    ],
+    notClaimable: [
+      { item: "Personal hair products at home", reason: "Home haircare is personal." },
+      { item: "Home-to-salon commute", reason: "Standard commute rule." },
+      { item: "Personal hair services", reason: "Your own hair treatments are personal even as a hairdresser." },
+    ],
+  },
+
+  personaltrainer: {
+    avgSalary: 60000,
+    claimable: [
+      { item: "Fitness Australia / ESSA registration & CPD", value: 500, tag: "Memberships", summary: "Required registration and professional development.", scenario: "Fitness Australia registration $420 + CPD workshop $180 = $600. Claimed.", howTo: "Annual statement from Fitness Australia + CPD receipts.", watchOut: "CPD must relate to current PT role.", docsNeeded: ["Fitness Australia statement", "CPD receipts"] },
+      { item: "Professional indemnity insurance", value: 400, tag: "Insurance", summary: "PI insurance required for personal training.", scenario: "Annual PI policy $380 — claimed.", howTo: "Keep insurance receipt.", watchOut: "Only if self-funded.", docsNeeded: ["Insurance receipt"] },
+      { item: "Training equipment & props (self-funded)", value: 500, tag: "Equipment", summary: "Resistance bands, cones, portable equipment for client sessions.", scenario: "Buys resistance band set $120, cones $45, TRX $180 = $345 for client training. Claimed.", howTo: "Keep receipts. Must be used for client sessions.", watchOut: "Gym-provided equipment cannot be claimed.", docsNeeded: ["Receipts"] },
+      { item: "Work attire (branded PT clothing)", value: 200, tag: "Clothing", summary: "Branded professional activewear required for work.", scenario: "Requires clients to recognise staff by branded PT clothing. $180 in branded items — claimed.", howTo: "Keep receipt. Must be employer-branded or required for work identification.", watchOut: "Generic activewear you also wear personally is personal expense.", docsNeeded: ["Receipt", "Evidence of work requirement"] },
+      { item: "Phone (work portion)", value: 250, tag: "Phone", summary: "Work-use for client comms and program management.", scenario: "50% work use on $720/yr = $360.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim 100% on mixed phone.", docsNeeded: ["4-week diary", "Annual phone cost"] },
+    ],
+    conditional: [
+      { item: "Vehicle costs (mobile PT — client travel)", value: 2000, tag: "Vehicle", summary: "If you're a mobile PT travelling to client homes.", scenario: "Mobile PT logbook: 70% work. Annual car costs $10,000. Claims $7,000.", howTo: "12-week logbook or 88c/km.", watchOut: "Home to first client of the day = commute.", docsNeeded: ["12-week logbook or trip diary", "Vehicle receipts if logbook"] },
+    ],
+    notClaimable: [
+      { item: "Personal gym membership", reason: "Even for maintaining your own fitness — personal expense." },
+      { item: "Personal protein powder or supplements", reason: "Personal dietary choices are not deductible." },
+      { item: "Home-to-gym commute", reason: "Standard commute rule." },
+    ],
+  },
+
+  retailmanager: {
+    avgSalary: 70000,
+    claimable: [
+      { item: "SDA / retail union fees", value: 300, tag: "Memberships", summary: "Shop Distributive and Allied Employees Association membership.", scenario: "SDA annual fee $280. Annual tax statement claimed.", howTo: "Annual tax statement from SDA.", watchOut: "100% work-related.", docsNeeded: ["SDA annual tax statement"] },
+      { item: "Retail management courses & CPD", value: 400, tag: "Education", summary: "Management and retail skills development.", scenario: "Retail management workshop $380. Claimed.", howTo: "Keep receipt + course description.", watchOut: "Must relate to current retail management role.", docsNeeded: ["Receipt", "Course outline"] },
+      { item: "Work uniform (if required)", value: 150, tag: "Clothing", summary: "Required branded retail uniform.", scenario: "Required branded polo shirts. 3 × $45 = $135. Claimed.", howTo: "Keep receipt. Must be employer-branded.", watchOut: "Generic clothing doesn't qualify.", docsNeeded: ["Receipt"] },
+      { item: "Phone & internet (work portion)", value: 300, tag: "Phone", summary: "Work-use for staff scheduling and supplier comms.", scenario: "40% work use on $720/yr = $288.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+      { item: "Home office (rostering, reporting)", value: 400, tag: "Home Office", summary: "Admin and rostering done at home.", scenario: "2hrs/evening × 3 nights × 48 × $0.70 = $202.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+    ],
+    conditional: [
+      { item: "Vehicle costs (multi-store role)", value: 1000, tag: "Travel", summary: "Driving between multiple retail locations.", scenario: "Logbook: 30% work visiting multiple stores. Annual car costs $10,000. Claims $3,000.", howTo: "12-week logbook or 88c/km.", watchOut: "Home to primary store = commute.", docsNeeded: ["12-week logbook or trip diary"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-store commute", reason: "Standard commute rule." },
+      { item: "Personal purchases from the store", reason: "Staff discounts on personal purchases are personal." },
+    ],
+  },
+
+  propertymanager: {
+    avgSalary: 80000,
+    claimable: [
+      { item: "Real estate licence renewal", value: 400, tag: "Licences", summary: "Required property management licence renewal.", scenario: "CPV licence renewal $380 — claimed.", howTo: "Keep receipt from Consumer Affairs VIC or state equivalent.", watchOut: "Initial licence training generally not deductible.", docsNeeded: ["Licence renewal receipt"] },
+      { item: "REIV / REIA membership & CPD", value: 500, tag: "Memberships", summary: "Real Estate Institute membership and mandatory CPD.", scenario: "REIV annual fee $480 + CPD $180 = $660. Claimed.", howTo: "Annual tax statement from REIV + CPD receipts.", watchOut: "CPD must relate to current property management role.", docsNeeded: ["REIV tax statement", "CPD receipts"] },
+      { item: "Vehicle costs (property inspections)", value: 3000, tag: "Vehicle", summary: "Driving to rental properties for inspections and maintenance.", scenario: "Property manager visits 150 properties/month. Logbook: 70% work. Annual car costs $12,000. Claims $8,400.", howTo: "12-week logbook or 88c/km.", watchOut: "Home to main office = commute.", docsNeeded: ["12-week logbook", "All vehicle receipts", "Odometer records"] },
+      { item: "Phone & internet (work portion)", value: 500, tag: "Phone", summary: "High work-use for tenant and owner comms.", scenario: "65% work use on $1,200/yr = $780.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+      { item: "Home office (admin, correspondence)", value: 600, tag: "Home Office", summary: "After-hours admin and tenant correspondence.", scenario: "2hrs/evening × 5 nights × 48 × $0.70 = $336.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+    ],
+    conditional: [
+      { item: "Property management software (personal)", value: 400, tag: "Software", summary: "Inspection apps and PM software personally subscribed.", scenario: "PropertyMe personal subscription $380/yr. Claimed.", howTo: "Keep subscription receipt.", watchOut: "Agency-provided software cannot be claimed.", docsNeeded: ["Subscription receipt"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+      { item: "Client entertainment", reason: "ATO is very strict." },
+      { item: "Investment property expenses for personal properties", reason: "Personal investment properties are handled under rental income deductions, not work deductions." },
+    ],
+  },
+
+  buildinginspector: {
+    avgSalary: 90000,
+    claimable: [
+      { item: "Building inspector licence renewal", value: 400, tag: "Licences", summary: "Required annual licence to carry out building inspections.", scenario: "VIC building inspector registration renewal $380 — claimed.", howTo: "Keep receipt from VBA or state licensing body.", watchOut: "Initial training costs generally not deductible.", docsNeeded: ["Licence renewal receipt"] },
+      { item: "AIBS membership & CPD", value: 500, tag: "Memberships", summary: "Australian Institute of Building Surveyors membership and CPD.", scenario: "AIBS annual fee $460 + CPD workshop $180 = $640. Claimed.", howTo: "Annual tax statement from AIBS + CPD receipts.", watchOut: "CPD must relate to current role.", docsNeeded: ["AIBS tax statement", "CPD receipts"] },
+      { item: "Vehicle costs (site inspections)", value: 3500, tag: "Vehicle", summary: "Driving to inspection sites is your biggest deduction.", scenario: "Inspects 8 properties/day. Logbook: 80% work. Annual car costs $13,000. Claims $10,400.", howTo: "12-week logbook. Apply business % to all costs.", watchOut: "Home to first site = commute.", docsNeeded: ["12-week logbook", "All vehicle receipts", "Odometer records"] },
+      { item: "PPE & safety equipment", value: 250, tag: "Clothing", summary: "Hard hat, hi-vis, safety boots for site inspections.", scenario: "Hard hat $45, hi-vis $65, steel caps $160 = $270. Claimed.", howTo: "Keep receipts. Must be safety-rated.", watchOut: "Generic clothing doesn't qualify.", docsNeeded: ["Receipts"] },
+      { item: "Phone & tablet (work portion)", value: 400, tag: "Phone", summary: "High work-use for site reporting and client comms.", scenario: "60% work use on $1,200/yr = $720.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+    ],
+    conditional: [
+      { item: "Inspection software & apps", value: 300, tag: "Software", summary: "Inspection reporting apps personally subscribed.", scenario: "HappyCo inspection app $280/yr. Claimed.", howTo: "Keep subscription receipt.", watchOut: "Employer-provided apps cannot be claimed.", docsNeeded: ["Subscription receipt"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-first-site commute", reason: "Standard commute rule." },
+      { item: "Traffic fines", reason: "Explicitly excluded." },
+    ],
+  },
+
+  quantitysurveyor: {
+    avgSalary: 100000,
+    claimable: [
+      { item: "AIQS membership & CPD", value: 600, tag: "Memberships", summary: "Australian Institute of Quantity Surveyors membership and CPD.", scenario: "AIQS annual fee $540 + CPD conference $220 = $760. Claimed.", howTo: "Annual tax statement from AIQS + CPD receipts.", watchOut: "CPD must relate to current QS role.", docsNeeded: ["AIQS tax statement", "CPD receipts"] },
+      { item: "QS software & estimating tools", value: 700, tag: "Software", summary: "Estimating and cost planning software personally subscribed.", scenario: "CostX personal licence $680/yr. Claimed.", howTo: "Keep subscription receipt.", watchOut: "Employer-provided software cannot be claimed.", docsNeeded: ["Subscription receipt"] },
+      { item: "Home office (WFH hours)", value: 900, tag: "Home Office", summary: "QSs who WFH on estimates and reports.", scenario: "WFH 3 days/week. 3 × 8 × 48 × $0.70 = $806.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or calendar records"] },
+      { item: "Phone & internet (work portion)", value: 400, tag: "Phone", summary: "Work-use proportion.", scenario: "45% work use on $1,000/yr = $450.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+      { item: "PPE for site visits", value: 200, tag: "Clothing", summary: "Required safety gear for site inspections.", scenario: "Hard hat $45, hi-vis $65, safety boots $120 = $230. Claimed.", howTo: "Keep receipts. Must be safety-rated.", watchOut: "If employer provides PPE, cannot claim.", docsNeeded: ["Receipts"] },
+    ],
+    conditional: [
+      { item: "Vehicle costs (site visits)", value: 1500, tag: "Travel", summary: "Driving to construction sites.", scenario: "Logbook: 40% work. Annual car costs $12,000. Claims $4,800.", howTo: "12-week logbook or 88c/km.", watchOut: "Home to main office = commute.", docsNeeded: ["12-week logbook or trip diary", "Vehicle receipts if logbook"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+      { item: "Personal finance or investment tools", reason: "Must relate to current QS role, not personal investing." },
+    ],
+  },
+
+  facilitiesmanager: {
+    avgSalary: 90000,
+    claimable: [
+      { item: "FMA membership & CPD", value: 500, tag: "Memberships", summary: "Facility Management Association membership and CPD.", scenario: "FMA annual fee $460 + CPD workshop $160 = $620. Claimed.", howTo: "Annual tax statement from FMA + CPD receipts.", watchOut: "CPD must relate to current FM role.", docsNeeded: ["FMA tax statement", "CPD receipts"] },
+      { item: "Vehicle costs (site inspections)", value: 2000, tag: "Vehicle", summary: "Driving between facilities and sites.", scenario: "Logbook: 50% work. Annual car costs $12,000. Claims $6,000.", howTo: "12-week logbook or 88c/km.", watchOut: "Home to primary facility = commute.", docsNeeded: ["12-week logbook or trip diary", "Vehicle receipts if logbook"] },
+      { item: "Phone & internet (work portion)", value: 400, tag: "Phone", summary: "Work-use for contractor and tenant comms.", scenario: "55% work use on $900/yr = $495.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+      { item: "Home office (after-hours admin)", value: 600, tag: "Home Office", summary: "Admin and planning done at home.", scenario: "2hrs/evening × 4 nights × 48 × $0.70 = $269.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+      { item: "PPE for site inspections", value: 200, tag: "Clothing", summary: "Safety gear for facility site visits.", scenario: "Hard hat $45, hi-vis $65, safety boots $120 = $230. Claimed.", howTo: "Keep receipts. Must be safety-rated.", watchOut: "Employer-provided PPE cannot be claimed.", docsNeeded: ["Receipts"] },
+    ],
+    conditional: [
+      { item: "Facilities management software", value: 300, tag: "Software", summary: "CMMS or CAFM software personally subscribed.", scenario: "FM software subscription $280/yr. Claimed.", howTo: "Keep subscription receipt.", watchOut: "Employer-provided tools cannot be claimed.", docsNeeded: ["Subscription receipt"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-primary-facility commute", reason: "Standard commute rule." },
+      { item: "Personal maintenance tools at home", reason: "Home maintenance is personal." },
+    ],
+  },
+
+  townplanner: {
+    avgSalary: 95000,
+    claimable: [
+      { item: "PIA membership & CPP assessment", value: 500, tag: "Memberships", summary: "Planning Institute of Australia membership and Certified Practicing Planner fees.", scenario: "PIA annual fee $460 + CPP renewal $80 = $540. Claimed.", howTo: "Annual tax statement from PIA.", watchOut: "100% work-related.", docsNeeded: ["PIA annual tax statement"] },
+      { item: "Planning software & GIS tools (personal)", value: 500, tag: "Software", summary: "GIS mapping and planning analysis software.", scenario: "ESRI ArcGIS personal licence $480/yr. Work tool — claimed.", howTo: "Keep subscription receipt.", watchOut: "Employer-provided tools cannot be claimed.", docsNeeded: ["Subscription receipt"] },
+      { item: "Home office (WFH hours)", value: 900, tag: "Home Office", summary: "Town planners who WFH on reports and analysis.", scenario: "WFH 3 days/week. 3 × 8 × 48 × $0.70 = $806.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or calendar records"] },
+      { item: "Phone & internet (work portion)", value: 350, tag: "Phone", summary: "Work-use proportion.", scenario: "40% work use on $900/yr = $360.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+      { item: "Planning publications & resources", value: 300, tag: "Education", summary: "Planning law and policy reference materials.", scenario: "Planning & Environment Act commentary $280. Claimed.", howTo: "Keep receipts. Must relate to current planning work.", watchOut: "General environmental or political interest publications don't qualify.", docsNeeded: ["Receipts"] },
+    ],
+    conditional: [
+      { item: "Vehicle costs (site inspections)", value: 1000, tag: "Travel", summary: "Driving to planning sites and development inspections.", scenario: "Logbook: 35% work. Annual car costs $10,000. Claims $3,500.", howTo: "12-week logbook or 88c/km.", watchOut: "Home to main office = commute.", docsNeeded: ["12-week logbook or trip diary"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+      { item: "Personal property investment research", reason: "Personal investing is separate from professional planning work." },
+    ],
+  },
+
+  pilot: {
+    avgSalary: 150000,
+    claimable: [
+      { item: "CASA licence & medical renewal", value: 600, tag: "Licences", summary: "Required CASA flight crew licence and mandatory medical.", scenario: "ATPL renewal $280 + Class 1 medical $320 = $600. Both required to fly — claimed.", howTo: "Keep receipts from CASA and approved aviation medical examiner.", watchOut: "Initial licence training costs generally not deductible — renewals only.", docsNeeded: ["CASA renewal receipt", "Medical certificate receipt"] },
+      { item: "AFAP / AIPA union fees", value: 500, tag: "Memberships", summary: "Australian Federation of Air Pilots or AIPA membership.", scenario: "AIPA annual fee $480. Annual tax statement claimed.", howTo: "Annual tax statement from AIPA in July.", watchOut: "100% work-related.", docsNeeded: ["Union annual tax statement"] },
+      { item: "Simulator & recurrent training (self-funded)", value: 1500, tag: "Education", summary: "Type rating and recurrent training costs not covered by employer.", scenario: "Self-funded simulator session $1,400. Required for currency — claimed.", howTo: "Keep receipt. Must be required for current flying role.", watchOut: "Employer-funded training cannot be claimed.", docsNeeded: ["Receipt", "Evidence of self-funding and work requirement"] },
+      { item: "Aviation charts, apps & publications", value: 300, tag: "Software", summary: "Required flight planning resources.", scenario: "AvPlan EFB subscription $180/yr + NOTAMs service $120/yr = $300. Required tools — claimed.", howTo: "Keep subscription receipts.", watchOut: "Employer-provided navigation tools cannot be claimed.", docsNeeded: ["Subscription receipts"] },
+      { item: "Overnight meal allowances", value: 1500, tag: "Meals", summary: "Meals during overnight layovers — ATO reasonable amounts.", scenario: "Overnight layovers 80 nights/yr. Claims ATO reasonable meal amounts per location.", howTo: "Check ATO's reasonable amounts table. Keep receipts for amounts over the threshold.", watchOut: "Day trips without overnight layover — meals generally not deductible.", docsNeeded: ["Flight schedule showing overnight layovers", "Receipts for amounts over ATO reasonable amounts"] },
+    ],
+    conditional: [
+      { item: "Home office (flight planning, study)", value: 400, tag: "Home Office", summary: "Route planning, study and admin done at home.", scenario: "3hrs/week at home on flight planning and study. 3 × 48 × $0.70 = $101.", howTo: "70c/hr. Time diary.", watchOut: "Must be genuine required work.", docsNeeded: ["Time diary"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-airport commute", reason: "Standard commute rule applies to travelling to your home base." },
+      { item: "Employer-funded training", reason: "Cannot claim costs covered by your airline." },
+      { item: "Personal flights on staff travel", reason: "Personal staff travel is personal expense." },
+    ],
+  },
+
+  busdriver: {
+    avgSalary: 65000,
+    claimable: [
+      { item: "MR/HR/HC licence renewal", value: 300, tag: "Licences", summary: "Required heavy vehicle licence renewal.", scenario: "HR licence renewal $280 — claimed.", howTo: "Keep receipt from state licensing body.", watchOut: "Initial training costs generally not deductible.", docsNeeded: ["Licence renewal receipt"] },
+      { item: "TWU / RTBU union fees", value: 400, tag: "Memberships", summary: "Transport Workers Union or Rail, Tram & Bus Union membership.", scenario: "TWU annual fee $380. Annual tax statement claimed.", howTo: "Annual tax statement from TWU or RTBU in July.", watchOut: "100% work-related.", docsNeeded: ["Union annual tax statement"] },
+      { item: "Uniform laundering", value: 150, tag: "Clothing", summary: "ATO formula for compulsory driver uniform.", scenario: "Washes uniform 5x/week × 48 = 240 loads × $1. Claims $150.", howTo: "$1/load. No receipts under $150.", watchOut: "Only for compulsory distinctive uniforms.", docsNeeded: ["Weekly tally"] },
+      { item: "Safety boots (if required)", value: 150, tag: "Clothing", summary: "Required safety footwear.", scenario: "Required safety shoes $140 — claimed.", howTo: "Keep receipt. Must be employer-required.", watchOut: "If employer provides footwear, cannot claim.", docsNeeded: ["Receipt"] },
+      { item: "Fatigue management & CPD training", value: 200, tag: "Education", summary: "Required driver training courses.", scenario: "Fatigue management course $180 — required. Claimed.", howTo: "Keep receipt.", watchOut: "Must be required for current role.", docsNeeded: ["Receipt"] },
+    ],
+    conditional: [
+      { item: "Home office (route planning, admin)", value: 150, tag: "Home Office", summary: "Route planning or admin done at home.", scenario: "2hrs/week at home. 2 × 48 × $0.70 = $67.", howTo: "70c/hr. Time diary.", watchOut: "Must be genuine required work.", docsNeeded: ["Time diary"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-depot commute", reason: "Standard commute rule." },
+      { item: "Meals during day shifts", reason: "Personal expense unless receiving a declared meal allowance." },
+      { item: "Traffic fines", reason: "Explicitly excluded." },
+    ],
+  },
+
+  forklift: {
+    avgSalary: 62000,
+    claimable: [
+      { item: "Forklift licence renewal", value: 200, tag: "Licences", summary: "Required forklift operator ticket renewal.", scenario: "LF/LO ticket renewal $180 — claimed.", howTo: "Keep receipt from registered training organisation.", watchOut: "Initial licence training generally not deductible.", docsNeeded: ["Licence renewal receipt"] },
+      { item: "Safety boots, hi-vis & PPE", value: 300, tag: "Clothing", summary: "Required safety equipment for warehouse environments.", scenario: "Steel caps $180, hi-vis $65, safety glasses $35 = $280. Claimed.", howTo: "Keep receipts. Must be safety-rated.", watchOut: "Generic clothing doesn't qualify.", docsNeeded: ["Receipts"] },
+      { item: "TWU / union fees", value: 350, tag: "Memberships", summary: "Transport Workers Union membership.", scenario: "TWU annual fee $320. Annual tax statement claimed.", howTo: "Annual tax statement from TWU.", watchOut: "100% work-related.", docsNeeded: ["Union tax statement"] },
+      { item: "Uniform laundering", value: 150, tag: "Clothing", summary: "ATO formula for compulsory work uniform.", scenario: "Washes uniform 5x/week × 48 = 240 loads × $1. Claims $150.", howTo: "$1/load. No receipts under $150.", watchOut: "Only for compulsory distinctive uniforms.", docsNeeded: ["Weekly tally"] },
+      { item: "Phone (work portion)", value: 100, tag: "Phone", summary: "Work-use portion of personal phone.", scenario: "20% work use on $600/yr = $120.", howTo: "4-week diary. Apply % to full year.", watchOut: "If work radio or device provided, cannot claim personal phone.", docsNeeded: ["4-week diary", "Annual phone cost"] },
+    ],
+    conditional: [],
+    notClaimable: [
+      { item: "Home-to-warehouse commute", reason: "Standard commute rule." },
+      { item: "Meals during shifts", reason: "Personal expense." },
+      { item: "Employer-issued equipment or tools", reason: "Cannot claim provided items." },
+    ],
+  },
+
+  logistics: {
+    avgSalary: 75000,
+    claimable: [
+      { item: "CILTA / Logistics certification", value: 400, tag: "Memberships", summary: "Chartered Institute of Logistics and Transport Australia membership.", scenario: "CILTA annual fee $380. Claimed.", howTo: "Annual tax statement from CILTA.", watchOut: "100% work-related.", docsNeeded: ["CILTA annual tax statement"] },
+      { item: "Logistics software tools (personal)", value: 300, tag: "Software", summary: "Supply chain and logistics management tools.", scenario: "Personal TMS subscription $280/yr. Claimed.", howTo: "Keep subscription receipt.", watchOut: "Employer-provided tools cannot be claimed.", docsNeeded: ["Subscription receipt"] },
+      { item: "Phone & internet (work portion)", value: 400, tag: "Phone", summary: "Work-use for supplier, carrier and team comms.", scenario: "55% work use on $900/yr = $495.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+      { item: "Home office (admin, planning)", value: 600, tag: "Home Office", summary: "Logistics coordination and planning done at home.", scenario: "WFH 2 days/week. 2 × 8 × 48 × $0.70 = $538.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or calendar records"] },
+    ],
+    conditional: [
+      { item: "Vehicle costs (site and supplier visits)", value: 1500, tag: "Travel", summary: "Driving to warehouses, suppliers or ports.", scenario: "Logbook: 40% work. Annual car costs $11,000. Claims $4,400.", howTo: "12-week logbook or 88c/km.", watchOut: "Home to main office = commute.", docsNeeded: ["12-week logbook or trip diary"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+      { item: "Personal online shopping delivery costs", reason: "Personal purchases are personal." },
+    ],
+  },
+
+  seafarer: {
+    avgSalary: 90000,
+    claimable: [
+      { item: "AMSA licence & medical renewal", value: 600, tag: "Licences", summary: "Required AMSA maritime licence and medical certificate.", scenario: "Master class renewal $380 + ENG1 medical $240 = $620. Both required — claimed.", howTo: "Keep receipts from AMSA and approved maritime medical examiner.", watchOut: "Initial licence training generally not deductible.", docsNeeded: ["AMSA renewal receipt", "Medical certificate receipt"] },
+      { item: "MUA / AMOU union fees", value: 500, tag: "Memberships", summary: "Maritime Union of Australia or AMOU membership.", scenario: "MUA annual fee $480. Annual tax statement claimed.", howTo: "Annual tax statement from MUA or AMOU in July.", watchOut: "100% work-related.", docsNeeded: ["Union annual tax statement"] },
+      { item: "STCW safety training (self-funded)", value: 500, tag: "Education", summary: "Required STCW certificates where self-funded.", scenario: "Advanced firefighting course $480. Self-funded — claimed.", howTo: "Keep receipt. Must be required for current role.", watchOut: "Company-funded training cannot be claimed.", docsNeeded: ["Receipt", "Evidence of self-funding"] },
+      { item: "Overnight allowances (vessel time)", value: 2000, tag: "Meals", summary: "Meals and incidentals during sea time — ATO reasonable amounts.", scenario: "200 vessel days/yr. Claims ATO reasonable meal amounts for each day.", howTo: "Keep records of vessel days. Claims ATO reasonable amounts per location/vessel.", watchOut: "Must be genuine sea time — not shore-based days.", docsNeeded: ["Vessel logbook or roster showing sea days", "Receipts if amounts exceed ATO reasonable amounts"] },
+      { item: "Work clothing & safety gear", value: 300, tag: "Clothing", summary: "Safety boots, overalls and PPE for vessel work.", scenario: "Safety boots $160, work overalls $120 = $280. Claimed.", howTo: "Keep receipts. Must be safety-rated work clothing.", watchOut: "Employer-issued uniforms cannot be claimed.", docsNeeded: ["Receipts"] },
+    ],
+    conditional: [
+      { item: "Home office (voyage planning, study)", value: 300, tag: "Home Office", summary: "Voyage planning and study done at home between voyages.", scenario: "3hrs/week at home on voyage planning and training. 3 × 48 × $0.70 = $101.", howTo: "70c/hr. Time diary.", watchOut: "Must be genuine required work.", docsNeeded: ["Time diary"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-port commute", reason: "Standard commute rule applies to travelling to your home port." },
+      { item: "Personal travel between voyages", reason: "Personal leave travel is personal." },
+    ],
+  },
+
+  farmer: {
+    avgSalary: 70000,
+    claimable: [
+      { item: "AgForce / NFF membership", value: 400, tag: "Memberships", summary: "National Farmers Federation or state farming organisation membership.", scenario: "AgForce annual fee $380. Claimed.", howTo: "Annual tax statement from AgForce or NFF.", watchOut: "100% work-related.", docsNeeded: ["Annual tax statement"] },
+      { item: "Vehicle costs (logbook — farm vehicle)", value: 4000, tag: "Vehicle", summary: "Farm vehicle used for work — claim work-use % of all costs.", scenario: "Ute 90% work use. Annual costs $15,000. Claims $13,500.", howTo: "12-week logbook. Apply business % to all running costs.", watchOut: "Personal use portions must be excluded.", docsNeeded: ["12-week logbook", "All vehicle receipts", "Odometer records"] },
+      { item: "Safety boots, hi-vis & PPE", value: 350, tag: "Clothing", summary: "Required safety equipment for farm work.", scenario: "Steel caps $180, hi-vis $65, gloves $45, safety glasses $35 = $325. Claimed.", howTo: "Keep receipts. Must be safety-rated.", watchOut: "Regular clothing doesn't qualify.", docsNeeded: ["Receipts"] },
+      { item: "Farming tools & equipment (under $300)", value: 500, tag: "Equipment", summary: "Small farming tools and implements.", scenario: "Various hand tools under $300 each. Total $480 — claimed instantly.", howTo: "Under $300 per item = instant deduction.", watchOut: "Large equipment over $300 = depreciated over effective life.", docsNeeded: ["Receipts"] },
+      { item: "Phone & internet (work portion)", value: 300, tag: "Phone", summary: "Work-use for commodity prices, weather and comms.", scenario: "40% work use on $900/yr = $360.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+    ],
+    conditional: [
+      { item: "Home office (farm admin, records)", value: 500, tag: "Home Office", summary: "Farm administration and record-keeping at home.", scenario: "3hrs/day on farm admin at home. 3 × 5 × 48 × $0.70 = $504.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-paddock commute (if home is on the farm)", reason: "If you live on the farm, moving around the farm is generally commuting." },
+      { item: "Personal food from the farm", reason: "Farm produce for personal consumption is personal." },
+      { item: "Farm equipment used for personal projects", reason: "Must apportion work and personal use." },
+    ],
+  },
+
+  vet: {
+    avgSalary: 90000,
+    claimable: [
+      { item: "AHPRA registration", value: 500, tag: "Memberships", summary: "Annual registration required to practise.", scenario: "$480 AHPRA renewal — claimed in full.", howTo: "Keep AHPRA tax invoice.", watchOut: "Renewals only.", docsNeeded: ["AHPRA tax invoice"] },
+      { item: "AVA membership & CPD", value: 800, tag: "Memberships", summary: "Australian Veterinary Association membership and mandatory CPD.", scenario: "AVA annual fee $720 + CPD conference $280 = $1,000. Claimed.", howTo: "Annual tax statement from AVA + CPD receipts.", watchOut: "CPD must relate to current veterinary role.", docsNeeded: ["AVA tax statement", "CPD receipts"] },
+      { item: "Professional indemnity insurance", value: 800, tag: "Insurance", summary: "PI insurance required to practise.", scenario: "Annual Avant/Guild policy $760 — claimed.", howTo: "Keep insurance receipt.", watchOut: "Only if self-funded.", docsNeeded: ["Insurance receipt"] },
+      { item: "Veterinary instruments & equipment", value: 600, tag: "Equipment", summary: "Personal clinical instruments for examinations.", scenario: "Ophthalmoscope $320 (depreciated) + stethoscope $180 (instant). Claims split.", howTo: "Under $300 = instant. Over $300 = depreciate.", watchOut: "Clinic-provided equipment cannot be claimed.", docsNeeded: ["Receipts", "Asset register for items over $300"] },
+      { item: "Vet journals & clinical databases", value: 400, tag: "Education", summary: "Veterinary clinical references.", scenario: "AVA journal $220/yr + online database $180/yr = $400. Claimed.", howTo: "Keep subscription receipts.", watchOut: "General pet care publications for personal interest don't qualify.", docsNeeded: ["Subscription receipts"] },
+    ],
+    conditional: [
+      { item: "Home office (clinical notes, CPD)", value: 400, tag: "Home Office", summary: "Writing clinical notes and CPD done at home.", scenario: "2hrs/week at home on notes and CPD. 2 × 48 × $0.70 = $67.", howTo: "70c/hr. Time diary.", watchOut: "Must be genuine required work.", docsNeeded: ["Time diary"] },
+    ],
+    notClaimable: [
+      { item: "Personal pet care for own animals", reason: "Your own pets' expenses are personal." },
+      { item: "Home-to-clinic commute", reason: "Standard commute rule." },
+    ],
+  },
+
+  environmental: {
+    avgSalary: 85000,
+    claimable: [
+      { item: "EIANZ membership & CPD", value: 500, tag: "Memberships", summary: "Environment Institute of Australia & NZ membership.", scenario: "EIANZ annual fee $460 + CPD conference $180 = $640. Claimed.", howTo: "Annual tax statement from EIANZ + CPD receipts.", watchOut: "CPD must relate to current role.", docsNeeded: ["EIANZ tax statement", "CPD receipts"] },
+      { item: "Field sampling equipment (personal)", value: 400, tag: "Equipment", summary: "Personal field equipment for environmental sampling.", scenario: "Purchases GPS unit $280 + sampling tools $120 = $400. Self-funded for work — claimed.", howTo: "Under $300 = instant. Over $300 = depreciate.", watchOut: "Employer-provided equipment cannot be claimed.", docsNeeded: ["Receipts", "Asset register for items over $300"] },
+      { item: "Vehicle costs (field work)", value: 2500, tag: "Vehicle", summary: "Driving to field sites and remote locations.", scenario: "Logbook: 60% work. Annual car costs $12,000. Claims $7,200.", howTo: "12-week logbook or 88c/km.", watchOut: "Home to main office = commute.", docsNeeded: ["12-week logbook or trip diary", "Vehicle receipts if logbook"] },
+      { item: "Home office (report writing)", value: 800, tag: "Home Office", summary: "Environmental reports and analysis done at home.", scenario: "WFH 3 days/week. 3 × 8 × 48 × $0.70 = $806.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or calendar records"] },
+      { item: "Environmental databases & journals", value: 400, tag: "Education", summary: "Scientific databases and environmental publications.", scenario: "Web of Science $200/yr + environmental journal $200/yr = $400. Claimed.", howTo: "Keep subscription receipts.", watchOut: "Personal interest in nature doesn't make subscriptions deductible.", docsNeeded: ["Subscription receipts"] },
+    ],
+    conditional: [
+      { item: "PPE & field safety equipment", value: 300, tag: "Clothing", summary: "Safety equipment for fieldwork environments.", scenario: "Safety boots $160, hi-vis $65, sun protection $45 = $270. Claimed.", howTo: "Keep receipts. Must be safety-rated.", watchOut: "General clothing doesn't qualify.", docsNeeded: ["Receipts"] },
+    ],
+    notClaimable: [
+      { item: "Home-to-office commute", reason: "Standard commute rule." },
+      { item: "Personal nature conservation activities", reason: "Volunteer or personal conservation activities are not deductible." },
+    ],
+  },
+
+  mining: {
+    avgSalary: 115000,
+    claimable: [
+      { item: "Mining industry licences & tickets", value: 500, tag: "Licences", summary: "Required site tickets and licence renewals.", scenario: "Mining induction ticket renewal $280 + first aid $220 = $500. Both required — claimed.", howTo: "Keep receipts from registered training providers.", watchOut: "Must be required for current mining role.", docsNeeded: ["Receipts from registered providers"] },
+      { item: "CFMEU / AWU union fees", value: 600, tag: "Memberships", summary: "Mining union membership — fully deductible.", scenario: "CFMEU Mining annual fee $580. Annual tax statement claimed.", howTo: "Annual tax statement from CFMEU or AWU in July.", watchOut: "100% work-related.", docsNeeded: ["Union annual tax statement"] },
+      { item: "Safety boots, hard hat & PPE", value: 400, tag: "Clothing", summary: "Required safety equipment for mine sites.", scenario: "Steel caps $190, hard hat $55, safety glasses $35, gloves $45 = $325. Claimed.", howTo: "Keep receipts. Must be safety-rated.", watchOut: "Site-issued equipment cannot be claimed.", docsNeeded: ["Receipts"] },
+      { item: "Overnight allowances (FIFO/DIDO)", value: 2500, tag: "Meals", summary: "Meals and incidentals during FIFO rosters.", scenario: "FIFO 2 weeks on. ATO reasonable amounts per day × 180 days/yr.", howTo: "Check ATO's reasonable meal amounts. Keep receipts for excess amounts.", watchOut: "Site-provided meals cannot be claimed. Only self-funded meals.", docsNeeded: ["Roster showing FIFO days away", "Receipts for amounts over ATO reasonable amounts"] },
+      { item: "Vehicle costs (travel to mine site)", value: 1000, tag: "Travel", summary: "Where you personally transport yourself to a mine site.", scenario: "Drives 150km to mine village weekly. 88c/km × 150km × 46 trips = $6,072.", howTo: "Cents per km (88c/km). Keep trip diary. Not a daily commute — distant worksite rule applies.", watchOut: "If mine provides transport, cannot claim.", docsNeeded: ["Trip diary", "Evidence of distant worksite"] },
+    ],
+    conditional: [
+      { item: "Home office (technical reports, study)", value: 400, tag: "Home Office", summary: "Technical reports and upskilling done at home between rosters.", scenario: "3hrs/week at home on reports and study. 3 × 48 × $0.70 = $101.", howTo: "70c/hr. Time diary.", watchOut: "Must be genuine required work.", docsNeeded: ["Time diary"] },
+    ],
+    notClaimable: [
+      { item: "Site-provided meals and accommodation", reason: "Cannot claim what employer already provides." },
+      { item: "Personal travel between home and local activities during FIFO", reason: "Leisure travel during FIFO roster is personal." },
+    ],
+  },
+
+  horticulturalist: {
+    avgSalary: 65000,
+    claimable: [
+      { item: "Horticulture / arborist certification renewal", value: 300, tag: "Licences", summary: "Required certification renewals for professional practice.", scenario: "AQF arborist certificate renewal $280 — claimed.", howTo: "Keep receipt from registered certifying body.", watchOut: "Initial qualification costs generally not deductible.", docsNeeded: ["Certification renewal receipt"] },
+      { item: "Tools & equipment (under $300 each)", value: 600, tag: "Equipment", summary: "Pruning saws, loppers, spades — tools of trade.", scenario: "Pruning saw $120, loppers $85, secateurs $65 = $270. All under $300 — claimed.", howTo: "Under $300 per item = instant. Keep receipts.", watchOut: "Tools also used for personal gardening — must apportion.", docsNeeded: ["Receipts"] },
+      { item: "Vehicle costs (logbook)", value: 2500, tag: "Vehicle", summary: "Vehicle used to transport tools to client properties.", scenario: "Ute 80% work use. Annual costs $11,000. Claims $8,800.", howTo: "12-week logbook. Apply business % to all costs.", watchOut: "Home to first client = commute.", docsNeeded: ["12-week logbook", "Vehicle receipts", "Odometer records"] },
+      { item: "Safety boots, hi-vis & PPE", value: 300, tag: "Clothing", summary: "Required safety equipment for horticulture/arborist work.", scenario: "Steel caps $160, hi-vis $65, safety gloves $45 = $270. Claimed.", howTo: "Keep receipts. Must be safety-rated.", watchOut: "Regular clothing doesn't qualify.", docsNeeded: ["Receipts"] },
+      { item: "Sunscreen (outdoor worker)", value: 80, tag: "Health", summary: "Sun protection for outdoor horticulture work.", scenario: "Buys SPF 50+ sunscreen regularly. $80/yr — claimed.", howTo: "Keep receipts. ATO allows for outdoor workers.", watchOut: "Cosmetic sunscreen doesn't qualify.", docsNeeded: ["Receipts"] },
+    ],
+    conditional: [
+      { item: "Home office (quotes & admin)", value: 150, tag: "Home Office", summary: "Quoting and invoicing done at home.", scenario: "2hrs/week at home on quotes. 2 × 48 × $0.70 = $67.", howTo: "70c/hr. Time diary.", watchOut: "Must be genuine work.", docsNeeded: ["Time diary"] },
+    ],
+    notClaimable: [
+      { item: "Home to first client commute", reason: "Standard commute rule." },
+      { item: "Personal garden supplies at home", reason: "Personal gardening materials are personal expense." },
+      { item: "Traffic fines", reason: "Explicitly excluded." },
+    ],
+  },
+
+  podcaster: {
+    avgSalary: 60000,
+    claimable: [
+      { item: "Podcast recording equipment", value: 800, tag: "Equipment", summary: "Microphone, audio interface, headphones for professional podcasting.", scenario: "Shure SM7B microphone $380 (depreciated) + focusrite interface $180 (instant) + headphones $120 (instant) = $678.", howTo: "Under $300 per item = instant. Over $300 = depreciate over effective life.", watchOut: "Equipment also used for personal use — must apportion honestly.", docsNeeded: ["Receipts", "Asset register for items over $300", "Work-use % if mixed use"] },
+      { item: "Hosting & distribution platforms", value: 400, tag: "Software", summary: "Podcast hosting and distribution subscription fees.", scenario: "Buzzsprout $240/yr + Spotify for Podcasters Pro $120/yr = $360. Work tools — claimed.", howTo: "Keep subscription receipts.", watchOut: "Free tier hosting has no cost to claim.", docsNeeded: ["Subscription receipts"] },
+      { item: "Audio editing software", value: 300, tag: "Software", summary: "Audacity (free), Adobe Audition, Descript for episode editing.", scenario: "Adobe Audition $360/yr or Descript $288/yr. Work tool — claimed.", howTo: "Keep subscription receipt.", watchOut: "Personal music production use must be excluded.", docsNeeded: ["Subscription receipt"] },
+      { item: "Home studio / home office", value: 700, tag: "Home Office", summary: "Dedicated recording space and editing time from home.", scenario: "Records and edits 3hrs/day × 5 days. 3 × 5 × 48 × $0.70 = $504.", howTo: "70c/hr fixed rate OR actual costs if room exclusively used for podcasting.", watchOut: "Must be genuine work time, not browsing while a mic is on.", docsNeeded: ["Time diary", "If exclusive use: rent and utility bills"] },
+      { item: "Phone & internet (work portion)", value: 400, tag: "Phone", summary: "Work-use for recording remote guests, research and promotion.", scenario: "50% work use on $900/yr = $450.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+    ],
+    conditional: [
+      { item: "Guest travel & interview expenses", value: 300, tag: "Travel", summary: "Travel to record in-person interviews.", scenario: "Travels to interview 5 guests/yr at $60/trip average = $300. Claimed.", howTo: "Keep all receipts. Document business purpose.", watchOut: "Personal travel with incidental recording doesn't qualify.", docsNeeded: ["Receipts", "Interview documentation"] },
+    ],
+    notClaimable: [
+      { item: "Personal music streaming subscriptions", reason: "Personal entertainment." },
+      { item: "General internet browsing for 'research'", reason: "Must be genuine content research directly for episodes." },
+    ],
+  },
+
+  affiliatemarketer: {
+    avgSalary: 70000,
+    claimable: [
+      { item: "Website hosting & domain costs", value: 400, tag: "Software", summary: "Website infrastructure costs for affiliate content sites.", scenario: "Vercel hosting $240/yr + domain $25/yr + CDN $60/yr = $325. Business infrastructure — claimed.", howTo: "Keep subscription receipts.", watchOut: "Personal websites not used for affiliate income don't qualify.", docsNeeded: ["Subscription receipts"] },
+      { item: "Content creation tools & software", value: 500, tag: "Software", summary: "SEO, email, design and analytics tools.", scenario: "Ahrefs $180/yr + Canva Pro $180/yr + ConvertKit $120/yr = $480. Work tools — claimed.", howTo: "Keep subscription receipts. Must be used for affiliate income generation.", watchOut: "Personal email newsletters unrelated to affiliate content don't qualify.", docsNeeded: ["Subscription receipts"] },
+      { item: "Home office (content creation hours)", value: 1000, tag: "Home Office", summary: "Creating and managing affiliate content from home.", scenario: "5hrs/day creating content. 5 × 5 × 48 × $0.70 = $840.", howTo: "70c/hr fixed rate. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or content publishing records"] },
+      { item: "Phone & internet (work portion)", value: 400, tag: "Phone", summary: "Work-use for content research and promotion.", scenario: "50% work use on $900/yr = $450.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+      { item: "Advertising & promotion costs", value: 600, tag: "Marketing", summary: "Paid promotion to drive traffic to affiliate content.", scenario: "Google Ads $400 + social media ads $200 = $600. Business promotion — claimed.", howTo: "Keep receipts and annual ad platform reports.", watchOut: "Must be promoting your affiliate business — not personal posts.", docsNeeded: ["Ad platform receipts or annual reports"] },
+    ],
+    conditional: [
+      { item: "Product purchases for reviews (work portion)", value: 400, tag: "Supplies", summary: "Products purchased to review for affiliate commissions.", scenario: "Buys $400 in products specifically to review and generate affiliate commissions. Claimed.", howTo: "Keep receipts. Document that purpose is affiliate review income generation.", watchOut: "Products also used personally — must honestly apportion or document exclusive review use.", docsNeeded: ["Receipts", "Published review evidence"] },
+    ],
+    notClaimable: [
+      { item: "Personal purchases through own affiliate links", reason: "Personal purchases are personal even if you earn a small commission." },
+      { item: "Home internet if claiming fixed rate", reason: "70c/hr rate already includes internet." },
+    ],
+  },
+
+  virtualassistant: {
+    avgSalary: 60000,
+    claimable: [
+      { item: "Home office (WFH hours)", value: 1200, tag: "Home Office", summary: "Virtual assistants work entirely from home — this is your biggest deduction.", scenario: "Full-time VA: 5 × 8 × 48 × $0.70 = $1,344.", howTo: "70c/hr fixed rate. Time diary or client log records.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or client project logs"] },
+      { item: "Software subscriptions & tools", value: 500, tag: "Software", summary: "Project management, communication and admin tools.", scenario: "Asana $120/yr + Slack Pro $96/yr + Zoom Pro $200/yr + LastPass $36/yr = $452. Work tools — claimed.", howTo: "Keep subscription receipts. Must be used for client work.", watchOut: "Personal subscriptions for the same tools cannot be bundled.", docsNeeded: ["Subscription receipts"] },
+      { item: "Phone & internet (work portion)", value: 500, tag: "Phone", summary: "High work-use for client comms.", scenario: "60% work use on $1,200/yr = $720.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+      { item: "Platform fees (Upwork, Fiverr)", value: 400, tag: "Software", summary: "VA platform service fees.", scenario: "Upwork service fees $360/yr. Deductible.", howTo: "Download annual fee statement from platform.", watchOut: "Only the fee portion — not your gross earnings.", docsNeeded: ["Platform annual fee statement"] },
+      { item: "Professional development & upskilling", value: 300, tag: "Education", summary: "VA skills and tools training.", scenario: "VA Bootcamp course $280. Directly improves current VA skills — claimed.", howTo: "Keep receipt + course description.", watchOut: "Must relate to current VA services offered.", docsNeeded: ["Receipt", "Course description"] },
+    ],
+    conditional: [
+      { item: "Laptop & peripherals (work portion)", value: 800, tag: "Equipment", summary: "Work-use proportion of computer.", scenario: "MacBook $2,400 × 80% work = $1,920 depreciated over 2 years = $960/yr.", howTo: "Calculate work-use %. Depreciate over effective life.", watchOut: "100% claim on device also used personally = audit flag.", docsNeeded: ["Receipt", "Work-use diary"] },
+    ],
+    notClaimable: [
+      { item: "Home internet if claiming fixed rate", reason: "70c/hr rate already includes internet." },
+      { item: "Personal subscriptions to same tools used for work", reason: "Only claim work-related subscriptions." },
+    ],
+  },
+
+  appdeveloper: {
+    avgSalary: 95000,
+    claimable: [
+      { item: "Apple Developer Program / Google Play fees", value: 200, tag: "Licences", summary: "Required developer account fees to publish apps.", scenario: "Apple Developer $149/yr + Google Play $25 (one-time) = $174/yr. Business infrastructure — claimed.", howTo: "Keep receipts from Apple/Google.", watchOut: "Only claim if actively developing apps for income.", docsNeeded: ["Apple/Google developer receipts"] },
+      { item: "Development tools & software", value: 600, tag: "Software", summary: "IDEs, design tools, testing platforms and services.", scenario: "Xcode (free) + Sketch $120/yr + GitHub Pro $48 + cloud services $200 = $368. Work tools — claimed.", howTo: "Keep subscription receipts.", watchOut: "Personal app projects for hobby use must be excluded.", docsNeeded: ["Subscription receipts"] },
+      { item: "Home office (development hours)", value: 1200, tag: "Home Office", summary: "Indie app developers work from home — claim every hour.", scenario: "Full-time indie dev: 5 × 8 × 48 × $0.70 = $1,344.", howTo: "70c/hr. Time diary or commit logs.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary or development logs"] },
+      { item: "Technical courses & certifications", value: 600, tag: "Education", summary: "Mobile development courses and WWDC content.", scenario: "Swift course $280 + design course $180 + tools training $140 = $600. Work-relevant — claimed.", howTo: "Keep receipts. Must relate to current app development work.", watchOut: "Hobby learning for personal projects doesn't qualify.", docsNeeded: ["Receipts", "Course descriptions"] },
+      { item: "Phone & internet (work portion)", value: 500, tag: "Phone", summary: "Work-use for development, testing and user comms.", scenario: "60% work use on $1,200/yr = $720.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual costs"] },
+    ],
+    conditional: [
+      { item: "Test devices (phones, tablets)", value: 400, tag: "Equipment", summary: "Devices used primarily for app testing.", scenario: "Buys older iPhone $380 exclusively for app testing. Depreciated over 2 years = $190/yr.", howTo: "Keep receipt. Document primary testing purpose.", watchOut: "Devices also used as personal phones — must apportion.", docsNeeded: ["Receipt", "Documentation of testing purpose"] },
+    ],
+    notClaimable: [
+      { item: "App Store purchases for personal use", reason: "Personal software purchases are not deductible." },
+      { item: "Home internet if claiming fixed rate", reason: "70c/hr rate already includes internet." },
+      { item: "Hobby app development (no income)", reason: "Must be earning income from apps to deduct development costs." },
+    ],
+  },
+
+  digitalnomad: {
+    avgSalary: 85000,
+    claimable: [
+      { item: "Home office (when working from Australian address)", value: 600, tag: "Home Office", summary: "Hours worked from an Australian home base.", scenario: "When in Australia 3 months/yr WFH. 3 × 8 × 65 days × $0.70 = $1,092.", howTo: "70c/hr. Keep time diary for Australian WFH periods.", watchOut: "Only claim Australian-based WFH hours — overseas WFH is complex. Seek tax advice.", docsNeeded: ["Time diary for Australian WFH periods"] },
+      { item: "Software & tools subscriptions", value: 600, tag: "Software", summary: "Remote work tools and productivity software.", scenario: "Notion $96/yr + Slack $180/yr + Zoom $200/yr + VPN $100/yr = $576. Work tools — claimed.", howTo: "Keep subscription receipts. Must be for your Australian income-earning activity.", watchOut: "Tools used exclusively for overseas clients may not be deductible against Australian income.", docsNeeded: ["Subscription receipts"] },
+      { item: "Phone & international data plan (work portion)", value: 500, tag: "Phone", summary: "Work-use proportion of phone plan.", scenario: "60% work use on $1,200/yr international plan = $720.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office.", docsNeeded: ["4-week diary", "Annual plan cost"] },
+      { item: "Professional memberships & CPD", value: 400, tag: "Memberships", summary: "Professional body membership maintained regardless of location.", scenario: "Industry association annual fee $380. Work-related — claimed.", howTo: "Keep annual tax statement.", watchOut: "Must relate to current income-earning activity.", docsNeeded: ["Annual tax statement"] },
+    ],
+    conditional: [
+      { item: "Co-working space (work portion)", value: 800, tag: "Home Office", summary: "Co-working memberships used for work.", scenario: "Co-working space $200/month × 4 months in Australia = $800. Work expenses — claimed.", howTo: "Keep receipts from co-working spaces. Only claim Australian work periods.", watchOut: "Overseas co-working space costs are complex — seek specialist tax advice.", docsNeeded: ["Co-working space receipts"] },
+    ],
+    notClaimable: [
+      { item: "International travel costs (generally)", reason: "Travel as a digital nomad is personal — the work is portable but that doesn't make travel deductible." },
+      { item: "Overseas accommodation", reason: "Personal living costs are not deductible even if you work while travelling." },
+      { item: "Visa fees for personal travel", reason: "Personal travel documentation is personal expense." },
+    ],
+  },
+
+
 };
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -602,7 +1864,7 @@ const TAG_COLORS = {
   Clothing: ["#dbeafe","#1e40af"], Equipment: ["#f3e8ff","#6d28d9"],
   Education: ["#fce7f3","#9d174d"], Phone: ["#d1fae5","#065f46"],
   Travel: ["#fef9c3","#78350f"], "Home Office": ["#e0f2fe","#0c4a6e"],
-  Memberships: ["#dbeafe","#1e40af"], Vehicle: ["#fee2e2","#991b1b"],
+  Memberships: ["#ede9fe","#5b21b6"], Vehicle: ["#fee2e2","#991b1b"],
   Software: ["#ecfdf5","#065f46"], Supplies: ["#fff7ed","#9a3412"],
   GST: ["#f0fdf4","#14532d"], Health: ["#fdf4ff","#7e22ce"],
   Marketing: ["#fff1f2","#9f1239"], Meals: ["#fffbeb","#78350f"],
@@ -707,11 +1969,6 @@ function FlipCard({ deduction, marginalRate, type, showLogbook }) {
           <div style={{ background:"#eff6ff", border:"1px solid #bfdbfe", borderRadius:10, padding:"10px 12px" }}>
             <p style={{ fontSize:10, fontWeight:800, color:"#1e4fd8", marginBottom:5, textTransform:"uppercase", letterSpacing:"0.06em" }}>✅ How to Claim It</p>
             <p style={{ fontSize:13, color:"#0f1e3d", lineHeight:1.65 }}>{deduction.howTo}</p>
-            {deduction.atoUrl && (
-              <a href={deduction.atoUrl} target="_blank" rel="noopener noreferrer" style={{ marginTop:8, display:"inline-flex", alignItems:"center", gap:4, fontSize:11, color:"#1e4fd8", fontWeight:600, textDecoration:"none" }}>
-                🔗 View ATO guidance ↗
-              </a>
-            )}
           </div>
           {deduction.watchOut && (
             <div style={{ background:"#fff7ed", border:"1px solid #fed7aa", borderRadius:10, padding:"10px 12px" }}>
@@ -771,7 +2028,7 @@ export default function App() {
   const totalClaim = data ? [...(data.claimable||[]), ...(data.conditional||[])].reduce((s,d)=>s+d.value,0) : 0;
   const estimatedSaving = data ? Math.round((data.claimable||[]).reduce((s,d)=>s+d.value*marginalRate,0) + (data.conditional||[]).reduce((s,d)=>s+d.value*marginalRate*0.6,0)) : 0;
 
-  const NEEDS_LOGBOOK = ["tradie","electrician","plumber","concreter","truckie","uber","delivery","realestate","lawyer","engineer","photographer","doctor","cleaner"];
+  const NEEDS_LOGBOOK = ["tradie","electrician","plumber","concreter","truckie","uber","delivery","realestate","lawyer","engineer","photographer","doctor","cleaner","ecommerce","freelancer","carpenter","welder","painter","tiler","pestcontrol","socialworker","police","salesrep","propertymanager","buildinginspector","quantitysurveyor","facilitiesmanager","townplanner","farmer","vet","environmental","mining","horticulturalist","logisticscoord","mortgagebroker","eventplanner","personaltrainer","retailmanager","hospitalitymanager","travelagent"];
 
   const CHECKLIST_QUESTIONS = [
     { id: "car", label: "Do you use your own car for work?" },
@@ -795,14 +2052,10 @@ export default function App() {
 async function handleEmailSubmit() {
   if (!email.includes("@")) return;
   try {
-    await fetch(`https://api.convertkit.com/v3/forms/9260632/subscribe`, {
+    await fetch("/api/subscribe", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        api_key: "MIBl3ebdZg5YyDUpqcZ-fw",
-        email: email,
-        fields: { profession: profession?.id || "unknown" },
-      }),
+      body: JSON.stringify({ email, profession: profession?.id || "unknown" }),
     });
   } catch (e) {
     console.error("Email subscribe failed:", e);
@@ -990,7 +2243,7 @@ async function handleEmailSubmit() {
           </div>
           <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
             <span className="trust-badge">✅ Updated for 2025-26 Tax Year</span>
-            <a href="https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/occupation-and-industry-specific-guides" target="_blank" rel="noopener noreferrer" style={{ display:"inline-flex", alignItems:"center", gap:4, background:"rgba(255,255,255,0.15)", borderRadius:99, padding:"4px 12px", fontSize:11, fontWeight:600, color:"#fff", textDecoration:"none" }}>🔗 ATO Occupation Guides ↗</a>
+            <a href="https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/occupation-and-industry-specific-guides" target="_blank" rel="noopener noreferrer" style={{ display:"inline-flex", alignItems:"center", gap:4, background:"rgba(255,255,255,0.15)", borderRadius:99, padding:"4px 12px", fontSize:11, fontWeight:600, color:"#fff", textDecoration:"none" }}>🔗 ATO Guides ↗</a>
           </div>
         </div>
       </div>
