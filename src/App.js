@@ -15,7 +15,7 @@ const CSS = `
   .card-side.hidden { opacity:0; transform:scale(0.97); pointer-events:none; position:absolute; top:0; left:0; width:100%; }
   .card-side.visible { opacity:1; transform:scale(1); pointer-events:auto; position:relative; }
   .prof-card { transition: all 0.18s ease; cursor: pointer; }
-  .prof-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(79,70,229,0.15); border-color: #4f46e5 !important; }
+  .prof-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(30,79,216,0.15); border-color: #1e4fd8 !important; }
   .prof-card:active { transform: scale(0.97); }
   .tab-btn { transition: all 0.18s; cursor: pointer; border: none; font-family: 'Plus Jakarta Sans', sans-serif; }
   .guide-step { animation: fadeUp 0.3s ease both; }
@@ -26,8 +26,11 @@ const CSS = `
   .hover-lift { transition: transform 0.18s ease, box-shadow 0.18s ease; }
   .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
   .progress-bar { height:4px; background:#e2e5f0; border-radius:99px; overflow:hidden; }
-  .progress-fill { height:100%; background:linear-gradient(90deg,#4f46e5,#10b981); border-radius:99px; transition:width 0.5s ease; }
-  input:focus { outline: 2px solid #4f46e5; outline-offset: 1px; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,#1e4fd8,#10b981); border-radius:99px; transition:width 0.5s ease; }
+  input:focus { outline: 2.5px solid #1e4fd8; outline-offset: 1px; }
+  .trust-badge { display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); border-radius:99px; padding:4px 12px; font-size:11px; font-weight:700; color:#fff; letter-spacing:0.04em; }
+  .ato-link { display:inline-flex; align-items:center; gap:4px; font-size:11px; color:#1e4fd8; font-weight:600; text-decoration:none; }
+  .ato-link:hover { text-decoration:underline; }
 `;
 
 // ─── PROFESSION GROUPS ────────────────────────────────────────────────────────
@@ -91,15 +94,15 @@ const D = {
   nurse: {
     avgSalary: 80000,
     claimable: [
-      { item: "Scrubs & nursing uniforms", value: 300, tag: "Clothing", summary: "Distinctive work uniforms are fully deductible.", scenario: "Sarah buys 3 sets of scrubs at $90 each = $270. Distinct work uniforms — she claims the full $270.", howTo: "Keep receipt. Uniform must be 'distinctive' — employer logo or required specific colour. Plain black pants don't qualify.", watchOut: "Cannot claim plain street clothes even if worn only to work.", docsNeeded: ["Receipt", "Note employer uniform policy if asked"] },
+      { item: "Scrubs & nursing uniforms", value: 300, tag: "Clothing", atoUrl: "https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/clothes-and-items-you-wear-at-work/clothing-laundry-and-dry-cleaning-expenses", summary: "Distinctive work uniforms are fully deductible.", scenario: "Sarah buys 3 sets of scrubs at $90 each = $270. Distinct work uniforms — she claims the full $270.", howTo: "Keep receipt. Uniform must be 'distinctive' — employer logo or required specific colour. Plain black pants don't qualify.", watchOut: "Cannot claim plain street clothes even if worn only to work.", docsNeeded: ["Receipt", "Note employer uniform policy if asked"] },
       { item: "Uniform laundry costs", value: 150, tag: "Clothing", summary: "ATO formula: $1 per load — no receipts needed under $150.", scenario: "Tom washes scrubs 3x/week × 48 weeks = 144 loads × $1 = $144. No receipts needed.", howTo: "Use ATO formula: $1/load washing, $1/load if also drying. Keep a simple weekly count in Notes.", watchOut: "Only applies to distinctive uniforms. Cannot claim laundering plain clothes.", docsNeeded: ["Simple weekly tally (notes app is fine)", "No receipts needed under $150"] },
       { item: "Stethoscope & medical equipment", value: 400, tag: "Equipment", summary: "Tools of trade you personally buy are fully deductible.", scenario: "Amira buys a $320 Littmann stethoscope. Employer doesn't provide one. Claims full $320.", howTo: "Keep receipt. Under $300 = instant deduction. Over $300 = depreciate over ATO effective life.", watchOut: "If employer reimburses you — you cannot claim it.", docsNeeded: ["Receipt", "Asset register entry if over $300"] },
-      { item: "CPD courses & conferences", value: 500, tag: "Education", summary: "Professional development directly related to your current nursing role.", scenario: "James pays $450 for an ICU upskilling course as an ICU nurse. Directly related — fully deductible.", howTo: "Keep receipt + course description. Key test: maintains or improves skills for your CURRENT job.", watchOut: "Studying law or a completely different field = not deductible.", docsNeeded: ["Receipt/invoice", "Course outline showing relevance"] },
-      { item: "ANMF membership fees", value: 200, tag: "Memberships", summary: "Union and professional body fees are fully deductible.", scenario: "ANMF annual fee $190 — claimed in full, no conditions.", howTo: "Get annual tax statement from ANMF (usually emailed in July). Use that exact figure.", watchOut: "None — ANMF is 100% work-related.", docsNeeded: ["Annual tax statement from ANMF"] },
+      { item: "CPD courses & conferences", value: 500, tag: "Education", atoUrl: "https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/education-training-and-seminars/self-education-expenses", summary: "Professional development directly related to your current nursing role.", scenario: "James pays $450 for an ICU upskilling course as an ICU nurse. Directly related — fully deductible.", howTo: "Keep receipt + course description. Key test: maintains or improves skills for your CURRENT job.", watchOut: "Studying law or a completely different field = not deductible.", docsNeeded: ["Receipt/invoice", "Course outline showing relevance"] },
+      { item: "ANMF membership fees", value: 200, tag: "Memberships", atoUrl: "https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/memberships-accreditations-fees-and-commissions/union-fees-subscriptions-to-associations-and-bargaining-agents-fees", summary: "Union and professional body fees are fully deductible.", scenario: "ANMF annual fee $190 — claimed in full, no conditions.", howTo: "Get annual tax statement from ANMF (usually emailed in July). Use that exact figure.", watchOut: "None — ANMF is 100% work-related.", docsNeeded: ["Annual tax statement from ANMF"] },
       { item: "Work phone use (portion)", value: 200, tag: "Phone", summary: "Work-use proportion of your phone plan.", scenario: "Priya uses her phone 30% for work. Annual plan $600. Claims 30% = $180.", howTo: "Keep a 4-week usage diary in June. That % applies to the whole year.", watchOut: "Cannot claim 100% on a mixed-use phone.", docsNeeded: ["4-week usage diary", "Annual plan cost or bills"] },
     ],
     conditional: [
-      { item: "Home office (67c/hr)", value: 300, tag: "Home Office", summary: "If you do admin or CPD at home, claim 67 cents per hour.", scenario: "Mia does 2hrs/week clinical notes at home. 2 × 48 × $0.67 = $64. Small but real.", howTo: "ATO fixed rate 67c/hr. Keep a time diary — calendar entries count.", watchOut: "Cannot also separately claim internet if using fixed rate.", docsNeeded: ["Time diary showing hours worked at home"] },
+      { item: "Home office (70c/hr)", value: 300, tag: "Home Office", summary: "If you do admin or CPD at home, claim 70 cents per hour.", scenario: "Mia does 2hrs/week clinical notes at home. 2 × 48 × $0.70 = $64. Small but real.", howTo: "ATO fixed rate 70c/hr. Keep a time diary — calendar entries count.", watchOut: "Cannot also separately claim internet if using fixed rate.", docsNeeded: ["Time diary showing hours worked at home"] },
       { item: "Travel between work sites", value: 400, tag: "Travel", summary: "Driving between two workplaces in one day — not home to work.", scenario: "Jake works morning at public hospital, afternoon at private clinic. The 15km between sites is deductible. His drive from home is not.", howTo: "Cents per km method: 88c/km (2024-25), up to 5,000km. Keep a simple trip diary.", watchOut: "Home-to-work commute is NEVER deductible. ATO's top audit target.", docsNeeded: ["Trip diary: date, from, to, km, purpose"] },
       { item: "Protective shoes / compression socks", value: 150, tag: "Clothing", summary: "Only if employer specifically requires protective footwear.", scenario: "Hospital policy requires safety-rated closed-toe shoes. Emma buys $140 pair — claimable.", howTo: "Keep receipt. Document the employer's specific requirement.", watchOut: "'Sensible shoes' recommendation ≠ claimable. Must be a specific employer requirement.", docsNeeded: ["Receipt", "Reference to employer policy"] },
     ],
@@ -119,7 +122,7 @@ const D = {
       { item: "AMA membership & CPD", value: 1500, tag: "Memberships", summary: "AMA membership and mandatory CPD hours are deductible.", scenario: "AMA fee $1,200 + CPD conference $600. Total $1,800 — claimed in full.", howTo: "Get annual tax statement from AMA. Keep CPD receipts and attendance records.", watchOut: "CPD must relate to current specialty and role.", docsNeeded: ["AMA annual tax statement", "CPD receipts and attendance records"] },
       { item: "Medical journals & reference materials", value: 600, tag: "Education", summary: "Clinical journals and textbooks relevant to your practice.", scenario: "BMJ subscription $280, MIMS online $320. Both directly used in clinical practice — claimed in full.", howTo: "Keep subscription receipts. Must relate to current clinical work.", watchOut: "General interest health reading doesn't qualify — must be clinical reference.", docsNeeded: ["Subscription receipts or annual statements"] },
       { item: "Work phone & internet (portion)", value: 500, tag: "Phone", summary: "Work-use proportion of phone and internet costs.", scenario: "Doctor uses phone 60% for work (on-call, clinical apps, referrals). $1,200/yr plan × 60% = $720.", howTo: "4-week usage diary. Apply % to full year costs.", watchOut: "Must be genuinely proportioned — 100% claim on mixed-use phone is an audit flag.", docsNeeded: ["4-week usage diary", "Annual phone and internet costs"] },
-      { item: "Home office (if consulting from home)", value: 800, tag: "Home Office", summary: "Telehealth consultations from home qualify for home office expenses.", scenario: "GP does 3 telehealth sessions/day from home office, 2 days/week. 48hrs/month × 12 × $0.67 = $386.", howTo: "67c/hr ATO fixed rate. Keep time records — calendar entries showing telehealth hours.", watchOut: "Must be genuine work hours. Checking emails on the couch doesn't count.", docsNeeded: ["Time diary showing telehealth/work hours at home"] },
+      { item: "Home office (if consulting from home)", value: 800, tag: "Home Office", summary: "Telehealth consultations from home qualify for home office expenses.", scenario: "GP does 3 telehealth sessions/day from home office, 2 days/week. 48hrs/month × 12 × $0.70 = $386.", howTo: "70c/hr ATO fixed rate. Keep time records — calendar entries showing telehealth hours.", watchOut: "Must be genuine work hours. Checking emails on the couch doesn't count.", docsNeeded: ["Time diary showing telehealth/work hours at home"] },
     ],
     conditional: [
       { item: "Specialist equipment (stethoscope, otoscope)", value: 800, tag: "Equipment", summary: "Medical instruments you personally purchase for your practice.", scenario: "Cardiologist buys a $750 digital stethoscope. Not provided by hospital. Claims full amount (under $1,000 instant asset write-off for individuals).", howTo: "Keep receipt. Claim work-use proportion if used in mixed settings.", watchOut: "Hospital-provided equipment cannot be claimed.", docsNeeded: ["Receipt", "Note if equipment is self-funded vs employer-provided"] },
@@ -143,7 +146,7 @@ const D = {
       { item: "Work uniform (if required)", value: 200, tag: "Clothing", summary: "Clinic-branded polo shirts or required scrubs.", scenario: "Clinic requires branded polo shirts. Physio buys 4 × $45 = $180. Claimed.", howTo: "Keep receipt. Must have employer logo or be a specifically required colour.", watchOut: "Generic coloured shirts without branding generally don't qualify.", docsNeeded: ["Receipt"] },
     ],
     conditional: [
-      { item: "Home office", value: 250, tag: "Home Office", summary: "If you write clinical notes or admin at home.", scenario: "Physio writes notes 1.5hrs/day from home on WFH days. 1.5 × 2 days × 48 weeks × $0.67 = $96.", howTo: "67c/hr fixed rate. Keep time diary.", watchOut: "Must be genuine work. ATO may ask for evidence of a dedicated work area.", docsNeeded: ["Time diary"] },
+      { item: "Home office", value: 250, tag: "Home Office", summary: "If you write clinical notes or admin at home.", scenario: "Physio writes notes 1.5hrs/day from home on WFH days. 1.5 × 2 days × 48 weeks × $0.70 = $96.", howTo: "70c/hr fixed rate. Keep time diary.", watchOut: "Must be genuine work. ATO may ask for evidence of a dedicated work area.", docsNeeded: ["Time diary"] },
       { item: "Travel between clinics", value: 500, tag: "Travel", summary: "Working across multiple clinic sites — travel between them is claimable.", scenario: "Physio works morning at CBD clinic, afternoon at suburban clinic. 25km between sites × 88c × 200 days = $4,400.", howTo: "Cents per km (88c/km) or logbook method. Keep trip diary.", watchOut: "Home-to-first-clinic is commuting — not claimable.", docsNeeded: ["Trip diary: date, route, km, purpose"] },
     ],
     notClaimable: [
@@ -164,7 +167,7 @@ const D = {
       { item: "Phone (work portion)", value: 200, tag: "Phone", summary: "Work-use proportion of personal phone.", scenario: "Uses phone 40% for work (crew comms, clinical reference apps). Plan $720/yr × 40% = $288.", howTo: "4-week usage diary. Apply % to full year.", watchOut: "Cannot claim 100% on mixed personal/work phone.", docsNeeded: ["4-week usage diary", "Annual phone costs"] },
     ],
     conditional: [
-      { item: "Home office", value: 200, tag: "Home Office", summary: "If you write incident reports or admin at home.", scenario: "Paramedic writes 2hrs of incident reports at home per week. 2 × 48 × $0.67 = $64.", howTo: "67c/hr fixed rate. Keep time diary.", watchOut: "Must be genuine required work, not optional.", docsNeeded: ["Time diary"] },
+      { item: "Home office", value: 200, tag: "Home Office", summary: "If you write incident reports or admin at home.", scenario: "Paramedic writes 2hrs of incident reports at home per week. 2 × 48 × $0.70 = $64.", howTo: "70c/hr fixed rate. Keep time diary.", watchOut: "Must be genuine required work, not optional.", docsNeeded: ["Time diary"] },
     ],
     notClaimable: [
       { item: "Home-to-station commute", reason: "Standard commute — personal expense regardless of shift length." },
@@ -183,7 +186,7 @@ const D = {
       { item: "Clinical journals & reference databases", value: 400, tag: "Education", summary: "Dental journals and clinical reference subscriptions.", scenario: "JADA online subscription $300 + clinical reference app $120. Both claimed.", howTo: "Keep receipts. Must be clinical reference material.", watchOut: "General health or science publications don't qualify.", docsNeeded: ["Subscription receipts"] },
     ],
     conditional: [
-      { item: "Home office", value: 300, tag: "Home Office", summary: "Admin, billing or practice management done at home.", scenario: "Practice owner spends 3hrs/week at home on admin. 3 × 48 × $0.67 = $96.", howTo: "67c/hr fixed rate. Time diary required.", watchOut: "Must be genuine required work hours.", docsNeeded: ["Time diary"] },
+      { item: "Home office", value: 300, tag: "Home Office", summary: "Admin, billing or practice management done at home.", scenario: "Practice owner spends 3hrs/week at home on admin. 3 × 48 × $0.70 = $96.", howTo: "70c/hr fixed rate. Time diary required.", watchOut: "Must be genuine required work hours.", docsNeeded: ["Time diary"] },
     ],
     notClaimable: [
       { item: "Personal dental treatment", reason: "Your own dental work is personal — even professional courtesy discounts don't make it deductible." },
@@ -196,14 +199,14 @@ const D = {
     avgSalary: 90000,
     claimable: [
       { item: "Tools & equipment (under $300 each)", value: 800, tag: "Equipment", summary: "Small tools are instantly deductible in the year purchased.", scenario: "Marco buys a $180 angle grinder, $95 level set and $85 drill bits. All under $300 each — claims $360 immediately.", howTo: "Keep receipts. Each item assessed individually. Must be used for work.", watchOut: "Don't bundle items to avoid $300 threshold. A $350 kit is one $350 item.", docsNeeded: ["Receipt per item"] },
-      { item: "Vehicle costs (logbook method)", value: 3000, tag: "Vehicle", summary: "Your biggest deduction — claim the work % of ALL car running costs.", scenario: "Dave (plumber) drives ute to job sites. 12-week logbook: 75% work. Annual car costs $12,000. Claims $9,000.", howTo: "12-week logbook — every trip, work AND personal. Calculate business %. Apply to all car costs for 5 years.", watchOut: "Home to first job site is NOT deductible. Site-to-site is fine.", docsNeeded: ["12-week logbook (all trips)", "All car receipts: fuel, rego, insurance, servicing", "Odometer readings 1 July & 30 June"] },
+      { item: "Vehicle costs (logbook method)", value: 3000, tag: "Vehicle", atoUrl: "https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/cars-transport-and-travel/motor-vehicle-and-car-expenses/expenses-for-a-car-you-own-or-lease", summary: "Your biggest deduction — claim the work % of ALL car running costs.", scenario: "Dave (plumber) drives ute to job sites. 12-week logbook: 75% work. Annual car costs $12,000. Claims $9,000.", howTo: "12-week logbook — every trip, work AND personal. Calculate business %. Apply to all car costs for 5 years.", watchOut: "Home to first job site is NOT deductible. Site-to-site is fine.", docsNeeded: ["12-week logbook (all trips)", "All car receipts: fuel, rego, insurance, servicing", "Odometer readings 1 July & 30 June"] },
       { item: "Safety boots & PPE", value: 350, tag: "Clothing", summary: "Safety-rated protective clothing required for work.", scenario: "Site requires steel-caps, hi-vis and safety glasses. Liam buys all three for $310. Fully claimable.", howTo: "Keep receipts. Must be specifically protective — safety-rated.", watchOut: "Regular work clothes don't count even if only worn to work.", docsNeeded: ["Receipts"] },
       { item: "Union fees & trade licence renewal", value: 600, tag: "Memberships", summary: "Trade licence renewals and union fees are fully deductible.", scenario: "Electrical licence $380 + ETU union $420 = $800 claimed.", howTo: "Keep licence renewal receipt. Union sends annual tax statement in July.", watchOut: "Only income-earning portions — trade unions are 100% work-related.", docsNeeded: ["Licence renewal receipt", "Union annual tax statement"] },
       { item: "Sunscreen & sunglasses (outdoor workers)", value: 80, tag: "Health", summary: "Sun protection for outdoor workers — often overlooked.", scenario: "Chris works outdoors 4 days/week. Buys $35 sunscreen + $60 sunglasses. Claims $35 + 80% × $60 = $83.", howTo: "Keep receipts. ATO allows this for workers exposed to sun. Apply work % to sunglasses.", watchOut: "Cannot claim if mostly indoors. Cosmetic SPF in moisturiser doesn't count.", docsNeeded: ["Receipts"] },
       { item: "Phone & internet (work portion)", value: 300, tag: "Phone", summary: "Work-use portion of phone for job comms and quoting.", scenario: "Uses phone 50% for work (client calls, quoting apps). $840/yr × 50% = $420.", howTo: "4-week diary. Apply % to full year costs.", watchOut: "Cannot claim 100% on a mixed-use phone.", docsNeeded: ["4-week diary", "Annual phone costs"] },
     ],
     conditional: [
-      { item: "Home office (quotes & admin)", value: 250, tag: "Home Office", summary: "If you do quoting, invoicing or admin at home.", scenario: "Self-employed carpenter spends 3hrs/week at home on quoting. 3 × 48 × $0.67 = $96.", howTo: "67c/hr fixed rate. Must be genuine work — not just checking messages.", watchOut: "PAYG employees rarely qualify unless specifically required to work from home.", docsNeeded: ["Time diary or quote timestamps"] },
+      { item: "Home office (quotes & admin)", value: 250, tag: "Home Office", summary: "If you do quoting, invoicing or admin at home.", scenario: "Self-employed carpenter spends 3hrs/week at home on quoting. 3 × 48 × $0.70 = $96.", howTo: "70c/hr fixed rate. Must be genuine work — not just checking messages.", watchOut: "PAYG employees rarely qualify unless specifically required to work from home.", docsNeeded: ["Time diary or quote timestamps"] },
       { item: "Overtime meal allowance meals", value: 200, tag: "Meals", summary: "Only if your award pays you a meal allowance you declare as income.", scenario: "Ben's award pays $25 meal allowance for overtime past 7pm. He declares it as income AND claims the meal. They offset.", howTo: "Check payslip for overtime meal allowances. Declare the allowance as income, then claim the meal.", watchOut: "Cannot claim meals during normal shifts. Allowance must be declared as income first.", docsNeeded: ["Payslip showing allowance", "Meal receipt"] },
     ],
     notClaimable: [
@@ -224,7 +227,7 @@ const D = {
       { item: "ETU union fees", value: 500, tag: "Memberships", summary: "Union membership fully deductible.", scenario: "ETU annual fee $480. Get annual tax statement.", howTo: "Annual tax statement from ETU in July.", watchOut: "100% work-related — claim in full.", docsNeeded: ["ETU annual tax statement"] },
     ],
     conditional: [
-      { item: "Home office (admin/quoting)", value: 200, tag: "Home Office", summary: "Quoting, scheduling and admin done at home.", scenario: "Sole trader electrician spends 4hrs/week on quoting from home. 4 × 48 × $0.67 = $128.", howTo: "67c/hr fixed rate. Keep time log.", watchOut: "PAYG employees need genuine employer requirement to WFH.", docsNeeded: ["Time log or diary"] },
+      { item: "Home office (admin/quoting)", value: 200, tag: "Home Office", summary: "Quoting, scheduling and admin done at home.", scenario: "Sole trader electrician spends 4hrs/week on quoting from home. 4 × 48 × $0.70 = $128.", howTo: "70c/hr fixed rate. Keep time log.", watchOut: "PAYG employees need genuine employer requirement to WFH.", docsNeeded: ["Time log or diary"] },
     ],
     notClaimable: [
       { item: "Home to first job site", reason: "Commute — not deductible even in a work vehicle." },
@@ -243,7 +246,7 @@ const D = {
       { item: "Master Plumbers or union fees", value: 500, tag: "Memberships", summary: "Industry association and union fees.", scenario: "Master Plumbers annual fee $460. Claimed from annual tax statement.", howTo: "Annual tax statement from association.", watchOut: "100% work-related.", docsNeeded: ["Annual tax statement"] },
     ],
     conditional: [
-      { item: "Home office", value: 200, tag: "Home Office", summary: "Quoting and admin at home if self-employed.", scenario: "Self-employed plumber spends 3hrs/week on quoting. 3 × 48 × $0.67 = $96.", howTo: "67c/hr. Keep time diary.", watchOut: "PAYG employees need employer requirement to WFH.", docsNeeded: ["Time diary"] },
+      { item: "Home office", value: 200, tag: "Home Office", summary: "Quoting and admin at home if self-employed.", scenario: "Self-employed plumber spends 3hrs/week on quoting. 3 × 48 × $0.70 = $96.", howTo: "70c/hr. Keep time diary.", watchOut: "PAYG employees need employer requirement to WFH.", docsNeeded: ["Time diary"] },
     ],
     notClaimable: [
       { item: "Home to first job site", reason: "Commute — same as any other worker." },
@@ -262,7 +265,7 @@ const D = {
       { item: "Sunscreen (outdoor worker)", value: 80, tag: "Health", summary: "Sun protection for outdoor construction workers.", scenario: "Buys SPF 50+ sunscreen regularly — $6/week × 48 weeks = $288. Claims $80 (ATO reasonable amount).", howTo: "Keep receipts. ATO allows this specifically for outdoor workers.", watchOut: "Cannot claim cosmetic sunscreen products.", docsNeeded: ["Receipts"] },
     ],
     conditional: [
-      { item: "Home office", value: 150, tag: "Home Office", summary: "Admin done at home if self-employed.", scenario: "Self-employed concreter: 2hrs/week quoting at home. 2 × 48 × $0.67 = $64.", howTo: "67c/hr. Time diary.", watchOut: "Must be genuine work, not just occasional messages.", docsNeeded: ["Time diary"] },
+      { item: "Home office", value: 150, tag: "Home Office", summary: "Admin done at home if self-employed.", scenario: "Self-employed concreter: 2hrs/week quoting at home. 2 × 48 × $0.70 = $64.", howTo: "70c/hr. Time diary.", watchOut: "Must be genuine work, not just occasional messages.", docsNeeded: ["Time diary"] },
     ],
     notClaimable: [
       { item: "Home to first site", reason: "Commute is personal." },
@@ -368,7 +371,7 @@ const D = {
   uber: {
     avgSalary: 55000,
     claimable: [
-      { item: "Vehicle costs (fuel, rego, insurance)", value: 4000, tag: "Vehicle", summary: "Your biggest deduction — work % of ALL running costs via logbook.", scenario: "Raj drives Uber full-time. 12-week logbook: 85% work. Annual car costs $14,000. Claims $11,900.", howTo: "12-week logbook — every trip, work and personal. Apply % to all costs for 5 years.", watchOut: "Without a logbook the ATO can deny your entire vehicle claim.", docsNeeded: ["12-week logbook (all trips — work AND personal)", "All car receipts", "Annual odometer readings 1 July & 30 June"] },
+      { item: "Vehicle costs (fuel, rego, insurance)", value: 4000, tag: "Vehicle", atoUrl: "https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/cars-transport-and-travel/motor-vehicle-and-car-expenses/expenses-for-a-car-you-own-or-lease", summary: "Your biggest deduction — work % of ALL running costs via logbook.", scenario: "Raj drives Uber full-time. 12-week logbook: 85% work. Annual car costs $14,000. Claims $11,900.", howTo: "12-week logbook — every trip, work and personal. Apply % to all costs for 5 years.", watchOut: "Without a logbook the ATO can deny your entire vehicle claim.", docsNeeded: ["12-week logbook (all trips — work AND personal)", "All car receipts", "Annual odometer readings 1 July & 30 June"] },
       { item: "Phone plan (work portion)", value: 400, tag: "Phone", summary: "Phone used for Uber app, navigation and passenger comms.", scenario: "Lin's plan $70/month. Uses 70% for Uber. 70% × $840/yr = $588.", howTo: "4-week diary. Apply % to full year costs.", watchOut: "Must be honest. 100% claim on mixed phone is a common audit trigger.", docsNeeded: ["4-week diary", "Annual plan cost"] },
       { item: "Water & mints for passengers", value: 150, tag: "Supplies", summary: "Passenger comfort items are deductible.", scenario: "Spends $12/month on water and mints. $144/yr — fully deductible.", howTo: "Keep supermarket receipts. Note 'Uber passenger supplies'.", watchOut: "Keep it reasonable — lavish gifts won't hold up.", docsNeeded: ["Supermarket receipts"] },
       { item: "Car cleaning (work portion)", value: 300, tag: "Vehicle", summary: "Cleaning costs proportional to work use.", scenario: "Washes car weekly at $15. 85% work use × $780/yr = $663.", howTo: "Apply logbook work % to annual cleaning costs.", watchOut: "Don't claim 100% — apply your logbook percentage.", docsNeeded: ["Receipts", "Apply logbook business %"] },
@@ -391,7 +394,7 @@ const D = {
       { item: "Law Institute / Bar Association membership", value: 800, tag: "Memberships", summary: "Professional body membership — fully deductible.", scenario: "LIV annual membership $750 — claimed using annual tax statement.", howTo: "Annual tax statement from LIV or relevant body.", watchOut: "100% work-related.", docsNeeded: ["Annual tax statement"] },
       { item: "CPD points & legal courses", value: 1000, tag: "Education", summary: "Mandatory CPD and practice-area upskilling.", scenario: "Pays $400 for a property law CPD seminar + $650 online course. Both relate to current practice area. Claimed.", howTo: "Keep receipts + course descriptions. Must relate to current practice area.", watchOut: "Studying for a completely different area of law = borderline. Current specialty is safest.", docsNeeded: ["Receipts", "Course outlines"] },
       { item: "Legal databases & subscriptions", value: 1200, tag: "Software", summary: "LexisNexis, Westlaw, Practical Law — if personally subscribed.", scenario: "Personal LexisNexis subscription $1,100/yr for research work. Fully deductible.", howTo: "Keep subscription receipts. Must be personally subscribed — not employer-provided.", watchOut: "If employer provides access — cannot claim personal subscription.", docsNeeded: ["Subscription receipts"] },
-      { item: "Home office (WFH portion)", value: 1000, tag: "Home Office", summary: "Lawyers who WFH or do after-hours work at home.", scenario: "Lawyer works from home 2 days/week + 2hrs/night on matters. ~6hrs/day WFH. 6 × 2 × 48 × $0.67 = $386.", howTo: "67c/hr fixed rate. Time diary. Calendar records of WFH days work.", watchOut: "Cannot separately claim internet or electricity if using fixed rate.", docsNeeded: ["Time diary or WFH calendar records"] },
+      { item: "Home office (WFH portion)", value: 1000, tag: "Home Office", atoUrl: "https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/working-from-home-expenses/fixed-rate-method-67-cents", summary: "Lawyers who WFH or do after-hours work at home.", scenario: "Lawyer works from home 2 days/week + 2hrs/night on matters. ~6hrs/day WFH. 6 × 2 × 48 × $0.70 = $386.", howTo: "70c/hr fixed rate. Time diary. Calendar records of WFH days work.", watchOut: "Cannot separately claim internet or electricity if using fixed rate.", docsNeeded: ["Time diary or WFH calendar records"] },
       { item: "Phone & internet (work portion)", value: 500, tag: "Phone", summary: "Work-use proportion of phone and internet.", scenario: "Uses phone 50% for work. $1,200/yr plan × 50% = $600.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if claiming fixed rate home office method.", docsNeeded: ["4-week diary", "Annual phone/internet cost"] },
     ],
     conditional: [
@@ -411,7 +414,7 @@ const D = {
       { item: "CPEng or NER registration", value: 300, tag: "Memberships", summary: "Professional registration required for engineering practice.", scenario: "CPEng annual renewal $280 — claimed.", howTo: "Keep renewal receipt.", watchOut: "Initial assessment costs may not be deductible — renewals are.", docsNeeded: ["Renewal receipt"] },
       { item: "Technical CPD & conferences", value: 800, tag: "Education", summary: "Continuing professional development in your engineering discipline.", scenario: "Structural engineer pays $750 for an industry conference and technical workshop. Directly related — claimed.", howTo: "Keep receipts and event descriptions.", watchOut: "Must relate to your current engineering discipline and role.", docsNeeded: ["Receipts", "Event descriptions"] },
       { item: "Technical software subscriptions", value: 600, tag: "Software", summary: "CAD, structural analysis or other work software subscribed personally.", scenario: "Personal AutoCAD subscription $580/yr for after-hours project work. Fully deductible.", howTo: "Keep subscription receipts. Must be personally subscribed.", watchOut: "Employer-provided software cannot be claimed.", docsNeeded: ["Subscription receipts"] },
-      { item: "Home office (WFH hours)", value: 900, tag: "Home Office", summary: "Engineers who WFH regularly — claim 67c/hr.", scenario: "Civil engineer WFH 3 days/week. 3 × 8 × 48 × $0.67 = $773.", howTo: "67c/hr fixed rate. Time diary or calendar records.", watchOut: "Cannot also claim internet separately.", docsNeeded: ["Time diary or calendar WFH records"] },
+      { item: "Home office (WFH hours)", value: 900, tag: "Home Office", summary: "Engineers who WFH regularly — claim 70c/hr.", scenario: "Civil engineer WFH 3 days/week. 3 × 8 × 48 × $0.70 = $773.", howTo: "70c/hr fixed rate. Time diary or calendar records.", watchOut: "Cannot also claim internet separately.", docsNeeded: ["Time diary or calendar WFH records"] },
       { item: "Phone & internet (work portion)", value: 400, tag: "Phone", summary: "Work-use proportion of phone.", scenario: "Uses phone 40% for work. $900/yr × 40% = $360.", howTo: "4-week diary. Apply % to full year.", watchOut: "Honest apportionment required.", docsNeeded: ["4-week diary", "Annual costs"] },
     ],
     conditional: [
@@ -430,7 +433,7 @@ const D = {
     claimable: [
       { item: "AHRI membership & CPD", value: 600, tag: "Memberships", summary: "Australian HR Institute membership and professional development.", scenario: "AHRI annual membership $520 + webinar series $180. Total $700 — claimed.", howTo: "Annual tax statement from AHRI + CPD receipts.", watchOut: "Must relate to current HR role.", docsNeeded: ["AHRI tax statement", "CPD receipts"] },
       { item: "HR software & subscriptions", value: 400, tag: "Software", summary: "Personal subscriptions to HR tools or platforms.", scenario: "Personal LinkedIn Learning subscription $240/yr for HR upskilling. Fully deductible.", howTo: "Keep subscription receipts.", watchOut: "Employer-provided tools cannot be claimed.", docsNeeded: ["Subscription receipts"] },
-      { item: "Home office (WFH hours)", value: 900, tag: "Home Office", summary: "HR professionals who WFH regularly.", scenario: "HR Manager WFH 4 days/week. 4 × 8 × 48 × $0.67 = $1,031.", howTo: "67c/hr fixed rate. Time diary.", watchOut: "Cannot also claim internet separately.", docsNeeded: ["Time diary or calendar WFH records"] },
+      { item: "Home office (WFH hours)", value: 900, tag: "Home Office", summary: "HR professionals who WFH regularly.", scenario: "HR Manager WFH 4 days/week. 4 × 8 × 48 × $0.70 = $1,031.", howTo: "70c/hr fixed rate. Time diary.", watchOut: "Cannot also claim internet separately.", docsNeeded: ["Time diary or calendar WFH records"] },
       { item: "Phone & internet (work portion)", value: 400, tag: "Phone", summary: "Work-use proportion of phone.", scenario: "Uses phone 40% for work. $900/yr × 40% = $360.", howTo: "4-week diary. Apply % to full year.", watchOut: "Honest apportionment.", docsNeeded: ["4-week diary", "Annual costs"] },
       { item: "Employment law books & resources", value: 300, tag: "Education", summary: "Work-related legal and HR reference materials.", scenario: "Buys FairWork handbook update $85 + employment law reference $220. Directly work-related — claimed.", howTo: "Keep receipts. Must relate to current HR role.", watchOut: "General management or leadership books are borderline.", docsNeeded: ["Receipts"] },
     ],
@@ -448,7 +451,7 @@ const D = {
     avgSalary: 120000,
     claimable: [
       { item: "Technical courses & subscriptions", value: 800, tag: "Education", summary: "Udemy, Pluralsight, O'Reilly, conference tickets.", scenario: "Alex: AWS cert course $300 + Pluralsight $200 + dev conference $350 = $850 — all work-relevant.", howTo: "Keep receipts. Must relate to current tech stack or role.", watchOut: "Learning an entirely new field for a career change = not deductible.", docsNeeded: ["Receipts", "Course description if relevance isn't obvious"] },
-      { item: "Home office (WFH hours)", value: 1200, tag: "Home Office", summary: "Most devs WFH — your most consistent annual deduction.", scenario: "Full-time WFH dev: 5 days × 8hrs × 48 weeks × $0.67 = $1,285.", howTo: "67c/hr. Time diary or calendar records.", watchOut: "Cannot also claim internet separately if using fixed rate.", docsNeeded: ["Time diary or WFH calendar"] },
+      { item: "Home office (WFH hours)", value: 1200, tag: "Home Office", atoUrl: "https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/working-from-home-expenses/fixed-rate-method-67-cents", summary: "Most devs WFH — your most consistent annual deduction.", scenario: "Full-time WFH dev: 5 days × 8hrs × 48 weeks × $0.70 = $1,285.", howTo: "70c/hr. Time diary or calendar records.", watchOut: "Cannot also claim internet separately if using fixed rate.", docsNeeded: ["Time diary or WFH calendar"] },
       { item: "Software subscriptions (GitHub, Figma, Jira)", value: 600, tag: "Software", summary: "Work tools you personally subscribe to.", scenario: "GitHub Pro $48 + JetBrains $250 + Figma $180 = $478 — fully deductible.", howTo: "Keep subscription receipts. Must be personally subscribed for work.", watchOut: "Employer-provided tools cannot be claimed.", docsNeeded: ["Subscription receipts or annual statements"] },
       { item: "Monitor, keyboard, peripherals", value: 800, tag: "Equipment", summary: "WFH equipment — claim the work-use proportion.", scenario: "Buys $450 monitor (depreciated) + $120 keyboard (instant). 80% work. $96 now + depreciation on monitor.", howTo: "Under $300 = instant. Over $300 = depreciate. Apply work-use %.", watchOut: "Gaming peripherals or items also used personally — must apportion.", docsNeeded: ["Receipts", "Work-use % calculation"] },
       { item: "Phone & internet (work portion)", value: 600, tag: "Phone", summary: "Work-use portion of phone and internet.", scenario: "Uses phone 50% for work + internet 60% for work. Separate diary for each.", howTo: "4-week diary for phone. If NOT using fixed rate — also claim internet separately.", watchOut: "Cannot claim internet separately if using fixed rate home office method.", docsNeeded: ["4-week diary", "Annual phone and internet costs"] },
@@ -458,7 +461,7 @@ const D = {
     ],
     notClaimable: [
       { item: "Personal streaming (Netflix, Spotify)", reason: "Not deductible even as background music while coding." },
-      { item: "Home internet if claiming fixed rate", reason: "The 67c/hr fixed rate already includes internet — can't claim it twice." },
+      { item: "Home internet if claiming fixed rate", reason: "The 70c/hr fixed rate already includes internet — can't claim it twice." },
       { item: "Gaming equipment", reason: "Unless you're a professional game developer and it's specifically required." },
     ],
   },
@@ -470,7 +473,7 @@ const D = {
       { item: "TPB registration (tax agents)", value: 300, tag: "Memberships", summary: "Tax Practitioners Board registration — required to give tax advice.", scenario: "$280 TPB annual renewal — claimed in full.", howTo: "Keep TPB renewal receipt.", watchOut: "Only for registered tax agents.", docsNeeded: ["TPB renewal receipt"] },
       { item: "Accounting software subscriptions", value: 500, tag: "Software", summary: "Work software personally subscribed to.", scenario: "Personal Xero $480 + Tax Act $340 — both work-related, both claimed.", howTo: "Keep subscription receipts.", watchOut: "Employer-provided software cannot be claimed personally.", docsNeeded: ["Subscription receipts"] },
       { item: "Professional journals & resources", value: 300, tag: "Education", summary: "Technical accounting and tax publications.", scenario: "CCH online $280 + Tax Institute webinars $180. Claimed.", howTo: "Keep receipts. Must relate to current accounting work.", watchOut: "General finance or investment reading doesn't qualify.", docsNeeded: ["Receipts"] },
-      { item: "Home office (WFH hours)", value: 800, tag: "Home Office", summary: "WFH accountants — 67c/hr adds up.", scenario: "Full-time WFH: 5 × 8 × 48 × $0.67 = $1,285.", howTo: "67c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
+      { item: "Home office (WFH hours)", value: 800, tag: "Home Office", summary: "WFH accountants — 70c/hr adds up.", scenario: "Full-time WFH: 5 × 8 × 48 × $0.70 = $1,285.", howTo: "70c/hr. Time diary.", watchOut: "Cannot separately claim internet if using fixed rate.", docsNeeded: ["Time diary"] },
       { item: "Phone & internet (work portion)", value: 400, tag: "Phone", summary: "Work-use portion.", scenario: "40% work use on $900/yr plan = $360.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office method.", docsNeeded: ["4-week diary", "Annual costs"] },
     ],
     conditional: [
@@ -493,7 +496,7 @@ const D = {
       { item: "Phone & internet (work portion)", value: 200, tag: "Phone", summary: "Work-use proportion for parent/school comms.", scenario: "Uses phone 25% for work. $720/yr × 25% = $180.", howTo: "4-week diary. Apply % to full year.", watchOut: "Cannot claim internet separately if using fixed rate home office method.", docsNeeded: ["4-week diary", "Annual costs"] },
     ],
     conditional: [
-      { item: "Home office (marking & lesson planning)", value: 400, tag: "Home Office", summary: "Most teachers genuinely WFH — don't leave this unclaimed.", scenario: "Michael marks 2hrs/night × 4 nights × 40 term weeks × $0.67 = $214.", howTo: "67c/hr fixed rate. Time diary — calendar entries count.", watchOut: "Must be genuine work hours, not just being 'available'.", docsNeeded: ["Time diary or calendar entries"] },
+      { item: "Home office (marking & lesson planning)", value: 400, tag: "Home Office", summary: "Most teachers genuinely WFH — don't leave this unclaimed.", scenario: "Michael marks 2hrs/night × 4 nights × 40 term weeks × $0.70 = $214.", howTo: "70c/hr fixed rate. Time diary — calendar entries count.", watchOut: "Must be genuine work hours, not just being 'available'.", docsNeeded: ["Time diary or calendar entries"] },
       { item: "Laptop or tablet (work portion)", value: 500, tag: "Equipment", summary: "Personal device used for teaching prep — claim work-use proportion.", scenario: "Rachel uses laptop 60% for work. Laptop cost $1,200. Claims $720 over 3 years = $240/yr.", howTo: "Calculate honest work-use %. Depreciate over effective life.", watchOut: "If school provides a device — must show why personal device is also necessary.", docsNeeded: ["Receipt", "Work-use % calculation"] },
     ],
     notClaimable: [
@@ -508,7 +511,7 @@ const D = {
     claimable: [
       { item: "Camera, lighting & studio equipment", value: 2000, tag: "Equipment", summary: "Production equipment used to create content — your main deduction.", scenario: "Buys mirrorless camera $1,800 (depreciated), ring light $150 (instant), tripod $95 (instant). Claims $245 now + depreciates camera.", howTo: "Under $300 per item = instant. Over $300 = depreciate. Must be used for content creation.", watchOut: "Camera also used for personal holidays — must apportion honestly.", docsNeeded: ["Receipts", "Asset register for items over $300", "Work-use % calculation"] },
       { item: "Software subscriptions (Adobe, Canva Pro)", value: 600, tag: "Software", summary: "Editing and design software for content production.", scenario: "Adobe Creative Cloud $660/yr + Canva Pro $180/yr = $840. Both used for content creation — claimed.", howTo: "Keep subscription receipts. Personal editing for fun must be excluded.", watchOut: "Apportion if used for personal creative projects too.", docsNeeded: ["Subscription receipts"] },
-      { item: "Home office / studio space", value: 800, tag: "Home Office", summary: "Dedicated studio or home office for content creation.", scenario: "Content creator uses dedicated room as studio. 67c/hr × 6hrs/day × 5 days × 48 weeks = $965. OR actual costs method if room is exclusively used.", howTo: "Fixed rate 67c/hr OR if room is exclusive to business — claim actual proportion of rent/utilities.", watchOut: "Room must be genuinely dedicated to work. Dual-use room = fixed rate only.", docsNeeded: ["Time diary", "If exclusive: rent/mortgage and utility bills"] },
+      { item: "Home office / studio space", value: 800, tag: "Home Office", summary: "Dedicated studio or home office for content creation.", scenario: "Content creator uses dedicated room as studio. 70c/hr × 6hrs/day × 5 days × 48 weeks = $965. OR actual costs method if room is exclusively used.", howTo: "Fixed rate 70c/hr OR if room is exclusive to business — claim actual proportion of rent/utilities.", watchOut: "Room must be genuinely dedicated to work. Dual-use room = fixed rate only.", docsNeeded: ["Time diary", "If exclusive: rent/mortgage and utility bills"] },
       { item: "Platform fees & subscriptions", value: 300, tag: "Software", summary: "Scheduling tools, analytics platforms, creator tools.", scenario: "Hootsuite $360/yr + TubeBuddy $120/yr. Both business tools — claimed.", howTo: "Keep subscription receipts.", watchOut: "Personal social media use cannot be included.", docsNeeded: ["Subscription receipts"] },
       { item: "Phone & internet (work portion)", value: 500, tag: "Phone", summary: "Phone and internet used for content creation and posting.", scenario: "Creator uses phone 70% for work. $900/yr plan × 70% = $630. Internet 60% work = $720 × 60% = $432.", howTo: "4-week diary for phone. If NOT using fixed rate home office — also claim internet separately.", watchOut: "Cannot claim internet separately if using fixed rate home office method.", docsNeeded: ["4-week diary", "Annual costs"] },
     ],
@@ -556,7 +559,7 @@ const D = {
     ],
     conditional: [
       { item: "Client entertainment (strictly limited)", value: 300, tag: "Meals", summary: "ATO scrutinises this heavily — must directly connect to income.", scenario: "Taking a vendor to lunch to discuss a listing: potentially claimable. Christmas client lunch for goodwill: generally not.", howTo: "Keep receipt AND diary: who attended, business discussed, direct income connection.", watchOut: "General goodwill entertainment almost never holds up to ATO scrutiny.", docsNeeded: ["Receipt", "Diary note: who, what, income connection"] },
-      { item: "Home office", value: 400, tag: "Home Office", summary: "Admin and after-hours work done at home.", scenario: "Works from home 2hrs most evenings on contracts and admin. 2 × 5 × 48 × $0.67 = $322.", howTo: "67c/hr. Time diary.", watchOut: "Cannot claim internet separately if using fixed rate.", docsNeeded: ["Time diary"] },
+      { item: "Home office", value: 400, tag: "Home Office", summary: "Admin and after-hours work done at home.", scenario: "Works from home 2hrs most evenings on contracts and admin. 2 × 5 × 48 × $0.70 = $322.", howTo: "70c/hr. Time diary.", watchOut: "Cannot claim internet separately if using fixed rate.", docsNeeded: ["Time diary"] },
     ],
     notClaimable: [
       { item: "Personal dining or entertainment", reason: "Must meet strict ATO entertainment test — goodwill dining almost never qualifies." },
@@ -599,7 +602,7 @@ const TAG_COLORS = {
   Clothing: ["#dbeafe","#1e40af"], Equipment: ["#f3e8ff","#6d28d9"],
   Education: ["#fce7f3","#9d174d"], Phone: ["#d1fae5","#065f46"],
   Travel: ["#fef9c3","#78350f"], "Home Office": ["#e0f2fe","#0c4a6e"],
-  Memberships: ["#ede9fe","#5b21b6"], Vehicle: ["#fee2e2","#991b1b"],
+  Memberships: ["#dbeafe","#1e40af"], Vehicle: ["#fee2e2","#991b1b"],
   Software: ["#ecfdf5","#065f46"], Supplies: ["#fff7ed","#9a3412"],
   GST: ["#f0fdf4","#14532d"], Health: ["#fdf4ff","#7e22ce"],
   Marketing: ["#fff1f2","#9f1239"], Meals: ["#fffbeb","#78350f"],
@@ -639,7 +642,7 @@ function LogbookGuide({ onClose }) {
         <div style={{ display:"flex", gap:10, marginTop:24 }}>
           {step > 0 && <button onClick={()=>setStep(s=>s-1)} style={{ flex:1, background:"#f3f4f6", border:"none", borderRadius:12, padding:14, fontWeight:700, cursor:"pointer", fontSize:15 }}>← Back</button>}
           {step < LOGBOOK_STEPS.length-1
-            ? <button onClick={()=>setStep(s=>s+1)} style={{ flex:2, background:"#4f46e5", border:"none", borderRadius:12, padding:14, color:"#fff", fontWeight:700, cursor:"pointer", fontSize:15 }}>Next →</button>
+            ? <button onClick={()=>setStep(s=>s+1)} style={{ flex:2, background:"#1e4fd8", border:"none", borderRadius:12, padding:14, color:"#fff", fontWeight:700, cursor:"pointer", fontSize:15 }}>Next →</button>
             : <button onClick={onClose} style={{ flex:2, background:"#059669", border:"none", borderRadius:12, padding:14, color:"#fff", fontWeight:700, cursor:"pointer", fontSize:15 }}>✅ Got it!</button>}
         </div>
       </div>
@@ -680,30 +683,35 @@ function FlipCard({ deduction, marginalRate, type, showLogbook }) {
           <div style={{ textAlign:"right", flexShrink:0, paddingLeft:8 }}>
             <p style={{ fontSize:16, fontWeight:800, color: type==="claimable" ? "#059669" : "#d97706", fontFamily:"monospace" }}>{fmt(deduction.value)}</p>
             <p style={{ fontSize:11, color:"#9ca3af", marginTop:2 }}>~{fmt(saving)} back</p>
-            <div style={{ marginTop:8, background:"#eef2ff", borderRadius:6, padding:"4px 8px" }}>
-              <p style={{ fontSize:11, color:"#4f46e5", fontWeight:700 }}>Tap to flip 🃏</p>
+            <div style={{ marginTop:8, background:"#eff6ff", borderRadius:6, padding:"4px 8px" }}>
+              <p style={{ fontSize:11, color:"#1e4fd8", fontWeight:700 }}>Tap to flip 🃏</p>
             </div>
           </div>
         </div>
       </div>
       {/* BACK */}
       <div className={`card-side ${flipped ? "visible" : "hidden"}`}
-        style={{ background:"#fff", borderRadius:12, border:"2px solid #4f46e5", padding:"14px 16px" }}>
+        style={{ background:"#fff", borderRadius:12, border:"2px solid #1e4fd8", padding:"14px 16px" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, flex:1, minWidth:0 }}>
             <span className="stag" style={{ background:tagBg, color:tagColor, flexShrink:0 }}>{deduction.tag}</span>
             <p style={{ fontWeight:800, fontSize:13, color:"#111827", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{deduction.item}</p>
           </div>
-          <button onClick={()=>flip(false)} style={{ background:"#eef2ff", border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, color:"#4f46e5", cursor:"pointer", fontWeight:700, flexShrink:0, marginLeft:8 }}>← Back</button>
+          <button onClick={()=>flip(false)} style={{ background:"#eff6ff", border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, color:"#1e4fd8", cursor:"pointer", fontWeight:700, flexShrink:0, marginLeft:8 }}>← Back</button>
         </div>
         <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
           <div style={{ background:"#f0fdf4", border:"1px solid #bbf7d0", borderRadius:10, padding:"10px 12px" }}>
             <p style={{ fontSize:10, fontWeight:800, color:"#059669", marginBottom:5, textTransform:"uppercase", letterSpacing:"0.06em" }}>📋 Real Example</p>
             <p style={{ fontSize:13, color:"#14532d", lineHeight:1.65 }}>{deduction.scenario}</p>
           </div>
-          <div style={{ background:"#eef2ff", border:"1px solid #c7d2fe", borderRadius:10, padding:"10px 12px" }}>
-            <p style={{ fontSize:10, fontWeight:800, color:"#4f46e5", marginBottom:5, textTransform:"uppercase", letterSpacing:"0.06em" }}>✅ How to Claim It</p>
-            <p style={{ fontSize:13, color:"#1e1b4b", lineHeight:1.65 }}>{deduction.howTo}</p>
+          <div style={{ background:"#eff6ff", border:"1px solid #bfdbfe", borderRadius:10, padding:"10px 12px" }}>
+            <p style={{ fontSize:10, fontWeight:800, color:"#1e4fd8", marginBottom:5, textTransform:"uppercase", letterSpacing:"0.06em" }}>✅ How to Claim It</p>
+            <p style={{ fontSize:13, color:"#0f1e3d", lineHeight:1.65 }}>{deduction.howTo}</p>
+            {deduction.atoUrl && (
+              <a href={deduction.atoUrl} target="_blank" rel="noopener noreferrer" style={{ marginTop:8, display:"inline-flex", alignItems:"center", gap:4, fontSize:11, color:"#1e4fd8", fontWeight:600, textDecoration:"none" }}>
+                🔗 View ATO guidance ↗
+              </a>
+            )}
           </div>
           {deduction.watchOut && (
             <div style={{ background:"#fff7ed", border:"1px solid #fed7aa", borderRadius:10, padding:"10px 12px" }}>
@@ -722,7 +730,7 @@ function FlipCard({ deduction, marginalRate, type, showLogbook }) {
               ))}
             </div>
             {hasLogbook && (
-              <button onClick={()=>showLogbook()} style={{ marginTop:10, width:"100%", background:"linear-gradient(135deg,#4f46e5,#6366f1)", border:"none", borderRadius:9, padding:"10px 14px", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer" }}>
+              <button onClick={()=>showLogbook()} style={{ marginTop:10, width:"100%", background:"linear-gradient(135deg,#1e4fd8,#3b6ef0)", border:"none", borderRadius:9, padding:"10px 14px", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer" }}>
                 📖 Open Logbook Guide — Step by step →
               </button>
             )}
@@ -787,10 +795,14 @@ export default function App() {
 async function handleEmailSubmit() {
   if (!email.includes("@")) return;
   try {
-    await fetch("/api/subscribe", {
+    await fetch(`https://api.convertkit.com/v3/forms/9260632/subscribe`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, profession: profession?.id || "unknown" }),
+      body: JSON.stringify({
+        api_key: "MIBl3ebdZg5YyDUpqcZ-fw",
+        email: email,
+        fields: { profession: profession?.id || "unknown" },
+      }),
     });
   } catch (e) {
     console.error("Email subscribe failed:", e);
@@ -836,7 +848,7 @@ async function handleEmailSubmit() {
 
   // ── HOME ──────────────────────────────────────────────────────────────────
   if (screen === "home") return (
-    <div style={{ minHeight:"100vh", background:"linear-gradient(160deg,#eef2ff 0%,#f0f2f8 40%,#ecfdf5 100%)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"32px 20px" }}>
+    <div style={{ minHeight:"100vh", background:"linear-gradient(160deg,#eff6ff 0%,#f0f2f8 40%,#ecfdf5 100%)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"32px 20px" }}>
       <div className="scale-in" style={{ maxWidth:440, width:"100%", textAlign:"center" }}>
         <div style={{ fontSize:60, marginBottom:16 }}>💰</div>
         <h1 style={{ fontFamily:"'Instrument Serif',serif", fontSize:36, color:"#111827", marginBottom:10, lineHeight:1.2 }}>Is It <em>Deductible?</em></h1>
@@ -851,7 +863,7 @@ async function handleEmailSubmit() {
             </div>
           ))}
         </div>
-        <button onClick={()=>setScreen("select")} style={{ width:"100%", background:"linear-gradient(135deg,#4f46e5,#6366f1)", border:"none", borderRadius:14, padding:18, color:"#fff", fontSize:16, fontWeight:700, cursor:"pointer", boxShadow:"0 8px 24px rgba(79,70,229,0.35)" }}>
+        <button onClick={()=>setScreen("select")} style={{ width:"100%", background:"linear-gradient(135deg,#1e4fd8,#3b6ef0)", border:"none", borderRadius:14, padding:18, color:"#fff", fontSize:16, fontWeight:700, cursor:"pointer", boxShadow:"0 8px 24px rgba(30,79,216,0.35)" }}>
           Check My Deductions →
         </button>
         <p style={{ marginTop:14, fontSize:12, color:"#9ca3af" }}>🇦🇺 Free · Based on ATO guidance · General info only — not tax advice</p>
@@ -893,7 +905,7 @@ async function handleEmailSubmit() {
           <div key={group.id} className="fade-up" style={{ animationDelay:`${gi*0.05}s`, marginBottom:16 }}>
             <button
               onClick={()=>setSelectedGroup(selectedGroup===group.id ? null : group.id)}
-              style={{ width:"100%", background: selectedGroup===group.id ? "#4f46e5" : "#fff", border:`2px solid ${selectedGroup===group.id ? "#4f46e5" : "#e2e5f0"}`, borderRadius:12, padding:"14px 18px", display:"flex", alignItems:"center", justifyContent:"space-between", cursor:"pointer", marginBottom: selectedGroup===group.id ? 10 : 0 }}
+              style={{ width:"100%", background: selectedGroup===group.id ? "#1e4fd8" : "#fff", border:`2px solid ${selectedGroup===group.id ? "#1e4fd8" : "#e2e5f0"}`, borderRadius:12, padding:"14px 18px", display:"flex", alignItems:"center", justifyContent:"space-between", cursor:"pointer", marginBottom: selectedGroup===group.id ? 10 : 0 }}
             >
               <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                 <span style={{ fontSize:22 }}>{group.emoji}</span>
@@ -929,7 +941,7 @@ async function handleEmailSubmit() {
         <span style={{ fontSize:36 }}>{profession?.emoji}</span>
         <h2 style={{ fontFamily:"'Instrument Serif',serif", fontSize:28, marginBottom:6, marginTop:8 }}>Your annual salary?</h2>
         <p style={{ color:"#6b7280", marginBottom:8 }}>Used to calculate your exact tax saving. Not stored anywhere.</p>
-        <p style={{ color:"#4f46e5", fontSize:13, fontWeight:700, marginBottom:24 }}>Average for {profession?.label}: {fmt(data?.avgSalary||80000)}/yr</p>
+        <p style={{ color:"#1e4fd8", fontSize:13, fontWeight:700, marginBottom:24 }}>Average for {profession?.label}: {fmt(data?.avgSalary||80000)}/yr</p>
         <div style={{ position:"relative", marginBottom:12 }}>
           <span style={{ position:"absolute", left:16, top:"50%", transform:"translateY(-50%)", fontWeight:800, color:"#9ca3af", fontSize:18 }}>$</span>
           <input autoFocus type="number" value={salaryInput} onChange={e=>setSalaryInput(e.target.value)}
@@ -938,12 +950,12 @@ async function handleEmailSubmit() {
             style={{ width:"100%", border:"2px solid #e2e5f0", borderRadius:12, padding:"16px 16px 16px 36px", fontSize:17, color:"#111827", background:"#fff" }} />
         </div>
         {salaryInput && (
-          <div className="scale-in" style={{ background:"#eef2ff", border:"1px solid #c7d2fe", borderRadius:10, padding:"10px 14px", marginBottom:16, fontSize:13, color:"#4338ca", fontWeight:600 }}>
+          <div className="scale-in" style={{ background:"#eff6ff", border:"1px solid #bfdbfe", borderRadius:10, padding:"10px 14px", marginBottom:16, fontSize:13, color:"#1e40af", fontWeight:600 }}>
             Marginal rate: {Math.round(getMarginalRate(Number(salaryInput))*100)}% — every $100 claimed = ${Math.round(getMarginalRate(Number(salaryInput))*100)} back
           </div>
         )}
         <button onClick={()=>{ setSalary(salaryInput||String(data?.avgSalary)); setScreen("results"); setActiveTab("claimable"); }}
-          style={{ width:"100%", background:"linear-gradient(135deg,#4f46e5,#6366f1)", border:"none", borderRadius:14, padding:17, color:"#fff", fontSize:16, fontWeight:700, cursor:"pointer", boxShadow:"0 6px 18px rgba(79,70,229,0.3)", marginBottom:10 }}>
+          style={{ width:"100%", background:"linear-gradient(135deg,#1e4fd8,#3b6ef0)", border:"none", borderRadius:14, padding:17, color:"#fff", fontSize:16, fontWeight:700, cursor:"pointer", boxShadow:"0 6px 18px rgba(30,79,216,0.3)", marginBottom:10 }}>
           Show My Deductions →
         </button>
         <button onClick={()=>{ setSalary(String(data?.avgSalary)); setScreen("results"); setActiveTab("claimable"); }}
@@ -962,19 +974,23 @@ async function handleEmailSubmit() {
   ];
 
   return (
-    <div style={{ minHeight:"100vh", background:"#f0f2f8", paddingBottom:60 }}>
+    <div style={{ minHeight:"100vh", background:"#f4f6fc", paddingBottom:60 }}>
       {showLogbook && <LogbookGuide onClose={()=>setShowLogbook(false)} />}
 
       {/* HEADER */}
-      <div style={{ background:"linear-gradient(135deg,#4f46e5 0%,#6366f1 100%)", padding:"24px 20px 72px" }}>
+      <div style={{ background:"linear-gradient(135deg,#1e4fd8 0%,#3b6ef0 100%)", padding:"24px 20px 72px" }}>
         <div style={{ maxWidth:560, margin:"0 auto" }}>
           <button onClick={()=>setScreen("select")} style={{ background:"rgba(255,255,255,0.18)", border:"none", borderRadius:8, padding:"6px 14px", color:"#fff", fontSize:13, cursor:"pointer", marginBottom:18, fontFamily:"inherit", fontWeight:600 }}>← Change</button>
-          <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:10 }}>
             <span style={{ fontSize:36 }}>{profession?.emoji}</span>
             <div>
               <p style={{ color:"rgba(255,255,255,0.65)", fontSize:13 }}>Tax Deductions</p>
               <h2 style={{ fontFamily:"'Instrument Serif',serif", fontSize:24, color:"#fff", fontWeight:400 }}>{profession?.label}</h2>
             </div>
+          </div>
+          <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+            <span className="trust-badge">✅ Updated for 2025-26 Tax Year</span>
+            <a href="https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/occupation-and-industry-specific-guides" target="_blank" rel="noopener noreferrer" style={{ display:"inline-flex", alignItems:"center", gap:4, background:"rgba(255,255,255,0.15)", borderRadius:99, padding:"4px 12px", fontSize:11, fontWeight:600, color:"#fff", textDecoration:"none" }}>🔗 ATO Occupation Guides ↗</a>
           </div>
         </div>
       </div>
@@ -982,7 +998,7 @@ async function handleEmailSubmit() {
       <div style={{ maxWidth:560, margin:"-52px auto 0", padding:"0 16px" }}>
 
         {/* SAVINGS CARD */}
-        <div className="scale-in" style={{ background:"#fff", borderRadius:18, padding:"20px", boxShadow:"0 8px 32px rgba(79,70,229,0.12)", marginBottom:12 }}>
+        <div className="scale-in" style={{ background:"#fff", borderRadius:18, padding:"20px", boxShadow:"0 8px 32px rgba(30,79,216,0.12)", marginBottom:12 }}>
           <p style={{ fontSize:11, fontWeight:700, color:"#9ca3af", letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:8 }}>Estimated Tax Saving</p>
           <div style={{ display:"flex", alignItems:"flex-end", gap:10, marginBottom:14 }}>
             <p className="num-pop" style={{ fontFamily:"'Instrument Serif',serif", fontSize:48, color:"#059669", lineHeight:1 }}>{fmt(estimatedSaving)}</p>
@@ -1006,13 +1022,13 @@ async function handleEmailSubmit() {
 
         {/* 1 — PERSONALISATION CHECKLIST */}
         {!checklistDone ? (
-          <div style={{ background:"#fff", border:"2px solid #4f46e5", borderRadius:16, padding:"18px", marginBottom:12 }}>
+          <div style={{ background:"#fff", border:"2px solid #1e4fd8", borderRadius:16, padding:"18px", marginBottom:12 }}>
             {!showChecklist ? (
               <div style={{ textAlign:"center" }}>
                 <p style={{ fontSize:22, marginBottom:8 }}>🎯</p>
                 <p style={{ fontWeight:800, fontSize:15, color:"#111827", marginBottom:6 }}>Get your personalised list</p>
                 <p style={{ fontSize:13, color:"#6b7280", marginBottom:14, lineHeight:1.6 }}>Answer 6 quick questions — we'll filter down to only the deductions that actually apply to you.</p>
-                <button onClick={()=>setShowChecklist(true)} style={{ background:"linear-gradient(135deg,#4f46e5,#6366f1)", border:"none", borderRadius:12, padding:"12px 24px", color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer" }}>
+                <button onClick={()=>setShowChecklist(true)} style={{ background:"linear-gradient(135deg,#1e4fd8,#3b6ef0)", border:"none", borderRadius:12, padding:"12px 24px", color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer" }}>
                   Personalise My Results →
                 </button>
               </div>
@@ -1023,29 +1039,29 @@ async function handleEmailSubmit() {
                 <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:16 }}>
                   {CHECKLIST_QUESTIONS.map(q=>(
                     <div key={q.id} onClick={()=>setChecklist(c=>({...c,[q.id]:!c[q.id]}))}
-                      style={{ display:"flex", alignItems:"center", gap:12, background: checklist[q.id] ? "#eef2ff" : "#f9fafb", border:`2px solid ${checklist[q.id] ? "#4f46e5" : "#e2e5f0"}`, borderRadius:10, padding:"12px 14px", cursor:"pointer" }}>
-                      <div style={{ width:22, height:22, borderRadius:6, background: checklist[q.id] ? "#4f46e5" : "#fff", border:`2px solid ${checklist[q.id] ? "#4f46e5" : "#d1d5db"}`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                      style={{ display:"flex", alignItems:"center", gap:12, background: checklist[q.id] ? "#eff6ff" : "#f9fafb", border:`2px solid ${checklist[q.id] ? "#1e4fd8" : "#e2e5f0"}`, borderRadius:10, padding:"12px 14px", cursor:"pointer" }}>
+                      <div style={{ width:22, height:22, borderRadius:6, background: checklist[q.id] ? "#1e4fd8" : "#fff", border:`2px solid ${checklist[q.id] ? "#1e4fd8" : "#d1d5db"}`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                         {checklist[q.id] && <span style={{ color:"#fff", fontSize:13, fontWeight:800 }}>✓</span>}
                       </div>
                       <p style={{ fontSize:14, fontWeight:600, color:"#111827" }}>{q.label}</p>
                     </div>
                   ))}
                 </div>
-                <button onClick={()=>setChecklistDone(true)} style={{ width:"100%", background:"linear-gradient(135deg,#4f46e5,#6366f1)", border:"none", borderRadius:12, padding:"13px", color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer" }}>
+                <button onClick={()=>setChecklistDone(true)} style={{ width:"100%", background:"linear-gradient(135deg,#1e4fd8,#3b6ef0)", border:"none", borderRadius:12, padding:"13px", color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer" }}>
                   Show My Personalised Deductions →
                 </button>
               </div>
             )}
           </div>
         ) : personalised.length > 0 ? (
-          <div style={{ background:"linear-gradient(135deg,#eef2ff,#ecfdf5)", border:"2px solid #4f46e5", borderRadius:16, padding:"18px", marginBottom:12 }}>
+          <div style={{ background:"linear-gradient(135deg,#eff6ff,#ecfdf5)", border:"2px solid #1e4fd8", borderRadius:16, padding:"18px", marginBottom:12 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:12 }}>
               <div>
-                <p style={{ fontSize:11, fontWeight:700, color:"#4f46e5", textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:4 }}>Your Personalised Deductions</p>
+                <p style={{ fontSize:11, fontWeight:700, color:"#1e4fd8", textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:4 }}>Your Personalised Deductions</p>
                 <p style={{ fontWeight:800, fontSize:22, color:"#059669" }}>{fmt(personalisedSaving)} estimated back</p>
                 <p style={{ fontSize:12, color:"#6b7280", marginTop:2 }}>{personalised.length} deductions that apply to you specifically</p>
               </div>
-              <button onClick={()=>{setChecklistDone(false);setChecklist({});setShowChecklist(false);}} style={{ background:"#eef2ff", border:"none", borderRadius:8, padding:"6px 10px", fontSize:11, color:"#4f46e5", cursor:"pointer", fontWeight:700, flexShrink:0 }}>Edit</button>
+              <button onClick={()=>{setChecklistDone(false);setChecklist({});setShowChecklist(false);}} style={{ background:"#eff6ff", border:"none", borderRadius:8, padding:"6px 10px", fontSize:11, color:"#1e4fd8", cursor:"pointer", fontWeight:700, flexShrink:0 }}>Edit</button>
             </div>
             <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
               {personalised.map((d,i)=>(
@@ -1059,12 +1075,12 @@ async function handleEmailSubmit() {
         ) : (
           <div style={{ background:"#f9fafb", border:"1px solid #e2e5f0", borderRadius:14, padding:"14px 16px", marginBottom:12, textAlign:"center" }}>
             <p style={{ fontSize:14, color:"#6b7280" }}>No specific deductions matched your answers — check the full list below.</p>
-            <button onClick={()=>{setChecklistDone(false);setChecklist({});setShowChecklist(false);}} style={{ marginTop:8, background:"transparent", border:"none", color:"#4f46e5", fontSize:13, fontWeight:700, cursor:"pointer" }}>Try again</button>
+            <button onClick={()=>{setChecklistDone(false);setChecklist({});setShowChecklist(false);}} style={{ marginTop:8, background:"transparent", border:"none", color:"#1e4fd8", fontSize:13, fontWeight:700, cursor:"pointer" }}>Try again</button>
           </div>
         )}
 
         {/* 2 — BOOK A TAX AGENT */}
-        <div style={{ background:"linear-gradient(135deg,#0f172a,#1e1b4b)", borderRadius:16, padding:"18px", marginBottom:12 }}>
+        <div style={{ background:"linear-gradient(135deg,#0f172a,#0f1e3d)", borderRadius:16, padding:"18px", marginBottom:12 }}>
           <div style={{ display:"flex", alignItems:"flex-start", gap:14 }}>
             <span style={{ fontSize:32, flexShrink:0 }}>👨‍💼</span>
             <div style={{ flex:1 }}>
@@ -1073,7 +1089,7 @@ async function handleEmailSubmit() {
                 You've found {fmt(totalClaim)} in potential deductions. A registered tax agent will make sure you claim every dollar — and their fee is tax deductible too.
               </p>
               <a href="https://www.ato.gov.au/individuals-and-families/your-tax-return/help-and-support-to-lodge-your-tax-return/find-a-registered-tax-agent" target="_blank" rel="noopener noreferrer"
-                style={{ display:"block", background:"linear-gradient(135deg,#4f46e5,#6366f1)", borderRadius:12, padding:"13px 18px", color:"#fff", fontSize:14, fontWeight:700, textAlign:"center", textDecoration:"none" }}>
+                style={{ display:"block", background:"linear-gradient(135deg,#1e4fd8,#3b6ef0)", borderRadius:12, padding:"13px 18px", color:"#fff", fontSize:14, fontWeight:700, textAlign:"center", textDecoration:"none" }}>
                 Find a Registered Tax Agent →
               </a>
               <p style={{ color:"#475569", fontSize:11, marginTop:8, textAlign:"center" }}>Powered by the ATO's official register</p>
@@ -1099,7 +1115,7 @@ async function handleEmailSubmit() {
               />
               <button
                 onClick={handleEmailSubmit}
-                style={{ background:"#4f46e5", border:"none", borderRadius:10, padding:"11px 18px", color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer", flexShrink:0 }}
+                style={{ background:"#1e4fd8", border:"none", borderRadius:10, padding:"11px 18px", color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer", flexShrink:0 }}
               >
                 Remind Me
               </button>
@@ -1114,24 +1130,24 @@ async function handleEmailSubmit() {
 
         {/* ACTIONS */}
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:10 }}>
-          <button onClick={handleDownload} style={{ background:"#4f46e5", border:"none", borderRadius:12, padding:13, color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer" }}>📄 Download Summary</button>
+          <button onClick={handleDownload} style={{ background:"#1e4fd8", border:"none", borderRadius:12, padding:13, color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer" }}>📄 Download Summary</button>
           <button onClick={handleShare} style={{ background:"#059669", border:"none", borderRadius:12, padding:13, color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer" }}>{copied ? "✓ Copied!" : "📤 Share Results"}</button>
         </div>
 
         {/* LOGBOOK BANNER */}
         {NEEDS_LOGBOOK.includes(profession?.id) && (
-          <div className="hover-lift" onClick={()=>setShowLogbook(true)} style={{ background:"linear-gradient(135deg,#1e1b4b,#312e81)", borderRadius:14, padding:"14px 16px", marginBottom:10, display:"flex", alignItems:"center", gap:12, cursor:"pointer" }}>
+          <div className="hover-lift" onClick={()=>setShowLogbook(true)} style={{ background:"linear-gradient(135deg,#0f1e3d,#1a3160)", borderRadius:14, padding:"14px 16px", marginBottom:10, display:"flex", alignItems:"center", gap:12, cursor:"pointer" }}>
             <span style={{ fontSize:28, flexShrink:0 }}>🚗</span>
             <div style={{ flex:1 }}>
               <p style={{ color:"#fff", fontWeight:700, fontSize:14, marginBottom:2 }}>Vehicle logbook guide</p>
-              <p style={{ color:"#a5b4fc", fontSize:12 }}>Your biggest deduction — learn how to do it in 6 steps</p>
+              <p style={{ color:"#93c5fd", fontSize:12 }}>Your biggest deduction — learn how to do it in 6 steps</p>
             </div>
-            <span style={{ color:"#818cf8", fontSize:18 }}>→</span>
+            <span style={{ color:"#60a5fa", fontSize:18 }}>→</span>
           </div>
         )}
 
         {/* FLIP HINT */}
-        <div style={{ background:"#eef2ff", border:"1px dashed #c7d2fe", borderRadius:10, padding:"10px 14px", marginBottom:10, textAlign:"center", fontSize:13, color:"#4338ca", fontWeight:600 }}>
+        <div style={{ background:"#eff6ff", border:"1px dashed #bfdbfe", borderRadius:10, padding:"10px 14px", marginBottom:10, textAlign:"center", fontSize:13, color:"#1e40af", fontWeight:600 }}>
           🃏 Tap any card to flip — real example, how to claim it & what documents you need
         </div>
 
