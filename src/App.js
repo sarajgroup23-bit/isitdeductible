@@ -1102,7 +1102,7 @@ async function handleEmailSubmit() {
                 style={{ flex:1, border:"2px solid #e2e5f0", borderRadius:10, padding:"11px 14px", fontSize:14, color:"#111827", background:"#f9fafb" }}
               />
               <button
-                onClick={()=>{ if(email.includes("@")){ setEmailSubmitted(true); }}}
+                onClick={handleEmailSubmit}
                 style={{ background:"#4f46e5", border:"none", borderRadius:10, padding:"11px 18px", color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer", flexShrink:0 }}
               >
                 Remind Me
