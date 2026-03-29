@@ -784,7 +784,23 @@ export default function App() {
   ] : [];
 
   const personalisedSaving = personalised.reduce((s,d)=>s+Math.round(d.value*marginalRate),0);
-
+async function handleEmailSubmit() {
+  if (!email.includes("@")) return;
+  try {
+    await fetch(`https://api.convertkit.com/v3/forms/9260632/subscribe`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        api_key: "MIBl3ebdZg5YyDUpqcZ-fw",
+        email: email,
+        fields: { profession: profession?.id || "unknown" },
+      }),
+    });
+  } catch (e) {
+    console.error("Email subscribe failed:", e);
+  }
+  setEmailSubmitted(true);
+}
   function handleShare() {
     const text = `Just used this free Aussie tax tool — found ${fmt(totalClaim)} in potential deductions as a ${profession?.label}. That's ~${fmt(estimatedSaving)} back. Check yours 👇 isitdeductible.com.au 🇦🇺`;
     if (navigator.share) navigator.share({ text });
