@@ -787,14 +787,10 @@ export default function App() {
 async function handleEmailSubmit() {
   if (!email.includes("@")) return;
   try {
-    await fetch(`https://api.convertkit.com/v3/forms/9260632/subscribe`, {
+    await fetch("/api/subscribe", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        api_key: "MIBl3ebdZg5YyDUpqcZ-fw",
-        email: email,
-        fields: { profession: profession?.id || "unknown" },
-      }),
+      body: JSON.stringify({ email, profession: profession?.id || "unknown" }),
     });
   } catch (e) {
     console.error("Email subscribe failed:", e);
