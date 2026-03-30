@@ -1959,7 +1959,7 @@ function FlipCard({ deduction, marginalRate, type, showLogbook }) {
             <span className="stag" style={{ background:tagBg, color:tagColor, flexShrink:0 }}>{deduction.tag}</span>
             <p style={{ fontWeight:800, fontSize:13, color:"#111827", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{deduction.item}</p>
           </div>
-          <button onClick={()=>flip(false)} style={{ background:"#eff6ff", border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, color:"#1e4fd8", cursor:"pointer", fontWeight:700, flexShrink:0, marginLeft:8 }}><- Back</button>
+          <button onClick={()=>flip(false)} style={{ background:"#eff6ff", border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, color:"#1e4fd8", cursor:"pointer", fontWeight:700, flexShrink:0, marginLeft:8 }}>Back</button>
         </div>
         <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
           <div style={{ background:"#f0fdf4", border:"1px solid #bbf7d0", borderRadius:10, padding:"10px 12px" }}>
@@ -2206,7 +2206,7 @@ async function handleEmailSubmit() {
   if (screen === "select") return (
     <div style={{ minHeight:"100vh", padding:"32px 20px 60px", maxWidth:580, margin:"0 auto" }}>
       <div className="fade-up">
-        <button onClick={()=>setScreen("home")} style={{ background:"transparent", border:"none", color:"#6b7280", cursor:"pointer", fontSize:14, fontWeight:600, marginBottom:20, padding:0 }}><- Back</button>
+        <button onClick={()=>setScreen("home")} style={{ background:"transparent", border:"none", color:"#6b7280", cursor:"pointer", fontSize:14, fontWeight:600, marginBottom:20, padding:0 }}>Back</button>
         <h2 style={{ fontFamily:"'Instrument Serif',serif", fontSize:28, marginBottom:6 }}>What's your profession?</h2>
         <p style={{ color:"#6b7280", marginBottom:20 }}>Choose a category or search directly.</p>
 
@@ -2268,7 +2268,7 @@ async function handleEmailSubmit() {
   if (screen === "salary") return (
     <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column", padding:"40px 20px", maxWidth:460, margin:"0 auto" }}>
       <div className="fade-up">
-        <button onClick={()=>setScreen("select")} style={{ background:"transparent", border:"none", color:"#6b7280", cursor:"pointer", fontSize:14, fontWeight:600, marginBottom:20, padding:0 }}><- Back</button>
+        <button onClick={()=>setScreen("select")} style={{ background:"transparent", border:"none", color:"#6b7280", cursor:"pointer", fontSize:14, fontWeight:600, marginBottom:20, padding:0 }}>Back</button>
         <span style={{ fontSize:36 }}>{profession?.emoji}</span>
         <h2 style={{ fontFamily:"'Instrument Serif',serif", fontSize:28, marginBottom:6, marginTop:8 }}>Your annual salary?</h2>
         <p style={{ color:"#6b7280", marginBottom:8 }}>Used to calculate your exact tax saving. Not stored anywhere.</p>
@@ -2302,7 +2302,7 @@ async function handleEmailSubmit() {
   if (screen === "privacy") return (
     <div style={{ minHeight:"100vh", padding:"40px 20px", maxWidth:600, margin:"0 auto" }}>
       <div className="fade-up">
-        <button onClick={()=>setScreen("home")} style={{ background:"transparent", border:"none", color:"#6b7280", cursor:"pointer", fontSize:14, fontWeight:600, marginBottom:24, padding:0 }}><- Back</button>
+        <button onClick={()=>setScreen("home")} style={{ background:"transparent", border:"none", color:"#6b7280", cursor:"pointer", fontSize:14, fontWeight:600, marginBottom:24, padding:0 }}>Back</button>
         <h2 style={{ fontFamily:"'Instrument Serif',serif", fontSize:28, marginBottom:20 }}>Privacy Policy</h2>
         <div style={{ background:"#fff", borderRadius:16, padding:"24px", border:"1px solid #e2e5f0", lineHeight:1.8, color:"#374151", fontSize:14 }}>
           <p style={{ marginBottom:16 }}><strong>Last updated: July 2025</strong></p>
@@ -2322,7 +2322,7 @@ async function handleEmailSubmit() {
   if (screen === "disclaimer") return (
     <div style={{ minHeight:"100vh", padding:"40px 20px", maxWidth:600, margin:"0 auto" }}>
       <div className="fade-up">
-        <button onClick={()=>setScreen("home")} style={{ background:"transparent", border:"none", color:"#6b7280", cursor:"pointer", fontSize:14, fontWeight:600, marginBottom:24, padding:0 }}><- Back</button>
+        <button onClick={()=>setScreen("home")} style={{ background:"transparent", border:"none", color:"#6b7280", cursor:"pointer", fontSize:14, fontWeight:600, marginBottom:24, padding:0 }}>Back</button>
         <h2 style={{ fontFamily:"'Instrument Serif',serif", fontSize:28, marginBottom:20 }}>Disclaimer</h2>
         <div style={{ background:"#fff", borderRadius:16, padding:"24px", border:"1px solid #e2e5f0", lineHeight:1.8, color:"#374151", fontSize:14 }}>
           <p style={{ marginBottom:16 }}><strong>General information only -- not tax advice.</strong></p>
@@ -2350,7 +2350,7 @@ async function handleEmailSubmit() {
       {/* HEADER */}
       <div style={{ background:"linear-gradient(135deg,#1e4fd8 0%,#3b6ef0 100%)", padding:"24px 20px 72px" }}>
         <div style={{ maxWidth:560, margin:"0 auto" }}>
-          <button onClick={()=>setScreen("select")} style={{ background:"rgba(255,255,255,0.18)", border:"none", borderRadius:8, padding:"6px 14px", color:"#fff", fontSize:13, cursor:"pointer", marginBottom:18, fontFamily:"inherit", fontWeight:600 }}><- Change</button>
+          <button onClick={()=>setScreen("select")} style={{ background:"rgba(255,255,255,0.18)", border:"none", borderRadius:8, padding:"6px 14px", color:"#fff", fontSize:13, cursor:"pointer", marginBottom:18, fontFamily:"inherit", fontWeight:600 }}>Change</button>
           <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:10 }}>
             <span style={{ fontSize:36 }}>{profession?.emoji}</span>
             <div>
