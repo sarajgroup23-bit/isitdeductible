@@ -1904,7 +1904,7 @@ function LogbookGuide({ onClose }) {
         <div style={{ display:"flex", gap:10, marginTop:24 }}>
           {step > 0 && <button onClick={()=>setStep(s=>s-1)} style={{ flex:1, background:"#f3f4f6", border:"none", borderRadius:12, padding:14, fontWeight:700, cursor:"pointer", fontSize:15 }}>Back</button>}
           {step < LOGBOOK_STEPS.length-1
-            ? <button onClick={()=>setStep(s=>s+1)} style={{ flex:2, background:"#1e4fd8", border:"none", borderRadius:12, padding:14, color:"#fff", fontWeight:700, cursor:"pointer", fontSize:15 }}>Next -></button>
+            ? <button onClick={()=>setStep(s=>s+1)} style={{ flex:2, background:"#1e4fd8", border:"none", borderRadius:12, padding:14, color:"#fff", fontWeight:700, cursor:"pointer", fontSize:15 }}>Next</button>
             : <button onClick={onClose} style={{ flex:2, background:"#059669", border:"none", borderRadius:12, padding:14, color:"#fff", fontWeight:700, cursor:"pointer", fontSize:15 }}>✅ Got it!</button>}
         </div>
       </div>
@@ -2520,7 +2520,7 @@ async function handleEmailSubmit() {
               <p style={{ color:"#fff", fontWeight:700, fontSize:14, marginBottom:2 }}>Vehicle logbook guide</p>
               <p style={{ color:"#93c5fd", fontSize:12 }}>Your biggest deduction -- learn how to do it in 6 steps</p>
             </div>
-            <span style={{ color:"#60a5fa", fontSize:18 }}>-></span>
+            <span style={{ color:"#60a5fa", fontSize:18 }}>  </span>
           </div>
         )}
 
