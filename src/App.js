@@ -1858,48 +1858,6 @@ const TAX = [
   { max: Infinity, rate: 0.45 },
 ];
 const getMarginalRate = (s) => { for (let i = TAX.length - 1; i >= 0; i--) { if (s > (i === 0 ? 0 : TAX[i-1].max)) return TAX[i].rate; } return 0; };
-
-// -- CALCULATION ENGINE --------------------------------------------------------
-function estimateTaxSaved(deductions, income) {
-  const rate = getMarginalRate(income);
-  return Math.round(deductions.reduce((sum, d) => sum + d.value * rate, 0));
-}
-
-function calculateFromDataset(professionId, userInputs) {
-  const data = D[professionId];
-  if (!data) return null;
-  const income = Number(userInputs.income) || data.avgSalary || 80000;
-  const rate = getMarginalRate(income);
-
-  // Build applicable deductions based on userInputs
-  const applicable = (data.claimable || []).filter(d => {
-    if (userInputs.usesCar && (d.tag === "Vehicle" || d.tag === "Travel")) return true;
-    if (userInputs.wfhHours > 0 && d.tag === "Home Office") return true;
-    if (!userInputs.usesCar && (d.tag === "Vehicle" || d.tag === "Travel")) return false;
-    if (userInputs.wfhHours === 0 && d.tag === "Home Office") return false;
-    return true;
-  });
-
-  // Adjust WFH value based on actual hours entered
-  const adjusted = applicable.map(d => {
-    if (d.tag === "Home Office" && userInputs.wfhHours > 0) {
-      const annualHours = userInputs.wfhHours * 48;
-      return { ...d, value: Math.round(annualHours * 0.70) };
-    }
-    return d;
-  });
-
-  const totalDeductions = adjusted.reduce((s, d) => s + d.value, 0);
-  const taxSaved = Math.round(totalDeductions * rate);
-
-  // Missed opportunities: conditional deductions not yet claimed
-  const missed = (data.conditional || []).filter(d => {
-    if (!userInputs.usesCar && (d.tag === "Vehicle" || d.tag === "Travel")) return false;
-    return true;
-  });
-
-  return { applicable: adjusted, totalDeductions, taxSaved, rate, missed };
-}
 const fmt = (n) => "$" + Math.round(n).toLocaleString("en-AU");
 
 const TAG_COLORS = {
@@ -2056,11 +2014,6 @@ export default function App() {
   const [checklist, setChecklist] = useState({});
   const [checklistDone, setChecklistDone] = useState(false);
   const [showChecklist, setShowChecklist] = useState(false);
-
-  // -- USER INPUTS for calculation engine -------------------------------------
-  const [userInputs, setUserInputs] = useState({ income: "", usesCar: false, wfhHours: 0 });
-  const [calcResults, setCalcResults] = useState(null);
-  const [showCalc, setShowCalc] = useState(false);
 
   useEffect(() => {
     const s = document.createElement("style");
@@ -2332,11 +2285,11 @@ async function handleEmailSubmit() {
             Marginal rate: {Math.round(getMarginalRate(Number(salaryInput))*100)}% -- every $100 claimed = ${Math.round(getMarginalRate(Number(salaryInput))*100)} back
           </div>
         )}
-        <button onClick={()=>{ setSalary(salaryInput||String(data?.avgSalary)); setScreen("results"); setActiveTab("claimable"); }}
+        <button onClick={()=>{ setSalary(salaryInput||String(data?.avgSalary)); setScreen("questionnaire"); }}
           style={{ width:"100%", background:"linear-gradient(135deg,#1e4fd8,#3b6ef0)", border:"none", borderRadius:14, padding:17, color:"#fff", fontSize:16, fontWeight:700, cursor:"pointer", boxShadow:"0 6px 18px rgba(30,79,216,0.3)", marginBottom:10 }}>
-          Show My Deductions ->
+          Next: Personalise My Results
         </button>
-        <button onClick={()=>{ setSalary(String(data?.avgSalary)); setScreen("results"); setActiveTab("claimable"); }}
+        <button onClick={()=>{ setSalary(String(data?.avgSalary)); setScreen("questionnaire"); }}
           style={{ width:"100%", background:"transparent", border:"none", color:"#9ca3af", fontSize:14, cursor:"pointer", padding:8 }}>
           Use average salary instead
         </button>
@@ -2345,6 +2298,69 @@ async function handleEmailSubmit() {
   );
 
   // -- RESULTS ---------------------------------------------------------------
+
+  // -- QUESTIONNAIRE ---------------------------------------------------------
+  if (screen === "questionnaire") return (
+    <div style={{ minHeight:"100vh", background:"#f4f6fc", padding:"0 0 60px" }}>
+      {/* Header */}
+      <div style={{ background:"linear-gradient(135deg,#1e4fd8 0%,#3b6ef0 100%)", padding:"24px 20px 36px" }}>
+        <div style={{ maxWidth:520, margin:"0 auto" }}>
+          <button onClick={()=>setScreen("salary")} style={{ background:"rgba(255,255,255,0.18)", border:"none", borderRadius:8, padding:"6px 14px", color:"#fff", fontSize:13, cursor:"pointer", marginBottom:18, fontFamily:"inherit", fontWeight:600 }}>Back</button>
+          <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+            <span style={{ fontSize:32 }}>{profession?.emoji}</span>
+            <div>
+              <p style={{ color:"rgba(255,255,255,0.7)", fontSize:13 }}>{profession?.label}</p>
+              <h2 style={{ fontFamily:"'Instrument Serif',serif", fontSize:22, color:"#fff", fontWeight:400 }}>A few quick questions</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ maxWidth:520, margin:"-20px auto 0", padding:"0 16px" }}>
+        <div className="fade-up" style={{ background:"#fff", borderRadius:18, padding:"22px", boxShadow:"0 8px 32px rgba(30,79,216,0.10)", marginBottom:12 }}>
+          <p style={{ fontSize:14, color:"#6b7280", marginBottom:20, lineHeight:1.6 }}>
+            We'll filter your results to only the deductions that apply to you. Tap all that apply.
+          </p>
+
+          <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:24 }}>
+            {CHECKLIST_QUESTIONS.map(q => (
+              <div key={q.id}
+                onClick={()=>setChecklist(c=>({...c,[q.id]:!c[q.id]}))}
+                style={{
+                  display:"flex", alignItems:"center", gap:14,
+                  background: checklist[q.id] ? "#eff6ff" : "#f9fafb",
+                  border: `2px solid ${checklist[q.id] ? "#1e4fd8" : "#e2e5f0"}`,
+                  borderRadius:12, padding:"14px 16px", cursor:"pointer",
+                  transition:"all 0.15s ease"
+                }}>
+                <div style={{
+                  width:24, height:24, borderRadius:7, flexShrink:0,
+                  background: checklist[q.id] ? "#1e4fd8" : "#fff",
+                  border: `2px solid ${checklist[q.id] ? "#1e4fd8" : "#d1d5db"}`,
+                  display:"flex", alignItems:"center", justifyContent:"center"
+                }}>
+                  {checklist[q.id] && <span style={{ color:"#fff", fontSize:14, fontWeight:800 }}>✓</span>}
+                </div>
+                <p style={{ fontSize:15, fontWeight:600, color: checklist[q.id] ? "#1e4fd8" : "#374151" }}>{q.label}</p>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={()=>{ setChecklistDone(true); setScreen("results"); setActiveTab("claimable"); }}
+            style={{ width:"100%", background:"linear-gradient(135deg,#0f1e3d,#1e4fd8)", border:"none", borderRadius:14, padding:16, color:"#fff", fontSize:16, fontWeight:700, cursor:"pointer", boxShadow:"0 6px 18px rgba(30,79,216,0.3)" }}>
+            Show My Deductions
+          </button>
+          <button
+            onClick={()=>{ setScreen("results"); setActiveTab("claimable"); }}
+            style={{ width:"100%", marginTop:8, background:"transparent", border:"none", color:"#9ca3af", fontSize:13, cursor:"pointer", padding:6 }}>
+            Skip and show everything
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   // -- PRIVACY POLICY --------------------------------------------------------
   if (screen === "privacy") return (
     <div style={{ minHeight:"100vh", padding:"40px 20px", maxWidth:600, margin:"0 auto" }}>
@@ -2437,48 +2453,16 @@ async function handleEmailSubmit() {
         </div>
 
 
-        {/* 1 -- PERSONALISATION CHECKLIST */}
-        {!checklistDone ? (
-          <div style={{ background:"#fff", border:"2px solid #1e4fd8", borderRadius:16, padding:"18px", marginBottom:12 }}>
-            {!showChecklist ? (
-              <div style={{ textAlign:"center" }}>
-                <p style={{ fontSize:22, marginBottom:8 }}>🎯</p>
-                <p style={{ fontWeight:800, fontSize:15, color:"#111827", marginBottom:6 }}>Get your personalised list</p>
-                <p style={{ fontSize:13, color:"#6b7280", marginBottom:14, lineHeight:1.6 }}>Answer 6 quick questions -- we'll filter down to only the deductions that actually apply to you.</p>
-                <button onClick={()=>setShowChecklist(true)} style={{ background:"linear-gradient(135deg,#1e4fd8,#3b6ef0)", border:"none", borderRadius:12, padding:"12px 24px", color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer" }}>
-                  Personalise My Results ->
-                </button>
-              </div>
-            ) : (
-              <div>
-                <p style={{ fontWeight:800, fontSize:15, color:"#111827", marginBottom:4 }}>Which of these apply to you?</p>
-                <p style={{ fontSize:13, color:"#6b7280", marginBottom:14 }}>Tick all that apply</p>
-                <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:16 }}>
-                  {CHECKLIST_QUESTIONS.map(q=>(
-                    <div key={q.id} onClick={()=>setChecklist(c=>({...c,[q.id]:!c[q.id]}))}
-                      style={{ display:"flex", alignItems:"center", gap:12, background: checklist[q.id] ? "#eff6ff" : "#f9fafb", border:`2px solid ${checklist[q.id] ? "#1e4fd8" : "#e2e5f0"}`, borderRadius:10, padding:"12px 14px", cursor:"pointer" }}>
-                      <div style={{ width:22, height:22, borderRadius:6, background: checklist[q.id] ? "#1e4fd8" : "#fff", border:`2px solid ${checklist[q.id] ? "#1e4fd8" : "#d1d5db"}`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                        {checklist[q.id] && <span style={{ color:"#fff", fontSize:13, fontWeight:800 }}>✓</span>}
-                      </div>
-                      <p style={{ fontSize:14, fontWeight:600, color:"#111827" }}>{q.label}</p>
-                    </div>
-                  ))}
-                </div>
-                <button onClick={()=>setChecklistDone(true)} style={{ width:"100%", background:"linear-gradient(135deg,#1e4fd8,#3b6ef0)", border:"none", borderRadius:12, padding:"13px", color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer" }}>
-                  Show My Personalised Deductions ->
-                </button>
-              </div>
-            )}
-          </div>
-        ) : personalised.length > 0 ? (
-          <div style={{ background:"linear-gradient(135deg,#eff6ff,#ecfdf5)", border:"2px solid #1e4fd8", borderRadius:16, padding:"18px", marginBottom:12 }}>
+        {/* PERSONALISED RESULTS -- shown if questionnaire was completed */}
+        {checklistDone && personalised.length > 0 && (
+          <div className="scale-in" style={{ background:"linear-gradient(135deg,#eff6ff,#ecfdf5)", border:"2px solid #1e4fd8", borderRadius:16, padding:"18px", marginBottom:12 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:12 }}>
               <div>
                 <p style={{ fontSize:11, fontWeight:700, color:"#1e4fd8", textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:4 }}>Your Personalised Deductions</p>
                 <p style={{ fontWeight:800, fontSize:22, color:"#059669" }}>{fmt(personalisedSaving)} estimated back</p>
-                <p style={{ fontSize:12, color:"#6b7280", marginTop:2 }}>{personalised.length} deductions that apply to you specifically</p>
+                <p style={{ fontSize:12, color:"#6b7280", marginTop:2 }}>{personalised.length} deductions matched to your situation</p>
               </div>
-              <button onClick={()=>{setChecklistDone(false);setChecklist({});setShowChecklist(false);}} style={{ background:"#eff6ff", border:"none", borderRadius:8, padding:"6px 10px", fontSize:11, color:"#1e4fd8", cursor:"pointer", fontWeight:700, flexShrink:0 }}>Edit</button>
+              <button onClick={()=>{ setChecklistDone(false); setChecklist({}); setScreen("questionnaire"); }} style={{ background:"#eff6ff", border:"none", borderRadius:8, padding:"6px 10px", fontSize:11, color:"#1e4fd8", cursor:"pointer", fontWeight:700, flexShrink:0 }}>Edit</button>
             </div>
             <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
               {personalised.map((d,i)=>(
@@ -2489,30 +2473,7 @@ async function handleEmailSubmit() {
               ))}
             </div>
           </div>
-        ) : (
-          <div style={{ background:"#f9fafb", border:"1px solid #e2e5f0", borderRadius:14, padding:"14px 16px", marginBottom:12, textAlign:"center" }}>
-            <p style={{ fontSize:14, color:"#6b7280" }}>No specific deductions matched your answers -- check the full list below.</p>
-            <button onClick={()=>{setChecklistDone(false);setChecklist({});setShowChecklist(false);}} style={{ marginTop:8, background:"transparent", border:"none", color:"#1e4fd8", fontSize:13, fontWeight:700, cursor:"pointer" }}>Try again</button>
-          </div>
         )}
-
-        {/* 2 -- BOOK A TAX AGENT */}
-        <div style={{ background:"linear-gradient(135deg,#0f172a,#0f1e3d)", borderRadius:16, padding:"18px", marginBottom:12 }}>
-          <div style={{ display:"flex", alignItems:"flex-start", gap:14 }}>
-            <span style={{ fontSize:32, flexShrink:0 }}>👨‍💼</span>
-            <div style={{ flex:1 }}>
-              <p style={{ color:"#fff", fontWeight:800, fontSize:15, marginBottom:4 }}>Want someone to claim all of this for you?</p>
-              <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.6, marginBottom:14 }}>
-                You've found {fmt(totalClaim)} in potential deductions. A registered tax agent will make sure you claim every dollar -- and their fee is tax deductible too.
-              </p>
-              <a href="https://www.ato.gov.au/individuals-and-families/your-tax-return/help-and-support-to-lodge-your-tax-return/find-a-registered-tax-agent" target="_blank" rel="noopener noreferrer"
-                style={{ display:"block", background:"linear-gradient(135deg,#1e4fd8,#3b6ef0)", borderRadius:12, padding:"13px 18px", color:"#fff", fontSize:14, fontWeight:700, textAlign:"center", textDecoration:"none" }}>
-                Find a Registered Tax Agent ->
-              </a>
-              <p style={{ color:"#475569", fontSize:11, marginTop:8, textAlign:"center" }}>Powered by the ATO's official register</p>
-            </div>
-          </div>
-        </div>
 
         {/* 3 -- EMAIL CAPTURE */}
         {!emailSubmitted ? (
@@ -2604,114 +2565,29 @@ async function handleEmailSubmit() {
           </>}
         </div>
 
+        {/* TAX AGENT -- BOTTOM */}
+        <div style={{ marginTop:16, background:"linear-gradient(135deg,#0f172a,#0f1e3d)", borderRadius:16, padding:"18px", marginBottom:12 }}>
+          <div style={{ display:"flex", alignItems:"flex-start", gap:14 }}>
+            <span style={{ fontSize:32, flexShrink:0 }}>👨‍💼</span>
+            <div style={{ flex:1 }}>
+              <p style={{ color:"#fff", fontWeight:800, fontSize:15, marginBottom:4 }}>Want someone to lodge all of this for you?</p>
+              <p style={{ color:"#94a3b8", fontSize:13, lineHeight:1.6, marginBottom:14 }}>
+                You've found {fmt(totalClaim)} in potential deductions. A registered tax agent makes sure you claim every dollar -- and their fee is tax deductible too.
+              </p>
+              <a href="https://www.ato.gov.au/individuals-and-families/your-tax-return/help-and-support-to-lodge-your-tax-return/find-a-registered-tax-agent" target="_blank" rel="noopener noreferrer"
+                style={{ display:"block", background:"linear-gradient(135deg,#1e4fd8,#3b6ef0)", borderRadius:12, padding:"13px 18px", color:"#fff", fontSize:14, fontWeight:700, textAlign:"center", textDecoration:"none" }}>
+                Find a Registered Tax Agent
+              </a>
+              <p style={{ color:"#475569", fontSize:11, marginTop:8, textAlign:"center" }}>Powered by the ATO's official register</p>
+            </div>
+          </div>
+        </div>
+
         {/* DISCLAIMER */}
-        <div style={{ marginTop:16, background:"#fffbeb", border:"1px solid #fcd34d", borderRadius:14, padding:"14px 16px" }}>
+        <div style={{ marginTop:12, background:"#fffbeb", border:"1px solid #fcd34d", borderRadius:14, padding:"14px 16px" }}>
           <p style={{ fontSize:12, color:"#78350f", lineHeight:1.7 }}>
             ⚖️ <strong style={{ color:"#78350f" }}>General information only -- not tax advice.</strong> This tool provides general guidance based on ATO published rules. It does not consider your personal circumstances. Always verify at <a href="https://ato.gov.au" target="_blank" rel="noopener noreferrer" style={{ color:"#1e4fd8" }}>ato.gov.au</a> and consult a registered tax agent before making any claim. Updated for 2024-25 tax rates (Stage 3 cuts applied).
           </p>
-        </div>
-
-        {/* PERSONALISED CALCULATOR */}
-        <div style={{ marginTop:16, background:"#fff", border:"2px solid #1e4fd8", borderRadius:16, padding:"18px" }}>
-          <p style={{ fontWeight:800, fontSize:15, color:"#0f1e3d", marginBottom:4 }}>📊 Get Your Exact Estimate</p>
-          <p style={{ fontSize:13, color:"#6b7280", marginBottom:14 }}>Enter your details for a personalised calculation.</p>
-
-          <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:14 }}>
-            <div>
-              <p style={{ fontSize:12, fontWeight:700, color:"#374151", marginBottom:4 }}>Annual income ($)</p>
-              <input
-                type="number"
-                placeholder={String(data?.avgSalary || 80000)}
-                value={userInputs.income}
-                onChange={e => setUserInputs(u => ({ ...u, income: e.target.value }))}
-                style={{ width:"100%", border:"2px solid #e2e5f0", borderRadius:10, padding:"10px 14px", fontSize:14, color:"#111827", background:"#f9fafb" }}
-              />
-            </div>
-            <div style={{ display:"flex", gap:10 }}>
-              <div style={{ flex:1 }}>
-                <p style={{ fontSize:12, fontWeight:700, color:"#374151", marginBottom:4 }}>WFH hours/week</p>
-                <input
-                  type="number"
-                  placeholder="0"
-                  min="0"
-                  max="60"
-                  value={userInputs.wfhHours || ""}
-                  onChange={e => setUserInputs(u => ({ ...u, wfhHours: Number(e.target.value) }))}
-                  style={{ width:"100%", border:"2px solid #e2e5f0", borderRadius:10, padding:"10px 14px", fontSize:14, color:"#111827", background:"#f9fafb" }}
-                />
-              </div>
-              <div style={{ flex:1, display:"flex", alignItems:"flex-end", paddingBottom:2 }}>
-                <label style={{ display:"flex", alignItems:"center", gap:8, cursor:"pointer", padding:"10px 14px", border:"2px solid #e2e5f0", borderRadius:10, width:"100%", background: userInputs.usesCar ? "#eff6ff" : "#f9fafb", borderColor: userInputs.usesCar ? "#1e4fd8" : "#e2e5f0" }}>
-                  <input type="checkbox" checked={userInputs.usesCar} onChange={e => setUserInputs(u => ({ ...u, usesCar: e.target.checked }))} style={{ width:16, height:16 }} />
-                  <span style={{ fontSize:13, fontWeight:600, color:"#374151" }}>Use car for work?</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <button
-            onClick={() => {
-              const inputs = { ...userInputs, income: Number(userInputs.income) || effectiveSalary };
-              const results = calculateFromDataset(profession?.id, inputs);
-              setCalcResults(results);
-              setShowCalc(true);
-            }}
-            style={{ width:"100%", background:"linear-gradient(135deg,#0f1e3d,#1e4fd8)", border:"none", borderRadius:12, padding:13, color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer" }}
-          >
-            Calculate My Deductions
-          </button>
-
-          {showCalc && calcResults && (
-            <div className="fade-up" style={{ marginTop:16 }}>
-              {/* RESULTS ROW */}
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:12 }}>
-                <div style={{ background:"#ecfdf5", borderRadius:12, padding:"14px", textAlign:"center" }}>
-                  <p style={{ fontSize:10, fontWeight:700, color:"#059669", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:4 }}>Total Deductions</p>
-                  <p style={{ fontSize:22, fontWeight:800, color:"#059669" }}>{fmt(calcResults.totalDeductions)}</p>
-                </div>
-                <div style={{ background:"#eff6ff", borderRadius:12, padding:"14px", textAlign:"center" }}>
-                  <p style={{ fontSize:10, fontWeight:700, color:"#1e4fd8", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:4 }}>Tax Saved</p>
-                  <p style={{ fontSize:22, fontWeight:800, color:"#1e4fd8" }}>{fmt(calcResults.taxSaved)}</p>
-                  <p style={{ fontSize:10, color:"#6b7280" }}>{Math.round(calcResults.rate * 100)}% marginal rate</p>
-                </div>
-              </div>
-
-              {/* APPLICABLE DEDUCTIONS */}
-              <p style={{ fontSize:12, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:8 }}>Your Applicable Deductions</p>
-              <div style={{ display:"flex", flexDirection:"column", gap:6, marginBottom:12 }}>
-                {calcResults.applicable.map((d, i) => (
-                  <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", background:"#f9fafb", borderRadius:9, padding:"10px 12px", borderLeft:"3px solid #059669" }}>
-                    <div style={{ flex:1, minWidth:0 }}>
-                      <p style={{ fontSize:13, fontWeight:600, color:"#111827", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{d.item}</p>
-                      <p style={{ fontSize:11, color:"#9ca3af" }}>{d.tag}</p>
-                    </div>
-                    <div style={{ textAlign:"right", flexShrink:0, marginLeft:8 }}>
-                      <p style={{ fontSize:13, fontWeight:800, color:"#059669", fontFamily:"monospace" }}>{fmt(d.value)}</p>
-                      <p style={{ fontSize:10, color:"#9ca3af" }}>~{fmt(Math.round(d.value * calcResults.rate))} back</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* MISSED OPPORTUNITIES */}
-              {calcResults.missed.length > 0 && (
-                <>
-                  <p style={{ fontSize:12, fontWeight:700, color:"#d97706", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:8 }}>Missed Opportunities</p>
-                  <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
-                    {calcResults.missed.map((d, i) => (
-                      <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", background:"#fffbeb", borderRadius:9, padding:"10px 12px", borderLeft:"3px solid #d97706" }}>
-                        <div style={{ flex:1, minWidth:0 }}>
-                          <p style={{ fontSize:13, fontWeight:600, color:"#92400e", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{d.item}</p>
-                          <p style={{ fontSize:11, color:"#d97706" }}>Check if this applies to you</p>
-                        </div>
-                        <p style={{ fontSize:13, fontWeight:800, color:"#d97706", fontFamily:"monospace", flexShrink:0, marginLeft:8 }}>{fmt(d.value)}</p>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          )}
         </div>
 
         <button onClick={()=>{ setScreen("home"); setProfession(null); setSalary(""); setSalaryInput(""); setSelectedGroup(null); }}
