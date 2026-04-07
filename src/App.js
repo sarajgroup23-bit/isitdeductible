@@ -1858,6 +1858,48 @@ const TAX = [
   { max: Infinity, rate: 0.45 },
 ];
 const getMarginalRate = (s) => { for (let i = TAX.length - 1; i >= 0; i--) { if (s > (i === 0 ? 0 : TAX[i-1].max)) return TAX[i].rate; } return 0; };
+
+// -- CALCULATION ENGINE --------------------------------------------------------
+function estimateTaxSaved(deductions, income) {
+  const rate = getMarginalRate(income);
+  return Math.round(deductions.reduce((sum, d) => sum + d.value * rate, 0));
+}
+
+function calculateFromDataset(professionId, userInputs) {
+  const data = D[professionId];
+  if (!data) return null;
+  const income = Number(userInputs.income) || data.avgSalary || 80000;
+  const rate = getMarginalRate(income);
+
+  // Build applicable deductions based on userInputs
+  const applicable = (data.claimable || []).filter(d => {
+    if (userInputs.usesCar && (d.tag === "Vehicle" || d.tag === "Travel")) return true;
+    if (userInputs.wfhHours > 0 && d.tag === "Home Office") return true;
+    if (!userInputs.usesCar && (d.tag === "Vehicle" || d.tag === "Travel")) return false;
+    if (userInputs.wfhHours === 0 && d.tag === "Home Office") return false;
+    return true;
+  });
+
+  // Adjust WFH value based on actual hours entered
+  const adjusted = applicable.map(d => {
+    if (d.tag === "Home Office" && userInputs.wfhHours > 0) {
+      const annualHours = userInputs.wfhHours * 48;
+      return { ...d, value: Math.round(annualHours * 0.70) };
+    }
+    return d;
+  });
+
+  const totalDeductions = adjusted.reduce((s, d) => s + d.value, 0);
+  const taxSaved = Math.round(totalDeductions * rate);
+
+  // Missed opportunities: conditional deductions not yet claimed
+  const missed = (data.conditional || []).filter(d => {
+    if (!userInputs.usesCar && (d.tag === "Vehicle" || d.tag === "Travel")) return false;
+    return true;
+  });
+
+  return { applicable: adjusted, totalDeductions, taxSaved, rate, missed };
+}
 const fmt = (n) => "$" + Math.round(n).toLocaleString("en-AU");
 
 const TAG_COLORS = {
@@ -1904,7 +1946,7 @@ function LogbookGuide({ onClose }) {
         <div style={{ display:"flex", gap:10, marginTop:24 }}>
           {step > 0 && <button onClick={()=>setStep(s=>s-1)} style={{ flex:1, background:"#f3f4f6", border:"none", borderRadius:12, padding:14, fontWeight:700, cursor:"pointer", fontSize:15 }}>Back</button>}
           {step < LOGBOOK_STEPS.length-1
-            ? <button onClick={()=>setStep(s=>s+1)} style={{ flex:2, background:"#1e4fd8", border:"none", borderRadius:12, padding:14, color:"#fff", fontWeight:700, cursor:"pointer", fontSize:15 }}>Next →</button>
+            ? <button onClick={()=>setStep(s=>s+1)} style={{ flex:2, background:"#1e4fd8", border:"none", borderRadius:12, padding:14, color:"#fff", fontWeight:700, cursor:"pointer", fontSize:15 }}>Next -></button>
             : <button onClick={onClose} style={{ flex:2, background:"#059669", border:"none", borderRadius:12, padding:14, color:"#fff", fontWeight:700, cursor:"pointer", fontSize:15 }}>✅ Got it!</button>}
         </div>
       </div>
@@ -2014,6 +2056,11 @@ export default function App() {
   const [checklist, setChecklist] = useState({});
   const [checklistDone, setChecklistDone] = useState(false);
   const [showChecklist, setShowChecklist] = useState(false);
+
+  // -- USER INPUTS for calculation engine -------------------------------------
+  const [userInputs, setUserInputs] = useState({ income: "", usesCar: false, wfhHours: 0 });
+  const [calcResults, setCalcResults] = useState(null);
+  const [showCalc, setShowCalc] = useState(false);
 
   useEffect(() => {
     const s = document.createElement("style");
@@ -2512,7 +2559,7 @@ async function handleEmailSubmit() {
               <p style={{ color:"#fff", fontWeight:700, fontSize:14, marginBottom:2 }}>Vehicle logbook guide</p>
               <p style={{ color:"#93c5fd", fontSize:12 }}>Your biggest deduction -- learn how to do it in 6 steps</p>
             </div>
-            <span style={{ color:"#60a5fa", fontSize:18 }}>→</span>
+            <span style={{ color:"#60a5fa", fontSize:18 }}>-></span>
           </div>
         )}
 
@@ -2562,6 +2609,109 @@ async function handleEmailSubmit() {
           <p style={{ fontSize:12, color:"#78350f", lineHeight:1.7 }}>
             ⚖️ <strong style={{ color:"#78350f" }}>General information only -- not tax advice.</strong> This tool provides general guidance based on ATO published rules. It does not consider your personal circumstances. Always verify at <a href="https://ato.gov.au" target="_blank" rel="noopener noreferrer" style={{ color:"#1e4fd8" }}>ato.gov.au</a> and consult a registered tax agent before making any claim. Updated for 2024-25 tax rates (Stage 3 cuts applied).
           </p>
+        </div>
+
+        {/* PERSONALISED CALCULATOR */}
+        <div style={{ marginTop:16, background:"#fff", border:"2px solid #1e4fd8", borderRadius:16, padding:"18px" }}>
+          <p style={{ fontWeight:800, fontSize:15, color:"#0f1e3d", marginBottom:4 }}>📊 Get Your Exact Estimate</p>
+          <p style={{ fontSize:13, color:"#6b7280", marginBottom:14 }}>Enter your details for a personalised calculation.</p>
+
+          <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:14 }}>
+            <div>
+              <p style={{ fontSize:12, fontWeight:700, color:"#374151", marginBottom:4 }}>Annual income ($)</p>
+              <input
+                type="number"
+                placeholder={String(data?.avgSalary || 80000)}
+                value={userInputs.income}
+                onChange={e => setUserInputs(u => ({ ...u, income: e.target.value }))}
+                style={{ width:"100%", border:"2px solid #e2e5f0", borderRadius:10, padding:"10px 14px", fontSize:14, color:"#111827", background:"#f9fafb" }}
+              />
+            </div>
+            <div style={{ display:"flex", gap:10 }}>
+              <div style={{ flex:1 }}>
+                <p style={{ fontSize:12, fontWeight:700, color:"#374151", marginBottom:4 }}>WFH hours/week</p>
+                <input
+                  type="number"
+                  placeholder="0"
+                  min="0"
+                  max="60"
+                  value={userInputs.wfhHours || ""}
+                  onChange={e => setUserInputs(u => ({ ...u, wfhHours: Number(e.target.value) }))}
+                  style={{ width:"100%", border:"2px solid #e2e5f0", borderRadius:10, padding:"10px 14px", fontSize:14, color:"#111827", background:"#f9fafb" }}
+                />
+              </div>
+              <div style={{ flex:1, display:"flex", alignItems:"flex-end", paddingBottom:2 }}>
+                <label style={{ display:"flex", alignItems:"center", gap:8, cursor:"pointer", padding:"10px 14px", border:"2px solid #e2e5f0", borderRadius:10, width:"100%", background: userInputs.usesCar ? "#eff6ff" : "#f9fafb", borderColor: userInputs.usesCar ? "#1e4fd8" : "#e2e5f0" }}>
+                  <input type="checkbox" checked={userInputs.usesCar} onChange={e => setUserInputs(u => ({ ...u, usesCar: e.target.checked }))} style={{ width:16, height:16 }} />
+                  <span style={{ fontSize:13, fontWeight:600, color:"#374151" }}>Use car for work?</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={() => {
+              const inputs = { ...userInputs, income: Number(userInputs.income) || effectiveSalary };
+              const results = calculateFromDataset(profession?.id, inputs);
+              setCalcResults(results);
+              setShowCalc(true);
+            }}
+            style={{ width:"100%", background:"linear-gradient(135deg,#0f1e3d,#1e4fd8)", border:"none", borderRadius:12, padding:13, color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer" }}
+          >
+            Calculate My Deductions
+          </button>
+
+          {showCalc && calcResults && (
+            <div className="fade-up" style={{ marginTop:16 }}>
+              {/* RESULTS ROW */}
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:12 }}>
+                <div style={{ background:"#ecfdf5", borderRadius:12, padding:"14px", textAlign:"center" }}>
+                  <p style={{ fontSize:10, fontWeight:700, color:"#059669", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:4 }}>Total Deductions</p>
+                  <p style={{ fontSize:22, fontWeight:800, color:"#059669" }}>{fmt(calcResults.totalDeductions)}</p>
+                </div>
+                <div style={{ background:"#eff6ff", borderRadius:12, padding:"14px", textAlign:"center" }}>
+                  <p style={{ fontSize:10, fontWeight:700, color:"#1e4fd8", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:4 }}>Tax Saved</p>
+                  <p style={{ fontSize:22, fontWeight:800, color:"#1e4fd8" }}>{fmt(calcResults.taxSaved)}</p>
+                  <p style={{ fontSize:10, color:"#6b7280" }}>{Math.round(calcResults.rate * 100)}% marginal rate</p>
+                </div>
+              </div>
+
+              {/* APPLICABLE DEDUCTIONS */}
+              <p style={{ fontSize:12, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:8 }}>Your Applicable Deductions</p>
+              <div style={{ display:"flex", flexDirection:"column", gap:6, marginBottom:12 }}>
+                {calcResults.applicable.map((d, i) => (
+                  <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", background:"#f9fafb", borderRadius:9, padding:"10px 12px", borderLeft:"3px solid #059669" }}>
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <p style={{ fontSize:13, fontWeight:600, color:"#111827", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{d.item}</p>
+                      <p style={{ fontSize:11, color:"#9ca3af" }}>{d.tag}</p>
+                    </div>
+                    <div style={{ textAlign:"right", flexShrink:0, marginLeft:8 }}>
+                      <p style={{ fontSize:13, fontWeight:800, color:"#059669", fontFamily:"monospace" }}>{fmt(d.value)}</p>
+                      <p style={{ fontSize:10, color:"#9ca3af" }}>~{fmt(Math.round(d.value * calcResults.rate))} back</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* MISSED OPPORTUNITIES */}
+              {calcResults.missed.length > 0 && (
+                <>
+                  <p style={{ fontSize:12, fontWeight:700, color:"#d97706", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:8 }}>Missed Opportunities</p>
+                  <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                    {calcResults.missed.map((d, i) => (
+                      <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", background:"#fffbeb", borderRadius:9, padding:"10px 12px", borderLeft:"3px solid #d97706" }}>
+                        <div style={{ flex:1, minWidth:0 }}>
+                          <p style={{ fontSize:13, fontWeight:600, color:"#92400e", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{d.item}</p>
+                          <p style={{ fontSize:11, color:"#d97706" }}>Check if this applies to you</p>
+                        </div>
+                        <p style={{ fontSize:13, fontWeight:800, color:"#d97706", fontFamily:"monospace", flexShrink:0, marginLeft:8 }}>{fmt(d.value)}</p>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
         </div>
 
         <button onClick={()=>{ setScreen("home"); setProfession(null); setSalary(""); setSalaryInput(""); setSelectedGroup(null); }}
