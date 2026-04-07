@@ -2013,7 +2013,6 @@ export default function App() {
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [checklist, setChecklist] = useState({});
   const [checklistDone, setChecklistDone] = useState(false);
-  const [showChecklist, setShowChecklist] = useState(false);
 
   useEffect(() => {
     const s = document.createElement("style");
